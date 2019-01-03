@@ -54,7 +54,4 @@ node_modules
 yarn-error.log
 npm-error.log
 
-Assets/ThirdParty/
-Assets/ThirdParty.meta
-
-.gitmodules  
+_ref
