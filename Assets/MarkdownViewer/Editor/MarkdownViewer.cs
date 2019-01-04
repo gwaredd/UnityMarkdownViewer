@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------
 
+using Markdig;
 using System;
 using System.IO;
 using UnityEditor;
@@ -13,9 +13,21 @@ namespace MG
     {
         public GUISkin Skin;
 
+        //------------------------------------------------------------------------------
+
         public override void OnInspectorGUI()
         {
-            // get file extension
+            // has target?
+
+            var asset = target as TextAsset;
+
+            if( asset == null )
+            {
+                base.OnInspectorGUI();
+                return;
+            }
+
+            // file extension is .md
 
             var path = AssetDatabase.GetAssetPath( target );
             var ext  = Path.GetExtension( path );
@@ -26,11 +38,23 @@ namespace MG
                 return;
             }
 
+            // TODO: ...
+            // Configure the pipeline with all advanced extensions active
+            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            //var result = Markdown.ToHtml("This is a text with some *emphasis*", pipeline);
+
             // do the thing ...
 
+            var doc = Markdown.Parse( asset.text );
 
-            Debug.Log( "#path# " + path );
-            base.OnInspectorGUI();
+            foreach( var block in doc )
+            {
+                Debug.Log( block.ToString() );
+            }
+
+            // HtmlRenderer
+
+            GUILayout.Label( Markdown.ToHtml( asset.text ), Skin.label );
         }
     }
 }
