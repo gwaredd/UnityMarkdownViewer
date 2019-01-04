@@ -13,6 +13,39 @@ namespace MG
     {
         public GUISkin Skin;
 
+        private Editor mDefaultEditor;
+
+        // TODO: powerUI to render markdown? or markdown interpretted as unity rich text / GUI
+
+        // TODO: test what happens when we have multiple TextAsset editors ...
+
+
+        //------------------------------------------------------------------------------
+
+        private void DrawDefault()
+        {
+            if( mDefaultEditor == null )
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                foreach( var assembly in assemblies )
+                {
+                    var type = assembly.GetType( "UnityEditor.TextAssetInspector" );
+
+                    if( type != null )
+                    {
+                        mDefaultEditor = Editor.CreateEditor( target, type );
+                        break;
+                    }
+                }
+            }
+
+            if( mDefaultEditor != null )
+            {
+                mDefaultEditor.OnInspectorGUI();
+            }
+        }
+
         //------------------------------------------------------------------------------
 
         public override void OnInspectorGUI()
@@ -23,7 +56,7 @@ namespace MG
 
             if( asset == null )
             {
-                base.OnInspectorGUI();
+                DrawDefault();
                 return;
             }
 
@@ -34,7 +67,7 @@ namespace MG
 
             if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) == false )
             {
-                base.OnInspectorGUI();
+                DrawDefault();
                 return;
             }
 
@@ -49,7 +82,7 @@ namespace MG
 
             foreach( var block in doc )
             {
-                Debug.Log( block.ToString() );
+                //Debug.Log( block.ToString() );
             }
 
             // HtmlRenderer
