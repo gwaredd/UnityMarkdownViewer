@@ -1,43 +1,76 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
+// https://answers.unity.com/static/markdown/help.html
+
+// TODO: add markdown to solution files
 
 using Markdig;
 using System;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace MG
+namespace MG.MDV
 {
+    // TODO: variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
+    // TODO: test what happens when we have multiple TextAsset editors ...
+    //          https://github.com/roydejong/chromium-unity-server
+    //          https://ultralig.ht/
+
+
     [CustomEditor( typeof( TextAsset ) )]
     public class MarkdownViewer : Editor
     {
         public GUISkin Skin;
 
-        private Editor mDefaultEditor;
 
-        // TODO: powerUI to render markdown? or markdown interpretted as unity rich text / GUI
+        //------------------------------------------------------------------------------
 
-        // TODO: test what happens when we have multiple TextAsset editors ...
+        static string GetFilePath( string filename )
+        {
+            var path = AssetDatabase.GetAssetPath( Selection.activeObject );
+
+            if( string.IsNullOrEmpty( path ) )
+            {
+                path = "Assets";
+            }
+            else if( AssetDatabase.IsValidFolder( path ) == false )
+            {
+                path = Path.GetDirectoryName( path );
+            }
+
+            return AssetDatabase.GenerateUniqueAssetPath( path + "/" + filename );
+        }
+
+        [MenuItem( "Assets/Create/Markdown" )]
+        static void CreateMarkdown()
+        {
+            var filepath = GetFilePath( "NewMarkdown.md" );
+
+            // TODO: custom markdown template ...
+
+            var writer = File.CreateText( filepath );
+            writer.Write( "# Markdown\n" );
+            writer.Close();
+
+            AssetDatabase.ImportAsset( filepath );
+
+            Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( filepath );
+        }
 
 
         //------------------------------------------------------------------------------
+
+        private Editor mDefaultEditor;
 
         private void DrawDefault()
         {
             if( mDefaultEditor == null )
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+                var textInspectorType = assemblies.Select( asm => asm.GetType( "UnityEditor.TextAssetInspector" ) ).First( t => t != null );
 
-                foreach( var assembly in assemblies )
-                {
-                    var type = assembly.GetType( "UnityEditor.TextAssetInspector" );
-
-                    if( type != null )
-                    {
-                        mDefaultEditor = Editor.CreateEditor( target, type );
-                        break;
-                    }
-                }
+                mDefaultEditor = textInspectorType != null ? Editor.CreateEditor( target, textInspectorType ) : null;
             }
 
             if( mDefaultEditor != null )
@@ -45,6 +78,7 @@ namespace MG
                 mDefaultEditor.OnInspectorGUI();
             }
         }
+
 
         //------------------------------------------------------------------------------
 
@@ -60,6 +94,7 @@ namespace MG
                 return;
             }
 
+            // TODO: configurable extensions?
             // file extension is .md
 
             var path = AssetDatabase.GetAssetPath( target );
@@ -71,23 +106,25 @@ namespace MG
                 return;
             }
 
-            // TODO: ...
-            // Configure the pipeline with all advanced extensions active
-            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            //var result = Markdown.ToHtml("This is a text with some *emphasis*", pipeline);
+
+
+            // TODO: cache parsed document ...
+
 
             // do the thing ...
 
-            var doc = Markdown.Parse( asset.text );
+            // TODO: fancy markdown pipelines ...
 
-            foreach( var block in doc )
-            {
-                //Debug.Log( block.ToString() );
-            }
+            // var renderer = new UnityMarkdownRenderer();
 
-            // HtmlRenderer
+            // var pipeline = new MarkdownPipelineBuilder().Build(); // UseAdvancedExtensions()
+            // pipeline.Setup( renderer );
 
-            GUILayout.Label( Markdown.ToHtml( asset.text ), Skin.label );
+            // var document = Markdown.Parse( asset.text, pipeline );
+            // renderer.Render( document );
+
+            var txt = Markdown.ToHtml( asset.text );
+            GUILayout.Label( txt, Skin.label );
         }
     }
 }
