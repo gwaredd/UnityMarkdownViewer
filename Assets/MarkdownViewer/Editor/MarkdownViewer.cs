@@ -115,16 +115,18 @@ namespace MG.MDV
 
             // TODO: fancy markdown pipelines ...
 
-            // var renderer = new UnityMarkdownRenderer();
+            var renderer = new RendererMarkdown( Skin );
+            renderer.Render( Markdown.Parse( asset.text ) );
 
-            // var pipeline = new MarkdownPipelineBuilder().Build(); // UseAdvancedExtensions()
-            // pipeline.Setup( renderer );
+            //var pipeline = new MarkdownPipelineBuilder().Build(); // UseAdvancedExtensions()
+            //pipeline.Setup( renderer );
 
-            // var document = Markdown.Parse( asset.text, pipeline );
-            // renderer.Render( document );
+            //var document = Markdown.Parse( asset.text, pipeline );
+            //var document = Markdown.Parse( asset.text, pipeline );
+            //renderer.Render( document );
 
-            var txt = Markdown.ToHtml( asset.text );
-            GUILayout.Label( txt, Skin.label );
+            //var txt = Markdown.ToHtml( asset.text );
+            //GUILayout.Label( txt, Skin.label );
         }
     }
 }

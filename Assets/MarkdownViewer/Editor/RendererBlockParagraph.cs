@@ -3,12 +3,13 @@
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System;
 
 namespace MG.MDV
 {
-    public class RendererParagraph : MarkdownObjectRenderer<UnityMarkdownRenderer, ParagraphBlock>
+    public class RendererBlockParagraph : MarkdownObjectRenderer<RendererMarkdown, ParagraphBlock>
     {
-        protected override void Write( UnityMarkdownRenderer renderer, ParagraphBlock obj )
+        protected override void Write( RendererMarkdown renderer, ParagraphBlock obj )
         {
             //if( !renderer.ImplicitParagraph && renderer.EnableHtmlForBlock )
             //{
@@ -16,19 +17,18 @@ namespace MG.MDV
             //    {
             //        renderer.EnsureLine();
             //    }
-
             //    renderer.Write( "<p" ).WriteAttributes( obj ).Write( ">" );
             //}
 
-            // write children ..
+            var inline = obj.Inline as Inline;
 
-            var child = (Inline) obj.Inline;
-
-            while( child != null )
+            while( inline != null )
             {
-                Write( renderer, child );
-                child = child.NextSibling;
+                renderer.Write( inline );
+                inline = inline.NextSibling;
             }
+
+            renderer.EnsureLine();
 
             //if( !renderer.ImplicitParagraph )
             //{
@@ -36,7 +36,6 @@ namespace MG.MDV
             //    {
             //        renderer.WriteLine( "</p>" );
             //    }
-
             //    renderer.EnsureLine();
             //}
         }
