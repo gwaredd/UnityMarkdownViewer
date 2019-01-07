@@ -5,8 +5,8 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
+    ////////////////////////////////////////////////////////////////////////////////
     // <a href="...">...</a>
-
     /// <see cref="Markdig.Renderers.Html.Inlines.AutolinkInlineRenderer"/>
 
     public class RendererInlineAutoLink : MarkdownObjectRenderer<RendererMarkdown, AutolinkInline>

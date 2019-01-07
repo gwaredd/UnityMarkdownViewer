@@ -5,6 +5,7 @@ using Markdig.Syntax;
 
 namespace MG.MDV
 {
+    ////////////////////////////////////////////////////////////////////////////////
     /// <see cref="Markdig.Renderers.Html.HtmlBlockRenderer"/>
 
     public class RendererBlockHtml : MarkdownObjectRenderer<RendererMarkdown, HtmlBlock>

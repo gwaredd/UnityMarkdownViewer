@@ -3,6 +3,7 @@
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System.Text;
 using UnityEngine;
 
 namespace MG.MDV
@@ -50,6 +51,8 @@ namespace MG.MDV
             return mSkin != null ? mSkin.GetStyle( style ) : null;
         }
 
+
+        //------------------------------------------------------------------------------
         /// <see cref="Markdig.Renderers.TextRendererBase.WriteLeafInline"/>
 
         internal void WriteLeafBlockInline( LeafBlock block )
@@ -63,6 +66,8 @@ namespace MG.MDV
             }
         }
 
+
+        //------------------------------------------------------------------------------
         /// <see cref="Markdig.Renderers.HtmlRenderer.WriteLeafRawLines"/>
 
         internal void WriteLeafRawLines( LeafBlock block )
@@ -77,48 +82,33 @@ namespace MG.MDV
 
             for( int i = 0; i < lines.Count; i++ )
             {
-                // if( !writeEndOfLines && i > 0 )
-                // {
-                //     WriteLine();
-                // }
-                // if( escape )
-                // {
-                //     WriteEscape( ref slices[ i ].Slice, softEscape );
-                // }
-                // else
-                // {
-                //     Write( ref slices[ i ].Slice );
-                // }
-                // if( writeEndOfLines )
-                // {
-                //     WriteLine();
-                // }
+                Print( slices[ i ].ToString() );
+                Print( "\n" );
             }
-
-            throw new System.NotImplementedException();
         }
 
 
-        string mLine = string.Empty;
+        //------------------------------------------------------------------------------
+
+        StringBuilder mText = new StringBuilder( 2048 );
 
         internal void Print( string text )
         {
-            mLine += text;
+            mText.Append( text );
         }
 
-        internal string GetLine()
+        internal string GetText()
         {
-            var line = mLine;
-            mLine = string.Empty;
-            return line;
+            var text = mText.ToString();
+            mText.Clear();
+            return text;
         }
 
         internal void EnsureLine()
         {
-            if( !string.IsNullOrEmpty( mLine ) )
+            if( mText.Length > 0 )
             {
-                GUILayout.Label( mLine, mSkin.label );
-                mLine = string.Empty;
+                GUILayout.Label( GetText(), mSkin.label );
             }
         }
     }

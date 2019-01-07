@@ -18,7 +18,7 @@ namespace MG.MDV
 
             renderer.WriteLeafBlockInline( block );
 
-            var heading = renderer.GetLine();
+            var heading = renderer.GetText();
 
             if( !string.IsNullOrEmpty( heading ) )
             {

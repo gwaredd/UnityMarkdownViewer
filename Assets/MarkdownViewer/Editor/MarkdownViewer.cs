@@ -81,6 +81,8 @@ namespace MG.MDV
 
         public override void OnInspectorGUI()
         {
+            //GUI.DrawTexture( new Rect( 0, 100, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
+
             // has target?
 
             var asset = target as TextAsset;

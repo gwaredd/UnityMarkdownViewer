@@ -2,11 +2,12 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax;
+using UnityEditor;
 
 namespace MG.MDV
 {
-    // <pre><code> ... </code></pre>
-
+    ////////////////////////////////////////////////////////////////////////////////
+    // <pre><code>...</code></pre>
     /// <see cref="Markdig.Renderers.Html.CodeBlockRenderer"/>
 
     public class RendererBlockCode : MarkdownObjectRenderer<RendererMarkdown, CodeBlock>
@@ -15,9 +16,9 @@ namespace MG.MDV
         {
             renderer.EnsureLine();
 
+            // TODO: use monospace font / block ...
             renderer.WriteLeafRawLines( block );
-
-            throw new System.NotImplementedException();
+            EditorGUILayout.TextArea( renderer.GetText() );
         }
     }
 }

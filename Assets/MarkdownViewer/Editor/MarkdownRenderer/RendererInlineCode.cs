@@ -13,7 +13,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeInline node )
         {
-            throw new System.NotImplementedException();
+            renderer.Print( node.Content );
         }
     }
 }
