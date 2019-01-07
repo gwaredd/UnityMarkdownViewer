@@ -1,13 +1,13 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Markdig.Helpers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Markdig.Parsers
 {
@@ -137,7 +137,7 @@ namespace Markdig.Parsers
         /// <returns>The source position</returns>
         public int GetSourcePosition(int sliceOffset, out int lineIndex, out int column)
         {
-            column = 0;            
+            column = 0;
             lineIndex = sliceOffset >= previousSliceOffset ? previousLineIndexForSliceOffset : 0;
             int position = 0;
             if (PreciseSourceLocation)
@@ -147,7 +147,7 @@ namespace Markdig.Parsers
                     var lineOffset = lineOffsets[lineIndex];
                     if (sliceOffset <= lineOffset.End)
                     {
-                        // Use the beginning of the line as a previous slice offset 
+                        // Use the beginning of the line as a previous slice offset
                         // (since it is on the same line)
                         previousSliceOffset = lineOffsets[lineIndex].Start;
                         var delta = sliceOffset - previousSliceOffset;

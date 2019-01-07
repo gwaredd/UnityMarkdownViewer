@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -118,7 +118,7 @@ namespace Markdig.Parsers
                 // We dicard the paragraph that will be transformed to a heading
                 state.Discard(paragraph);
 
-                // If we matched a LinkReferenceDefinition before matching the heading, and the remaining 
+                // If we matched a LinkReferenceDefinition before matching the heading, and the remaining
                 // lines are empty, we can early exit and remove the paragraph
                 if (!(TryMatchLinkReferenceDefinition(ref paragraph.Lines, state) && paragraph.Lines.Count == 0))
                 {

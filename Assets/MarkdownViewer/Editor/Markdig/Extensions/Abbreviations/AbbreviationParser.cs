@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System.Collections.Generic;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System.Collections.Generic;
 
 namespace Markdig.Extensions.Abbreviations
 {
@@ -30,7 +30,7 @@ namespace Markdig.Extensions.Abbreviations
                 return BlockState.None;
             }
 
-            // A link must be of the form *[Some Text]: An abbreviation 
+            // A link must be of the form *[Some Text]: An abbreviation
             var slice = processor.Line;
             var startPosition = slice.Start;
             var c = slice.NextChar();
@@ -155,7 +155,7 @@ namespace Markdig.Extensions.Abbreviations
                         // Appned the abbreviation
                         container.AppendChild(abbrInline);
 
-                        // If this is the end of the string, clear the literal 
+                        // If this is the end of the string, clear the literal
                         // and exit
                         if (content.End == indexAfterMatch - 1)
                         {

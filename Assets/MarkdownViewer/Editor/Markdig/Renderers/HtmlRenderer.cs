@@ -1,15 +1,15 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Markdig.Helpers;
 using Markdig.Renderers.Html;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
+using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Markdig.Renderers
 {
@@ -41,7 +41,7 @@ namespace Markdig.Renderers
             ObjectRenderers.Add(new EmphasisInlineRenderer());
             ObjectRenderers.Add(new LineBreakInlineRenderer());
             ObjectRenderers.Add(new HtmlInlineRenderer());
-            ObjectRenderers.Add(new HtmlEntityInlineRenderer());            
+            ObjectRenderers.Add(new HtmlEntityInlineRenderer());
             ObjectRenderers.Add(new LinkInlineRenderer());
             ObjectRenderers.Add(new LiteralInlineRenderer());
 

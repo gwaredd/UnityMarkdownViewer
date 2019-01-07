@@ -1,13 +1,11 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Markdig.Helpers;
 using Markdig.Syntax;
+using System;
+using System.Collections.Generic;
 
 namespace Markdig.Parsers
 {
@@ -93,7 +91,7 @@ namespace Markdig.Parsers
 
             // At this point the LineIndex is the same as the number of lines in the document
             document.LineCount = blockProcessor.LineIndex;
-            
+
             // Allow to call a hook after processing a document
             documentProcessed?.Invoke(document);
             return document;
@@ -105,7 +103,7 @@ namespace Markdig.Parsers
             {
                 // Get the precise position of the begining of the line
                 var lineText = lineReader.ReadLine();
-                
+
                 // If this is the end of file and the last line is empty
                 if (lineText == null)
                 {

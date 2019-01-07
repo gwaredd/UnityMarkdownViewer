@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 namespace Markdig.Syntax
@@ -10,7 +10,7 @@ namespace Markdig.Syntax
     public interface IFencedBlock : IBlock
     {
         /// <summary>
-        /// Gets or sets the language parsed after the first line of 
+        /// Gets or sets the language parsed after the first line of
         /// the fenced code block. May be null.
         /// </summary>
         string Info { get; set; }

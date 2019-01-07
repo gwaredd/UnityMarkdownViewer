@@ -1,11 +1,11 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
+using Markdig.Helpers;
+using Markdig.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Markdig.Helpers;
-using Markdig.Syntax;
 
 namespace Markdig.Parsers
 {
@@ -123,7 +123,7 @@ namespace Markdig.Parsers
         public int Column { get; set; }
 
         /// <summary>
-        /// Gets the position of the current character in the line being processed. 
+        /// Gets the position of the current character in the line being processed.
         /// </summary>
         public int Start => Line.Start;
 
@@ -233,7 +233,7 @@ namespace Markdig.Parsers
         }
 
         /// <summary>
-        /// Parses the indentation from the current position in the line, updating <see cref="StartBeforeIndent"/>, 
+        /// Parses the indentation from the current position in the line, updating <see cref="StartBeforeIndent"/>,
         /// <see cref="ColumnBeforeIndent"/>, <see cref="Start"/> and <see cref="Column"/> accordingly
         /// taking into account space taken by tabs.
         /// </summary>
@@ -536,7 +536,7 @@ namespace Markdig.Parsers
                 OpenedBlocks[i].IsOpen = true;
             }
         }
-        
+
         /// <summary>
         /// Updates the <see cref="CurrentBlock"/> and <see cref="CurrentContainer"/>.
         /// </summary>
@@ -574,7 +574,7 @@ namespace Markdig.Parsers
         /// </exception>
         private void TryContinueBlocks()
         {
-            // Set all blocks non opened. 
+            // Set all blocks non opened.
             // They will be marked as open in the following loop
             for (int i = 1; i < OpenedBlocks.Count; i++)
             {

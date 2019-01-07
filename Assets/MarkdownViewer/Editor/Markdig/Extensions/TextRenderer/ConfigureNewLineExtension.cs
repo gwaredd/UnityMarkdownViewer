@@ -1,4 +1,4 @@
-using Markdig.Renderers;
+﻿using Markdig.Renderers;
 
 namespace Markdig.Extensions.TextRenderer
 {

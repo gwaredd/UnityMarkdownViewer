@@ -1,13 +1,13 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System.Collections.Generic;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System.Collections.Generic;
 
 namespace Markdig.Extensions.GenericAttributes
 {
@@ -173,7 +173,7 @@ namespace Markdig.Extensions.GenericAttributes
                     line.TrimStart();
                     c = line.CurrentChar;
 
-                    // Handle boolean properties that are not followed by = 
+                    // Handle boolean properties that are not followed by =
                     if ((hasSpace && (c == '.' || c == '#' || IsStartAttributeName(c))) || c == '}')
                     {
                         if (properties == null)
@@ -184,7 +184,7 @@ namespace Markdig.Extensions.GenericAttributes
                         properties.Add(new KeyValuePair<string, string>(name, null));
                         continue;
                     }
-                    
+
                     // Else we expect a regular property
                     if (line.CurrentChar != '=')
                     {
@@ -264,7 +264,7 @@ namespace Markdig.Extensions.GenericAttributes
                     Properties = properties
                 };
 
-                // Assign back the current processor of the line to 
+                // Assign back the current processor of the line to
                 slice = line;
             }
             return isValid;

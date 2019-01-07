@@ -1,4 +1,4 @@
-using Markdig.Renderers;
+﻿using Markdig.Renderers;
 using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;

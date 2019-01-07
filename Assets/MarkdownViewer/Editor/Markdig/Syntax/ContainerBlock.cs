@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Markdig.Helpers;
-using Markdig.Parsers;
 
 namespace Markdig.Syntax
 {

@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using System;
@@ -284,7 +284,7 @@ namespace Markdig.Helpers
                 text.NextChar() == 'D' &&
                 text.NextChar() == 'A' &&
                 text.NextChar() == 'T' &&
-                text.NextChar() == 'A' && 
+                text.NextChar() == 'A' &&
                 (c = text.NextChar()) == '[')
             {
                 builder.Append("CDATA[");
@@ -434,7 +434,7 @@ namespace Markdig.Helpers
         public static string Unescape(string text, bool removeBackSlash = true)
         {
             // Credits: code from CommonMark.NET
-            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved. 
+            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved.
             // See license for details:  https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md
             if (string.IsNullOrEmpty(text))
             {
@@ -537,7 +537,7 @@ namespace Markdig.Helpers
         public static int ScanEntity<T>(T slice, out int numericEntity, out int namedEntityStart,  out int namedEntityLength) where T : ICharIterator
         {
             // Credits: code from CommonMark.NET
-            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved. 
+            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved.
             // See license for details:  https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md
 
             /*!re2c
@@ -558,7 +558,7 @@ namespace Markdig.Helpers
             var start = slice.Start;
             char c = slice.NextChar();
             int counter = 0;
-            
+
             if (c == '#')
             {
                 c = slice.PeekChar();

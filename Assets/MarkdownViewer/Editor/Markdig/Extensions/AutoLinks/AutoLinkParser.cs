@@ -1,12 +1,12 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Syntax.Inlines;
+using System;
+using System.Collections.Generic;
 
 namespace Markdig.Extensions.AutoLinks
 {
@@ -209,7 +209,7 @@ namespace Markdig.Extensions.AutoLinks
                     }
                 }
 
-                // Check previous sibling and parents in the tree 
+                // Check previous sibling and parents in the tree
                 currentInline = currentInline.PreviousSibling ?? currentInline.Parent;
             }
 

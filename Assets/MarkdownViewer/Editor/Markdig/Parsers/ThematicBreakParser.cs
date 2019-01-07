@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -36,7 +36,7 @@ namespace Markdig.Parsers
 
             var line = processor.Line;
 
-            // 4.1 Thematic breaks 
+            // 4.1 Thematic breaks
             // A line consisting of 0-3 spaces of indentation, followed by a sequence of three or more matching -, _, or * characters, each followed optionally by any number of spaces
             int breakCharCount = 0;
             var breakChar = line.CurrentChar;

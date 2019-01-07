@@ -1,15 +1,15 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
-using Markdig.Renderers.Normalize.Inlines;
 using Markdig.Renderers.Normalize;
+using Markdig.Renderers.Normalize.Inlines;
 
 namespace Markdig.Extensions.JiraLinks
 {
     /// <summary>
-    /// Simple inline parser extension for Markdig to find, and 
+    /// Simple inline parser extension for Markdig to find, and
     /// automatically add links to JIRA issue numbers.
     /// </summary>
     public class JiraLinkExtension : IMarkdownExtension
@@ -41,5 +41,5 @@ namespace Markdig.Extensions.JiraLinks
             }
         }
     }
-    
+
 }

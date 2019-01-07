@@ -1,10 +1,10 @@
-using Markdig.Parsers;
+﻿using Markdig.Parsers;
 using Markdig.Syntax;
 
 namespace Markdig.Extensions.DefinitionLists
 {
     /// <summary>
-    /// A definition item contains zero to multiple <see cref="DefinitionTerm"/> 
+    /// A definition item contains zero to multiple <see cref="DefinitionTerm"/>
     /// and definitions (any <see cref="Block"/>)
     /// </summary>
     /// <seealso cref="Markdig.Syntax.ContainerBlock" />

@@ -1,4 +1,4 @@
-using Markdig.Helpers;
+﻿using Markdig.Helpers;
 
 namespace Markdig.Syntax
 {

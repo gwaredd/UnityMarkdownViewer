@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System.Diagnostics;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Syntax.Inlines;
+using System.Diagnostics;
 
 namespace Markdig.Syntax
 {
@@ -24,7 +24,7 @@ namespace Markdig.Syntax
         }
 
         /// <summary>
-        /// Gets or sets the string lines accumulated for this leaf block. 
+        /// Gets or sets the string lines accumulated for this leaf block.
         /// May be null after process inlines have occured.
         /// </summary>
         public StringLineGroup Lines;

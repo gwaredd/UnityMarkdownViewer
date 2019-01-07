@@ -1,16 +1,16 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Markdig.Extensions.Tables
 {
@@ -51,7 +51,7 @@ namespace Markdig.Extensions.Tables
 
             var c = slice.CurrentChar;
 
-            // If we have not a delimiter on the first line of a paragraph, don't bother to continue 
+            // If we have not a delimiter on the first line of a paragraph, don't bother to continue
             // tracking other delimiters on following lines
             var tableState = processor.ParserStates[Index] as TableState;
             bool isFirstLineEmpty = false;
@@ -66,7 +66,7 @@ namespace Markdig.Extensions.Tables
             {
 
                 // A table could be preceded by an empty line or a line containing an inline
-                // that has not been added to the stack, so we consider this as a valid 
+                // that has not been added to the stack, so we consider this as a valid
                 // start for a table. Typically, with this, we can have an attributes {...}
                 // starting on the first line of a pipe table, even if the first line
                 // doesn't have a pipe
@@ -237,7 +237,7 @@ namespace Markdig.Extensions.Tables
             // So the following:
             // | a | b \n
             // | d | e \n
-            // 
+            //
             // Will generate a tree of the following node:
             // |
             //   a
@@ -343,7 +343,7 @@ namespace Markdig.Extensions.Tables
                         }
                         break;
                     }
-                    
+
                     beginOfCell = cellContentIt;
                     if (endOfCell == null)
                     {
@@ -353,7 +353,7 @@ namespace Markdig.Extensions.Tables
 
 
                 // If the current deilimiter is a pipe `|` OR
-                // the beginOfCell/endOfCell are not null and 
+                // the beginOfCell/endOfCell are not null and
                 // either they are :
                 // - different
                 // - they contain a single element, but it is not a line break (\n) or an empty/whitespace Literal.
@@ -489,7 +489,7 @@ namespace Markdig.Extensions.Tables
             return false;
         }
 
-        private List<TableColumnDefinition> FindHeaderRow(List<Inline> delimiters) 
+        private List<TableColumnDefinition> FindHeaderRow(List<Inline> delimiters)
         {
             bool isValidRow = false;
             List<TableColumnDefinition> aligns = null;

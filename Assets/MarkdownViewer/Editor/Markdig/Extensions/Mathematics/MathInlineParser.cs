@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using Markdig.Helpers;
@@ -57,7 +57,7 @@ namespace Markdig.Extensions.Mathematics
             bool openNextIsDigit = c.IsDigit();
             pc.CheckUnicodeCategory(out openPrevIsWhiteSpace, out openPrevIsPunctuation);
             c.CheckUnicodeCategory(out openNextIsWhiteSpace, out openNextIsPunctuation);
-            
+
             // Check that opening $/$$ is correct, using the different heuristics than for emphasis delimiters
             // If a $/$$ is not preceded by a whitespace or punctuation, or followed by a digit
             // this is a not a math block
@@ -146,7 +146,7 @@ namespace Markdig.Extensions.Mathematics
                 c.CheckUnicodeCategory(out closeNextIsWhiteSpace, out closeNextIsPunctuation);
 
                 // A closing $/$$ should be followed by at least a punctuation or a whitespace
-                // and if the character after an openning $/$$ was a whitespace, it should be 
+                // and if the character after an openning $/$$ was a whitespace, it should be
                 // a whitespace as well for the character preceding the closing of $/$$
                 if ((!closeNextIsPunctuation && !closeNextIsWhiteSpace) || (openNextIsWhiteSpace != closePrevIsWhiteSpace))
                 {

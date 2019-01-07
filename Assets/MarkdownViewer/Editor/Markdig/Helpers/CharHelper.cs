@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 
@@ -66,10 +66,10 @@ namespace Markdig.Helpers
 
         public static void CheckOpenCloseDelimiter(char pc, char c, bool enableWithinWord, out bool canOpen, out bool canClose)
         {
-            // A left-flanking delimiter run is a delimiter run that is 
+            // A left-flanking delimiter run is a delimiter run that is
             // (a) not followed by Unicode whitespace, and
-            // (b) either not followed by a punctuation character, or preceded by Unicode whitespace 
-            // or a punctuation character. 
+            // (b) either not followed by a punctuation character, or preceded by Unicode whitespace
+            // or a punctuation character.
             // For purposes of this definition, the beginning and the end of the line count as Unicode whitespace.
             bool nextIsPunctuation;
             bool nextIsWhiteSpace;
@@ -85,10 +85,10 @@ namespace Markdig.Helpers
                            ((!nextIsPunctuation || nextIsExcepted) || prevIsWhiteSpace || prevIsPunctuation);
 
 
-            // A right-flanking delimiter run is a delimiter run that is 
-            // (a) not preceded by Unicode whitespace, and 
-            // (b) either not preceded by a punctuation character, or followed by Unicode whitespace 
-            // or a punctuation character. 
+            // A right-flanking delimiter run is a delimiter run that is
+            // (a) not preceded by Unicode whitespace, and
+            // (b) either not preceded by a punctuation character, or followed by Unicode whitespace
+            // or a punctuation character.
             // For purposes of this definition, the beginning and the end of the line count as Unicode whitespace.
             canClose = !prevIsWhiteSpace &&
                             ((!prevIsPunctuation || prevIsExcepted) || nextIsWhiteSpace || nextIsPunctuation);
@@ -96,13 +96,13 @@ namespace Markdig.Helpers
             if (!enableWithinWord)
             {
                 var temp = canOpen;
-                // A single _ character can open emphasis iff it is part of a left-flanking delimiter run and either 
-                // (a) not part of a right-flanking delimiter run or 
+                // A single _ character can open emphasis iff it is part of a left-flanking delimiter run and either
+                // (a) not part of a right-flanking delimiter run or
                 // (b) part of a right-flanking delimiter run preceded by punctuation.
                 canOpen = canOpen && (!canClose || prevIsPunctuation);
 
                 // A single _ character can close emphasis iff it is part of a right-flanking delimiter run and either
-                // (a) not part of a left-flanking delimiter run or 
+                // (a) not part of a left-flanking delimiter run or
                 // (b) part of a left-flanking delimiter run followed by punctuation.
                 canClose = canClose && (!temp || nextIsPunctuation);
             }
@@ -177,7 +177,7 @@ namespace Markdig.Helpers
         [MethodImpl(MethodImplOptionPortable.AggressiveInlining)]
         public static bool IsWhitespace(this char c)
         {
-            // 2.1 Characters and lines 
+            // 2.1 Characters and lines
             // A whitespace character is a space(U + 0020), tab(U + 0009), newline(U + 000A), line tabulation (U + 000B), form feed (U + 000C), or carriage return (U + 000D).
             return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r';
         }
@@ -202,12 +202,12 @@ namespace Markdig.Helpers
         }
 
         // Note that we are not considering the character & as a punctuation in HTML
-        // as it is used for HTML entities, print unicode, so we assume that when we have a `&` 
+        // as it is used for HTML entities, print unicode, so we assume that when we have a `&`
         // it is more likely followed by a valid HTML Entity that represents a non punctuation
         public static void CheckUnicodeCategory(this char c, out bool space, out bool punctuation)
         {
             // Credits: code from CommonMark.NET
-            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved. 
+            // Copyright (c) 2014, Kārlis Gaņģis All rights reserved.
             // See license for details:  https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md
             if (c <= 'ÿ')
             {
@@ -246,7 +246,7 @@ namespace Markdig.Helpers
         [MethodImpl(MethodImplOptionPortable.AggressiveInlining)]
         public static bool IsSpace(this char c)
         {
-            // 2.1 Characters and lines 
+            // 2.1 Characters and lines
             // A space is U+0020.
             return c == ' ';
         }
@@ -254,7 +254,7 @@ namespace Markdig.Helpers
         [MethodImpl(MethodImplOptionPortable.AggressiveInlining)]
         public static bool IsTab(this char c)
         {
-            // 2.1 Characters and lines 
+            // 2.1 Characters and lines
             // A space is U+0009.
             return c == '\t';
         }
@@ -299,7 +299,7 @@ namespace Markdig.Helpers
 
         public static bool IsAsciiPunctuation(this char c)
         {
-            // 2.1 Characters and lines 
+            // 2.1 Characters and lines
             // An ASCII punctuation character is !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~.
             switch (c)
             {

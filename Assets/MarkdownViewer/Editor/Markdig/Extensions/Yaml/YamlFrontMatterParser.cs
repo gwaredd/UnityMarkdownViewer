@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Helpers;
 using Markdig.Parsers;
@@ -8,7 +8,7 @@ using Markdig.Syntax;
 namespace Markdig.Extensions.Yaml
 {
     /// <summary>
-    /// Block parser for a YAML frontmatter. 
+    /// Block parser for a YAML frontmatter.
     /// </summary>
     /// <seealso cref="YamlFrontMatterBlock" />
     public class YamlFrontMatterParser : BlockParser
@@ -51,7 +51,7 @@ namespace Markdig.Extensions.Yaml
             {
                 return BlockState.None;
             }
-            
+
             int count = 0;
             var line = processor.Line;
             char c = line.CurrentChar;

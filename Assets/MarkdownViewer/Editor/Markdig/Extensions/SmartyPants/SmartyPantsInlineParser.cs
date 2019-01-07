@@ -1,11 +1,11 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+Ôªø// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System.Collections.Generic;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System.Collections.Generic;
 
 namespace Markdig.Extensions.SmartyPants
 {
@@ -26,15 +26,15 @@ namespace Markdig.Extensions.SmartyPants
         {
             // We are matching the following characters:
             //
-            // ' 	ë í 	&lsquo; &rsquo; 	'left-single-quote', 'right-single-quote'
-            // '' 	ì î 	&ldquo; &rdquo; 	'left-double-quote', 'right-double-quote'
-            // " 	ì î 	&ldquo; &rdquo; 	'left-double-quote', 'right-double-quote'
-            // << >> 	´ ª 	&laquo; &raquo; 	'left-angle-quote', 'right-angle-quote'
-            // ... 	Ö 	&hellip; 	'ellipsis'
+            // '    ‚Äò ‚Äô     &lsquo; &rsquo;     'left-single-quote', 'right-single-quote'
+            // ''   ‚Äú ‚Äù     &ldquo; &rdquo;     'left-double-quote', 'right-double-quote'
+            // "    ‚Äú ‚Äù     &ldquo; &rdquo;     'left-double-quote', 'right-double-quote'
+            // << >>    ¬´ ¬ª     &laquo; &raquo;     'left-angle-quote', 'right-angle-quote'
+            // ...  ‚Ä¶   &hellip;    'ellipsis'
 
             // Special case: &ndash; and &mdash; are handle as a PostProcess step to avoid conflicts with pipetables header separator row
-            // -- 	ñ 	&ndash; 	'ndash'
-            // --- 	ó 	&mdash; 	'mdash'
+            // --   ‚Äì   &ndash;     'ndash'
+            // ---  ‚Äî   &mdash;     'mdash'
 
             var pc = slice.PeekCharExtra(-1);
             var c = slice.CurrentChar;

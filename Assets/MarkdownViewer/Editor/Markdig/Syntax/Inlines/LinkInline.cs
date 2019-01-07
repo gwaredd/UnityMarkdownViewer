@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace Markdig.Syntax.Inlines
     public class LinkInline : ContainerInline
     {
         /// <summary>
-        /// A delegate to use if it is setup on this instance to allow late binding 
+        /// A delegate to use if it is setup on this instance to allow late binding
         /// of a Url.
         /// </summary>
         /// <returns></returns>
@@ -44,7 +44,7 @@ namespace Markdig.Syntax.Inlines
         public string Url { get; set; }
 
         /// <summary>
-        /// Gets or sets the GetDynamicUrl delegate. If this property is set, 
+        /// Gets or sets the GetDynamicUrl delegate. If this property is set,
         /// it is used instead of <see cref="Url"/> to get the Url from this instance.
         /// </summary>
         public GetUrlDelegate GetDynamicUrl { get; set; }

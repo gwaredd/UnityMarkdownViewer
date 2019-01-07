@@ -1,14 +1,14 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax.Inlines;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Markdig.Extensions.MediaLinks
 {
@@ -135,7 +135,7 @@ namespace Markdig.Extensions.MediaLinks
 
         private bool TryRenderIframeFromKnownProviders(Uri uri, HtmlRenderer renderer, LinkInline linkInline)
         {
-            var foundProvider = 
+            var foundProvider =
                 KnownHosts
                     .Where(pair => uri.Host.StartsWith(pair.HostPrefix, StringComparison.OrdinalIgnoreCase))  // when host is match
                     .Select(provider =>

@@ -1,10 +1,10 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System;
-using System.Collections.Generic;
 using Markdig.Helpers;
 using Markdig.Syntax;
+using System;
+using System.Collections.Generic;
 
 namespace Markdig.Parsers
 {
@@ -97,7 +97,7 @@ namespace Markdig.Parsers
                 }
             }
 
-            // 5.2 List items 
+            // 5.2 List items
             // TODO: Check with specs, it is not clear that list marker or bullet marker must be followed by at least 1 space
 
             // If we have already a ListItemBlock, we are going to try to append to it
@@ -149,7 +149,7 @@ namespace Markdig.Parsers
 
                 // Update list-item source end position
                 listItem.UpdateSpanEnd(state.Line.End);
-                
+
                 return BlockState.Continue;
             }
 

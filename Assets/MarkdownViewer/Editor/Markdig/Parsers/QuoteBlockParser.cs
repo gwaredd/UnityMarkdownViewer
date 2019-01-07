@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -30,7 +30,7 @@ namespace Markdig.Parsers
             var column = processor.Column;
             var sourcePosition = processor.Start;
 
-            // 5.1 Block quotes 
+            // 5.1 Block quotes
             // A block quote marker consists of 0-3 spaces of initial indent, plus (a) the character > together with a following space, or (b) a single character > not followed by a space.
             var quoteChar = processor.CurrentChar;
             var c = processor.NextChar();
@@ -56,7 +56,7 @@ namespace Markdig.Parsers
 
             var quote = (QuoteBlock) block;
 
-            // 5.1 Block quotes 
+            // 5.1 Block quotes
             // A block quote marker consists of 0-3 spaces of initial indent, plus (a) the character > together with a following space, or (b) a single character > not followed by a space.
             var c = processor.CurrentChar;
             if (c != quote.QuoteChar)

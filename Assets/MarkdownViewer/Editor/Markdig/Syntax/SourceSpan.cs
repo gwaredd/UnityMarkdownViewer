@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using System;
@@ -25,7 +25,7 @@ namespace Markdig.Syntax
         }
 
         /// <summary>
-        /// Gets or sets the starting character position from the original text source. 
+        /// Gets or sets the starting character position from the original text source.
         /// Note that for inline elements, this is only valid if <see cref="MarkdownExtensions.UsePreciseSourceLocation"/> is setup on the pipeline.
         /// </summary>
         public int Start { get; set; }

@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
-using System;
-using System.Text;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax.Inlines;
+using System;
+using System.Text;
 
 namespace Markdig.Extensions.JiraLinks
 {
@@ -32,7 +32,7 @@ namespace Markdig.Extensions.JiraLinks
             var pc = slice.PeekCharExtra(-1);
             if (!pc.IsWhiteSpaceOrZero() && pc != '(')
             {
-                return false; 
+                return false;
             }
 
             var current = slice.CurrentChar;
@@ -64,7 +64,7 @@ namespace Markdig.Extensions.JiraLinks
             var startIssue = slice.Start;
             var endIssue = slice.Start;
 
-            while (current.IsDigit()) 
+            while (current.IsDigit())
             {
                 endIssue = slice.Start;
                 current = slice.NextChar();

@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -46,7 +46,7 @@ namespace Markdig.Parsers.Inlines
             int closeSticks = 0;
 
             // A backtick string is a string of one or more backtick characters (`) that is neither preceded nor followed by a backtick.
-            // A code span begins with a backtick string and ends with a backtick string of equal length. 
+            // A code span begins with a backtick string and ends with a backtick string of equal length.
             // The contents of the code span are the characters between the two backtick strings, with leading and trailing spaces and line endings removed, and whitespace collapsed to single spaces.
             var pc = ' ';
 

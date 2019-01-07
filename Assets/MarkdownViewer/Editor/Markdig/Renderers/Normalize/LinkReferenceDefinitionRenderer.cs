@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using Markdig.Syntax;
 
@@ -10,7 +10,7 @@ namespace Markdig.Renderers.Normalize
         protected override void Write(NormalizeRenderer renderer, LinkReferenceDefinition linkDef)
         {
             renderer.EnsureLine();
-            renderer.Write('[');            
+            renderer.Write('[');
             renderer.Write(linkDef.Label);
             renderer.Write("]: ");
 

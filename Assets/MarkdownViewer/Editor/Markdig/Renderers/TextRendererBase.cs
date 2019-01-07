@@ -1,13 +1,13 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
+using Markdig.Helpers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Markdig.Helpers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 
 namespace Markdig.Renderers
 {

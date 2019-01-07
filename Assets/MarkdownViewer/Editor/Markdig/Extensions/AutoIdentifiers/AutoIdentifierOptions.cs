@@ -1,5 +1,5 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 using System;
 
@@ -12,7 +12,7 @@ namespace Markdig.Extensions.AutoIdentifiers
     public enum AutoIdentifierOptions
     {
         /// <summary>
-        /// No options: does not apply any additional formatting and/or transformations.  
+        /// No options: does not apply any additional formatting and/or transformations.
         /// </summary>
         None = 0,
 

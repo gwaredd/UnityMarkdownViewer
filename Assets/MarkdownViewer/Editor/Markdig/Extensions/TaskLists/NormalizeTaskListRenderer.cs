@@ -1,4 +1,4 @@
-using Markdig.Renderers.Normalize;
+﻿using Markdig.Renderers.Normalize;
 
 namespace Markdig.Extensions.TaskLists
 {

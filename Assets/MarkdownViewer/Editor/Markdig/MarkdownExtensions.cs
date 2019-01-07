@@ -1,8 +1,7 @@
-// Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+﻿// Copyright (c) Alexandre Mutel. All rights reserved.
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using System;
 using Markdig.Extensions.Abbreviations;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.AutoLinks;
@@ -17,23 +16,24 @@ using Markdig.Extensions.Figures;
 using Markdig.Extensions.Footers;
 using Markdig.Extensions.Footnotes;
 using Markdig.Extensions.GenericAttributes;
+using Markdig.Extensions.Globalization;
 using Markdig.Extensions.Hardlines;
 using Markdig.Extensions.JiraLinks;
 using Markdig.Extensions.ListExtras;
 using Markdig.Extensions.Mathematics;
 using Markdig.Extensions.MediaLinks;
+using Markdig.Extensions.NonAsciiNoEscape;
 using Markdig.Extensions.NoRefLinks;
 using Markdig.Extensions.PragmaLines;
 using Markdig.Extensions.SelfPipeline;
 using Markdig.Extensions.SmartyPants;
-using Markdig.Extensions.NonAsciiNoEscape;
 using Markdig.Extensions.Tables;
 using Markdig.Extensions.TaskLists;
 using Markdig.Extensions.TextRenderer;
 using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
-using Markdig.Extensions.Globalization;
+using System;
 
 namespace Markdig
 {
@@ -93,7 +93,7 @@ namespace Markdig
                 .UseAutoLinks()
                 .UseGenericAttributes(); // Must be last as it is one parser that is modifying other parsers
         }
-        
+
         /// <summary>
         /// Uses this extension to enable autolinks from text `http://`, `https://`, `ftp://`, `mailto:`, `www.xxx.yyy`
         /// </summary>
