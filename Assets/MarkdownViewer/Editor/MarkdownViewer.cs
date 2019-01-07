@@ -113,15 +113,13 @@ namespace MG.MDV
 
             // do the thing ...
 
-            // TODO: fancy markdown pipelines ...
-
             var renderer = new RendererMarkdown( Skin );
             renderer.Render( Markdown.Parse( asset.text ) );
 
+            // TODO: fancy markdown pipelines ...
+
             //var pipeline = new MarkdownPipelineBuilder().Build(); // UseAdvancedExtensions()
             //pipeline.Setup( renderer );
-
-            //var document = Markdown.Parse( asset.text, pipeline );
             //var document = Markdown.Parse( asset.text, pipeline );
             //renderer.Render( document );
 

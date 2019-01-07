@@ -3,6 +3,7 @@
 using System;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using UnityEngine;
 
 namespace MG.MDV
@@ -15,23 +16,28 @@ namespace MG.MDV
         {
             mSkin = skin;
 
-            //ObjectRenderers.Add( new CodeBlockRenderer() );
-            //ObjectRenderers.Add( new ListRenderer() );
-            //ObjectRenderers.Add( new HeadingRenderer() );
-            //ObjectRenderers.Add( new HtmlBlockRenderer() );
+            ObjectRenderers.Add( new RendererBlockCode() );
+            ObjectRenderers.Add( new RendererBlockList() );
+            ObjectRenderers.Add( new RendererBlockHeading() );
+            ObjectRenderers.Add( new RendererBlockHtml() );
             ObjectRenderers.Add( new RendererBlockParagraph() );
-            //ObjectRenderers.Add( new QuoteBlockRenderer() );
-            //ObjectRenderers.Add( new ThematicBreakRenderer() );
+            ObjectRenderers.Add( new RendererBlockQuote() );
+            ObjectRenderers.Add( new RendererBlockThematicBreak() );
 
-            //ObjectRenderers.Add( new AutolinkInlineRenderer() );
-            //ObjectRenderers.Add( new CodeInlineRenderer() );
+            ObjectRenderers.Add( new RendererInlineLink() );
+            ObjectRenderers.Add( new RendererInlineAutoLink() );
+            ObjectRenderers.Add( new RendererInlineCode() );
             ObjectRenderers.Add( new RendererInlineDelimiter() );
             ObjectRenderers.Add( new RendererInlineEmphasis() );
-            //ObjectRenderers.Add( new LineBreakInlineRenderer() );
-            //ObjectRenderers.Add( new HtmlInlineRenderer() );
-            //ObjectRenderers.Add( new HtmlEntityInlineRenderer() );
-            //ObjectRenderers.Add( new LinkInlineRenderer() );
+            ObjectRenderers.Add( new RendererInlineLineBreak() );
+            ObjectRenderers.Add( new RendererInlineHtml() );
+            ObjectRenderers.Add( new RendererInlineHtmlEntity() );
             ObjectRenderers.Add( new RendererInlineLiteral() );
+        }
+
+        internal GUIStyle GetStyle( string style )
+        {
+            return mSkin != null ? mSkin.GetStyle( style ) : null;
         }
 
         public override object Render( MarkdownObject document )
@@ -40,6 +46,18 @@ namespace MG.MDV
             return null;
         }
 
+        internal void WriteLeafBlockInline( LeafBlock block )
+        {
+            var inline = block.Inline as Inline;
+
+            while( inline != null )
+            {
+                Write( inline );
+                inline = inline.NextSibling;
+            }
+        }
+
+
         //------------------------------------------------------------------------------
 
         string mLine = string.Empty;
@@ -47,6 +65,13 @@ namespace MG.MDV
         internal void Print( string text )
         {
             mLine += text;
+        }
+
+        internal string GetLine()
+        {
+            var line = mLine;
+            mLine = string.Empty;
+            return line;
         }
 
         internal void EnsureLine()
