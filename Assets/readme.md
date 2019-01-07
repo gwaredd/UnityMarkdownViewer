@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------------
 
 * work through test files until it all works ...
-
+* review TODO's
+* review NotImplementedException
+* look at colour issue
 
 # Documentation
 ------------------------------------------------------------------------------

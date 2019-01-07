@@ -1,6 +1,7 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
 using Markdig;
+using Markdig.Syntax;
 using System;
 using System.IO;
 using System.Linq;
@@ -79,9 +80,13 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        MarkdownDocument mDoc;
+        RendererMarkdown mRenderer;
+        MarkdownPipeline mPipeline;
+
         public override void OnInspectorGUI()
         {
-            //GUI.DrawTexture( new Rect( 0, 100, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
+            GUI.DrawTexture( new Rect( 0, 46, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
 
             // has target?
 
@@ -105,25 +110,24 @@ namespace MG.MDV
                 return;
             }
 
+            // parse
 
+            if( mDoc == null )
+            {
+                // TODO: look at pipeline options ...
+                mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                mRenderer = new RendererMarkdown();
+                mPipeline.Setup( mRenderer );
 
-            // TODO: cache parsed document ...
+                mDoc = Markdown.Parse( asset.text, mPipeline );
+            }
 
+            // render
 
-            // do the thing ...
+            GUI.skin = Skin;
+            GUI.backgroundColor = Color.white;
 
-            var renderer = new RendererMarkdown( Skin );
-            renderer.Render( Markdown.Parse( asset.text ) );
-
-            // TODO: fancy markdown pipelines ...
-
-            //var pipeline = new MarkdownPipelineBuilder().Build(); // UseAdvancedExtensions()
-            //pipeline.Setup( renderer );
-            //var document = Markdown.Parse( asset.text, pipeline );
-            //renderer.Render( document );
-
-            //var txt = Markdown.ToHtml( asset.text );
-            //GUILayout.Label( txt, Skin.label );
+            mRenderer.Render( mDoc );
         }
     }
 }

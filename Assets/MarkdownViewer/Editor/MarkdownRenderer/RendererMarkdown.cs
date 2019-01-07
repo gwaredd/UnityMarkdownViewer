@@ -5,6 +5,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System.Text;
 using UnityEngine;
+using UnityEditor;
 
 namespace MG.MDV
 {
@@ -12,12 +13,8 @@ namespace MG.MDV
 
     public class RendererMarkdown : RendererBase
     {
-        GUISkin mSkin;
-
-        public RendererMarkdown( GUISkin skin )
+        public RendererMarkdown()
         {
-            mSkin = skin;
-
             ObjectRenderers.Add( new RendererBlockCode() );
             ObjectRenderers.Add( new RendererBlockList() );
             ObjectRenderers.Add( new RendererBlockHeading() );
@@ -48,7 +45,7 @@ namespace MG.MDV
 
         internal GUIStyle GetStyle( string style )
         {
-            return mSkin != null ? mSkin.GetStyle( style ) : null;
+            return GUI.skin != null ? GUI.skin.GetStyle( style ) : null;
         }
 
 
@@ -108,7 +105,10 @@ namespace MG.MDV
         {
             if( mText.Length > 0 )
             {
-                GUILayout.Label( GetText(), mSkin.label );
+                //GUILayout.TextField( GetText() );
+
+                GUILayout.Label( GetText(), GUI.skin.label );
+                //EditorGUILayout.SelectableLabel( GetText(), GUI.skin.label );
             }
         }
     }

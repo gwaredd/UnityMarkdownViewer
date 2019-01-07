@@ -29,7 +29,6 @@ namespace MG.MDV
             renderer.Print( "</" );
             renderer.Print( tag );
             renderer.Print( ">" );
-
         }
     }
 }
