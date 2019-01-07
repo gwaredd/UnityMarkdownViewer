@@ -1,7 +1,4 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
-// https://answers.unity.com/static/markdown/help.html
-
-// TODO: add markdown to solution files
 
 using Markdig;
 using System;
