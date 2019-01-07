@@ -5,6 +5,8 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
+    /// <see cref="Markdig.Renderers.Html.Inlines.CodeInlineRenderer"/>
+
     public class RendererInlineCode : MarkdownObjectRenderer<RendererMarkdown, CodeInline>
     {
         protected override void Write( RendererMarkdown renderer, CodeInline obj )

@@ -1,6 +1,5 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -8,6 +7,8 @@ using UnityEngine;
 
 namespace MG.MDV
 {
+    /// <see cref="Markdig.Renderers.HtmlRenderer"/>
+
     public class RendererMarkdown : RendererBase
     {
         GUISkin mSkin;
@@ -35,15 +36,18 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererInlineLiteral() );
         }
 
-        internal GUIStyle GetStyle( string style )
-        {
-            return mSkin != null ? mSkin.GetStyle( style ) : null;
-        }
-
         public override object Render( MarkdownObject document )
         {
             Write( document );
             return null;
+        }
+
+
+        //------------------------------------------------------------------------------
+
+        internal GUIStyle GetStyle( string style )
+        {
+            return mSkin != null ? mSkin.GetStyle( style ) : null;
         }
 
         internal void WriteLeafBlockInline( LeafBlock block )
@@ -57,8 +61,6 @@ namespace MG.MDV
             }
         }
 
-
-        //------------------------------------------------------------------------------
 
         string mLine = string.Empty;
 
