@@ -9,12 +9,11 @@ namespace MG.MDV
 
     public class RendererInlineDelimiter : MarkdownObjectRenderer<RendererMarkdown, DelimiterInline>
     {
-        protected override void Write( RendererMarkdown renderer, DelimiterInline obj )
+        protected override void Write( RendererMarkdown renderer, DelimiterInline node )
         {
             //renderer.WriteEscape( obj.ToLiteral() );
-            UnityEngine.Debug.Log( "RendererInlineDelimiter" );
-            renderer.WriteChildren( obj );
+            UnityEngine.Debug.Log( "TODO: RendererInlineDelimiter" );
+            renderer.WriteChildren( node );
         }
     }
 }
-

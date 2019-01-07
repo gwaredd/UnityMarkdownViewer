@@ -50,6 +50,8 @@ namespace MG.MDV
             return mSkin != null ? mSkin.GetStyle( style ) : null;
         }
 
+        /// <see cref="Markdig.Renderers.TextRendererBase.WriteLeafInline"/>
+
         internal void WriteLeafBlockInline( LeafBlock block )
         {
             var inline = block.Inline as Inline;
@@ -59,6 +61,41 @@ namespace MG.MDV
                 Write( inline );
                 inline = inline.NextSibling;
             }
+        }
+
+        /// <see cref="Markdig.Renderers.HtmlRenderer.WriteLeafRawLines"/>
+
+        internal void WriteLeafRawLines( LeafBlock block )
+        {
+            if( block.Lines.Lines == null )
+            {
+                return;
+            }
+
+            var lines  = block.Lines;
+            var slices = lines.Lines;
+
+            for( int i = 0; i < lines.Count; i++ )
+            {
+                // if( !writeEndOfLines && i > 0 )
+                // {
+                //     WriteLine();
+                // }
+                // if( escape )
+                // {
+                //     WriteEscape( ref slices[ i ].Slice, softEscape );
+                // }
+                // else
+                // {
+                //     Write( ref slices[ i ].Slice );
+                // }
+                // if( writeEndOfLines )
+                // {
+                //     WriteLine();
+                // }
+            }
+
+            throw new System.NotImplementedException();
         }
 
 

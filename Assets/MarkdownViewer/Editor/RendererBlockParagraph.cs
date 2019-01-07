@@ -6,6 +6,8 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
+    // <p>...</p>
+
     /// <see cref="Markdig.Renderers.Html.ParagraphRenderer"/>
 
     public class RendererBlockParagraph : MarkdownObjectRenderer<RendererMarkdown, ParagraphBlock>

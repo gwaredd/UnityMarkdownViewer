@@ -5,11 +5,13 @@ using Markdig.Syntax;
 
 namespace MG.MDV
 {
+    // <hr/>
+
     /// <see cref="Markdig.Renderers.Html.ThematicBreakRenderer"/>
 
     public class RendererBlockThematicBreak : MarkdownObjectRenderer<RendererMarkdown, ThematicBreakBlock>
     {
-        protected override void Write( RendererMarkdown renderer, ThematicBreakBlock obj )
+        protected override void Write( RendererMarkdown renderer, ThematicBreakBlock block )
         {
             throw new System.NotImplementedException();
         }

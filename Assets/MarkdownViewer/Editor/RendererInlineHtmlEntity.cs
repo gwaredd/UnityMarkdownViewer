@@ -9,8 +9,9 @@ namespace MG.MDV
 
     public class RendererInlineHtmlEntity : MarkdownObjectRenderer<RendererMarkdown, HtmlEntityInline>
     {
-        protected override void Write( RendererMarkdown renderer, HtmlEntityInline obj )
+        protected override void Write( RendererMarkdown renderer, HtmlEntityInline node )
         {
+            //renderer.WriteEscape( obj.Transcoded );
             throw new System.NotImplementedException();
         }
     }

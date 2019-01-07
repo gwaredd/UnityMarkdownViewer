@@ -5,13 +5,14 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
+    // text
     /// <see cref="Markdig.Renderers.Html.Inlines.LiteralInlineRenderer"/>
 
     public class RendererInlineLiteral : MarkdownObjectRenderer<RendererMarkdown, LiteralInline>
     {
-        protected override void Write( RendererMarkdown renderer, LiteralInline obj )
+        protected override void Write( RendererMarkdown renderer, LiteralInline node )
         {
-            renderer.Print( obj.Content.ToString() );
+            renderer.Print( node.Content.ToString() );
         }
     }
 }

@@ -9,7 +9,7 @@ namespace MG.MDV
 
     public class RendererBlockHtml : MarkdownObjectRenderer<RendererMarkdown, HtmlBlock>
     {
-        protected override void Write( RendererMarkdown renderer, HtmlBlock obj )
+        protected override void Write( RendererMarkdown renderer, HtmlBlock block )
         {
             throw new System.NotImplementedException();
         }

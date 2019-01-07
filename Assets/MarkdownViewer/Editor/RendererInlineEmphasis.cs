@@ -5,17 +5,19 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
+    // <b><i>...</i></b>
+
     /// <see cref="Markdig.Renderers.Html.Inlines.EmphasisInlineRenderer"/>
 
     public class RendererInlineEmphasis : MarkdownObjectRenderer<RendererMarkdown, EmphasisInline>
     {
-        protected override void Write( RendererMarkdown renderer, EmphasisInline obj )
+        protected override void Write( RendererMarkdown renderer, EmphasisInline node )
         {
             var tag = null as string;
 
-            if( obj.DelimiterChar == '*' || obj.DelimiterChar == '_' )
+            if( node.DelimiterChar == '*' || node.DelimiterChar == '_' )
             {
-                tag = obj.IsDouble ? "b" : "i";
+                tag = node.IsDouble ? "b" : "i";
             }
 
             renderer.Print( "<" + tag + ">" );
@@ -29,7 +31,7 @@ namespace MG.MDV
 
             //return obj.IsDouble ? "strong" : "em";
 
-            renderer.WriteChildren( obj );
+            renderer.WriteChildren( node );
             renderer.Print( "</" + tag + ">" );
 
             //if( renderer.EnableHtmlForInline )
