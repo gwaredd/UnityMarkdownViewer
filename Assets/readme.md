@@ -14,3 +14,11 @@ configurable file extensions?
 
 cache parsed document ...
 
+
+# Documentation
+
+## Add .md files to project
+
+* Edit -> Project Settings -> Editor -> C# Project Generation -> Additional Extentions to include
+
+
