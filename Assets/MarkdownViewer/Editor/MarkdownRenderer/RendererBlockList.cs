@@ -25,6 +25,8 @@ namespace MG.MDV
                 renderer.EnsureLine();
             }
 
+            //GUILayout.SelectionGrid() !?
+
 //             using( new EditorGUILayout.VerticalScope() )
 //             {
 //                 for( var i = 0; i < block.Count; i++ )

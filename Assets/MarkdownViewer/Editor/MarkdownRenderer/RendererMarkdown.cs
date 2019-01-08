@@ -106,7 +106,8 @@ namespace MG.MDV
         {
             if( mText.Length > 0 )
             {
-                GUILayout.Label( GetText() );
+                EditorGUILayout.SelectableLabel( GetText(), GUI.skin.label );
+                //GUILayout.Label( GetText() );
             }
         }
     }
