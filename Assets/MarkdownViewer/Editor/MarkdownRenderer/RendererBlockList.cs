@@ -17,22 +17,30 @@ namespace MG.MDV
         {
             renderer.EnsureLine();
 
-            using( new EditorGUILayout.VerticalScope() )
+            for( var i = 0; i < block.Count; i++ )
             {
-                for( var i = 0; i < block.Count; i++ )
-                {
-                    using( new EditorGUILayout.HorizontalScope() )
-                    {
-                        // TODO: renderer.ImplicitParagraph = !listBlock.IsLoose;
-                        // TODO: if block.IsOrdered <ol> else <ul>
-
-                        GUILayout.Label( i.ToString(), GUILayout.Width( 10 ) );
-
-                        var item = block[i] as ListItemBlock;
-                        renderer.WriteChildren( item );
-                    }
-                }
+                renderer.Print( i.ToString() );
+                renderer.Print( "\t" );
+                renderer.WriteChildren( block[ i ] as ListItemBlock );
+                renderer.EnsureLine();
             }
+
+//             using( new EditorGUILayout.VerticalScope() )
+//             {
+//                 for( var i = 0; i < block.Count; i++ )
+//                 {
+//                     using( new EditorGUILayout.HorizontalScope() )
+//                     {
+//                         // TODO: renderer.ImplicitParagraph = !listBlock.IsLoose;
+//                         // TODO: if block.IsOrdered <ol> else <ul>
+// 
+//                         GUILayout.Label( i.ToString(), GUILayout.Width( 10 ) );
+// 
+//                         var item = block[i] as ListItemBlock;
+//                         renderer.WriteChildren( item );
+//                     }
+//                 }
+//             }
         }
     }
 }

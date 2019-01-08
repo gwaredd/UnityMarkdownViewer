@@ -91,6 +91,7 @@ namespace MG.MDV
 
         internal void Print( string text )
         {
+            //GUIStyle.CalcSize
             mText.Append( text );
         }
 
@@ -105,10 +106,7 @@ namespace MG.MDV
         {
             if( mText.Length > 0 )
             {
-                //GUILayout.TextField( GetText() );
-
-                GUILayout.Label( GetText(), GUI.skin.label );
-                //EditorGUILayout.SelectableLabel( GetText(), GUI.skin.label );
+                GUILayout.Label( GetText() );
             }
         }
     }

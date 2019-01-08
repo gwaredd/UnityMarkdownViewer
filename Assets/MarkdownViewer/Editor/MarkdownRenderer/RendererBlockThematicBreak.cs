@@ -2,6 +2,7 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax;
+using UnityEngine;
 
 namespace MG.MDV
 {
@@ -13,7 +14,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ThematicBreakBlock block )
         {
-            // TODO: <hr/>
+            GUILayout.Label( string.Empty, renderer.GetStyle( "hr" ) );
         }
     }
 }

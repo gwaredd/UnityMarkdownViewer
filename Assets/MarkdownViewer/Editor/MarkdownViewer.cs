@@ -24,55 +24,18 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        static string GetFilePath( string filename )
-        {
-            var path = AssetDatabase.GetAssetPath( Selection.activeObject );
-
-            if( string.IsNullOrEmpty( path ) )
-            {
-                path = "Assets";
-            }
-            else if( AssetDatabase.IsValidFolder( path ) == false )
-            {
-                path = Path.GetDirectoryName( path );
-            }
-
-            return AssetDatabase.GenerateUniqueAssetPath( path + "/" + filename );
-        }
-
-        [MenuItem( "Assets/Create/Markdown" )]
-        static void CreateMarkdown()
-        {
-            var filepath = GetFilePath( "NewMarkdown.md" );
-
-            // TODO: custom markdown template ...
-
-            var writer = File.CreateText( filepath );
-            writer.Write( "# Markdown\n" );
-            writer.Close();
-
-            AssetDatabase.ImportAsset( filepath );
-
-            Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( filepath );
-        }
-
-
-        //------------------------------------------------------------------------------
-
         private Editor mDefaultEditor;
 
         private void DrawDefault()
         {
             if( mDefaultEditor == null )
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-                var textInspectorType = assemblies.Select( asm => asm.GetType( "UnityEditor.TextAssetInspector" ) ).First( t => t != null );
-
-                mDefaultEditor = textInspectorType != null ? Editor.CreateEditor( target, textInspectorType ) : null;
+                mDefaultEditor = CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
             }
 
             if( mDefaultEditor != null )
             {
+                GUI.skin = null;
                 mDefaultEditor.OnInspectorGUI();
             }
         }
@@ -83,11 +46,10 @@ namespace MG.MDV
         MarkdownDocument mDoc;
         RendererMarkdown mRenderer;
         MarkdownPipeline mPipeline;
+        bool             mRaw = false;
 
         public override void OnInspectorGUI()
         {
-            GUI.DrawTexture( new Rect( 0, 46, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
-
             // has target?
 
             var asset = target as TextAsset;
@@ -110,24 +72,63 @@ namespace MG.MDV
                 return;
             }
 
-            // parse
+            ParseDocument();
+            DrawIMGUI();
+        }
 
-            if( mDoc == null )
+
+        //------------------------------------------------------------------------------
+
+        void ParseDocument()
+        {
+            if( mDoc != null )
             {
-                // TODO: look at pipeline options ...
-                mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                mRenderer = new RendererMarkdown();
-                mPipeline.Setup( mRenderer );
-
-                mDoc = Markdown.Parse( asset.text, mPipeline );
+                return;
             }
 
-            // render
+            // TODO: look at pipeline options ...
+            mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            mRenderer = new RendererMarkdown();
+            mPipeline.Setup( mRenderer );
 
-            GUI.skin = Skin;
+            mDoc = Markdown.Parse( ( target as TextAsset ).text, mPipeline );
+        }
+
+
+        //------------------------------------------------------------------------------
+
+        void DrawIMGUI()
+        {
+            GUI.skin            = Skin;
+            GUI.enabled         = true;
             GUI.backgroundColor = Color.white;
 
-            mRenderer.Render( mDoc );
+            mRaw = GUILayout.Toggle( mRaw, "Raw" );
+
+            GUILayout.Space( 10.0f );
+
+            if( mRaw )
+            {
+                DrawDefault();
+            }
+            else
+            {
+                ClearBackground();
+                mRenderer.Render( mDoc );
+            }
+        }
+
+        //------------------------------------------------------------------------------
+
+        void ClearBackground()
+        {
+            var r = GUILayoutUtility.GetRect(0,0);
+
+            if( Event.current.type == EventType.Repaint )
+            {
+                const float margin = 4.0f;
+                GUI.DrawTexture( new Rect( 0, r.y - margin, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
+            }
         }
     }
 }
