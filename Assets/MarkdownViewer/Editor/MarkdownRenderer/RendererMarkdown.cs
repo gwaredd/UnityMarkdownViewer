@@ -105,7 +105,6 @@ namespace MG.MDV
 
         public bool Bold    { get; set; }
         public bool Italic  { get; set; }
-
         //public FontStyle FontStyle = FontStyle.Normal;
 
         internal GUIStyle GetStyle( string style )
@@ -116,23 +115,69 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        GUIStyle mCurrentStyle = null;
+
         internal void Print( string text )
         {
             // print words (in current style) with wrapping
 
-            //             ObjectRenderers.Add( new RendererInlineLiteral() );
+            //GUIStyle.GetCursorStringIndex
 
-            //             ObjectRenderers.Add( new RendererInlineEmphasis() );
-            //             ObjectRenderers.Add( new RendererInlineLineBreak() );
+            // ObjectRenderers.Add( new RendererInlineLiteral() );
 
-            //             ObjectRenderers.Add( new RendererInlineLink() );
-            //             ObjectRenderers.Add( new RendererInlineAutoLink() );
+            // ObjectRenderers.Add( new RendererInlineEmphasis() );
+            // ObjectRenderers.Add( new RendererInlineLineBreak() );
 
-            //             ObjectRenderers.Add( new RendererInlineCode() );
+            // ObjectRenderers.Add( new RendererInlineLink() );
+            // ObjectRenderers.Add( new RendererInlineAutoLink() );
+
+            // ObjectRenderers.Add( new RendererInlineCode() );
 
 
             mText.Append( text );
         }
+
+        /*
+
+                var lineHeight = Skin.label.lineHeight;
+                var fontSize   = Skin.label.fontSize;
+                var font       = Skin.font;
+                var dim        = new Vector2( mMaxWidth, lineHeight * 2.0f );
+
+                var pos = 0;
+                var totalWidth = 0.0f;
+
+                for( var i = 0; i < text.Length; i++ )
+                {
+                    // TODO: actual word wrapping!
+
+                    if( font.GetCharacterInfo( text[ i ], out mCharacterInfo, fontSize, FontStyle.Normal ) )
+                    {
+                        var newWidth = totalWidth + mCharacterInfo.advance;
+
+                        if( newWidth > mMaxWidth )
+                        {
+                            GUI.Label( new Rect( mPos, dim ), text.Substring( pos, i - pos ) );
+                            mPos.y += lineHeight;
+
+                            pos = i;
+                            totalWidth = mCharacterInfo.advance;
+                        }
+                        else
+                        {
+                            totalWidth = newWidth;
+                        }
+                    }
+                    else
+                    {
+                        // character not in font!
+                    }
+                }
+
+                GUI.Label( new Rect( mPos, dim ), text.Substring( pos ) );
+                mPos.y += lineHeight;
+
+        /**/
 
 
         //------------------------------------------------------------------------------
