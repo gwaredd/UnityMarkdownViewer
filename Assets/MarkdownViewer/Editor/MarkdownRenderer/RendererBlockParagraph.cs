@@ -23,7 +23,7 @@ namespace MG.MDV
             //}
 
             renderer.WriteLeafBlockInline( block );
-            renderer.EnsureLine();
+            renderer.FlushLine();
 
             //if( !renderer.ImplicitParagraph )
             //{

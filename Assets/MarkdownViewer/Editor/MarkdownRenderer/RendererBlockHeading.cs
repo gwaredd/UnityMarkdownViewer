@@ -14,7 +14,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, HeadingBlock block )
         {
-            renderer.EnsureLine();
+            renderer.FlushLine();
 
             renderer.WriteLeafBlockInline( block );
 

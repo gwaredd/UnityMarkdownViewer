@@ -11,8 +11,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, DelimiterInline node )
         {
-            //renderer.WriteEscape( obj.ToLiteral() );
-            UnityEngine.Debug.Log( "TODO: RendererInlineDelimiter" );
+            renderer.Print( node.ToLiteral() );
             renderer.WriteChildren( node );
         }
     }

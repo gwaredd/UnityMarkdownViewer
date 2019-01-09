@@ -14,7 +14,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeBlock block )
         {
-            renderer.EnsureLine();
+            renderer.FlushLine();
 
             // TODO: use monospace font / block ...
             renderer.WriteLeafRawLines( block );

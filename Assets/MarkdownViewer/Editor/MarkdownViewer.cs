@@ -10,12 +10,6 @@ using UnityEngine;
 
 namespace MG.MDV
 {
-    // TODO: variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
-    // TODO: test what happens when we have multiple TextAsset editors ...
-    //          https://github.com/roydejong/chromium-unity-server
-    //          https://ultralig.ht/
-
-
     [CustomEditor( typeof( TextAsset ) )]
     public class MarkdownViewer : Editor
     {
@@ -26,7 +20,7 @@ namespace MG.MDV
 
         private Editor mDefaultEditor;
 
-        private void DrawDefault()
+        private void DrawDefaultEditor()
         {
             if( mDefaultEditor == null )
             {
@@ -40,6 +34,23 @@ namespace MG.MDV
             }
         }
 
+        //------------------------------------------------------------------------------
+
+        public override bool UseDefaultMargins()
+        {
+            return false;
+        }
+
+        protected override void OnHeaderGUI()
+        {
+            base.OnHeaderGUI();
+
+            if( Event.current.type == EventType.Repaint )
+            {
+                mHeaderHeight = GUILayoutUtility.GetLastRect().height;
+            }
+        }
+
 
         //------------------------------------------------------------------------------
 
@@ -47,6 +58,7 @@ namespace MG.MDV
         RendererMarkdown mRenderer;
         MarkdownPipeline mPipeline;
         bool             mRaw = false;
+        float            mHeaderHeight = 0.0f;
 
         public override void OnInspectorGUI()
         {
@@ -56,7 +68,7 @@ namespace MG.MDV
 
             if( asset == null )
             {
-                DrawDefault();
+                DrawDefaultEditor();
                 return;
             }
 
@@ -68,7 +80,7 @@ namespace MG.MDV
 
             if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) == false )
             {
-                DrawDefault();
+                DrawDefaultEditor();
                 return;
             }
 
@@ -97,37 +109,33 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        Vector2 mScrollPos;
+
         void DrawIMGUI()
         {
-            GUI.skin            = Skin;
-            GUI.enabled         = true;
-            GUI.backgroundColor = Color.white;
+            GUI.skin    = Skin;
+            GUI.enabled = true;
 
-            mRaw = GUILayout.Toggle( mRaw, "Raw" );
+            GUI.DrawTexture( new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
-            GUILayout.Space( 10.0f );
+            var size    = 20.0f;
+            var padding = 8.0f;
+            mRaw = GUI.Toggle( new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size ), mRaw, "" );
 
             if( mRaw )
             {
-                DrawDefault();
+                var style   = Skin.GetStyle( "pre" );
+                var content = new GUIContent( ( target as TextAsset ).text );
+                var height  = style.CalcHeight( content, Screen.width );
+
+                mScrollPos = GUILayout.BeginScrollView( mScrollPos );
+                EditorGUILayout.SelectableLabel( content.text, style, GUILayout.Height( height ) );
+                GUILayout.EndScrollView();
             }
             else
             {
-                ClearBackground();
+                mRenderer.Init( mHeaderHeight );
                 mRenderer.Render( mDoc );
-            }
-        }
-
-        //------------------------------------------------------------------------------
-
-        void ClearBackground()
-        {
-            var r = GUILayoutUtility.GetRect(0,0);
-
-            if( Event.current.type == EventType.Repaint )
-            {
-                const float margin = 4.0f;
-                GUI.DrawTexture( new Rect( 0, r.y - margin, EditorGUIUtility.currentViewWidth, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill );
             }
         }
     }

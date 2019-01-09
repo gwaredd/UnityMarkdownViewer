@@ -15,14 +15,14 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ListBlock block )
         {
-            renderer.EnsureLine();
+            renderer.FlushLine();
 
             for( var i = 0; i < block.Count; i++ )
             {
                 renderer.Print( i.ToString() );
                 renderer.Print( "\t" );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
-                renderer.EnsureLine();
+                renderer.FlushLine();
             }
 
             //GUILayout.SelectionGrid() !?

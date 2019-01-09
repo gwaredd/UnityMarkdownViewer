@@ -6,9 +6,11 @@ using Markdig.Syntax.Inlines;
 using System.Text;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace MG.MDV
 {
+    ////////////////////////////////////////////////////////////////////////////////
     /// <see cref="Markdig.Renderers.HtmlRenderer"/>
 
     public class RendererMarkdown : RendererBase
@@ -34,22 +36,38 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererInlineLiteral() );
         }
 
+
+        ////////////////////////////////////////////////////////////////////////////////
+
+        float   mPadding    = 8.0f;
+        float   mMaxWidth   = 100.0f;
+
+        Vector2 mContentOffset;
+        Vector2 mPos;
+
+        StringBuilder mText = new StringBuilder( 2048 );
+
+        public void Init( float headerHeight )
+        {
+            mContentOffset.x = mPadding;
+            mContentOffset.y = headerHeight + mPadding;
+
+            mPos      = mContentOffset;
+            mMaxWidth = Screen.width - mPadding * 2.0f;
+        }
+
         public override object Render( MarkdownObject document )
         {
             Write( document );
+            FlushLine();
+
             return null;
         }
 
 
-        //------------------------------------------------------------------------------
+        ////////////////////////////////////////////////////////////////////////////////
+        // 
 
-        internal GUIStyle GetStyle( string style )
-        {
-            return GUI.skin != null ? GUI.skin.GetStyle( style ) : null;
-        }
-
-
-        //------------------------------------------------------------------------------
         /// <see cref="Markdig.Renderers.TextRendererBase.WriteLeafInline"/>
 
         internal void WriteLeafBlockInline( LeafBlock block )
@@ -63,8 +81,6 @@ namespace MG.MDV
             }
         }
 
-
-        //------------------------------------------------------------------------------
         /// <see cref="Markdig.Renderers.HtmlRenderer.WriteLeafRawLines"/>
 
         internal void WriteLeafRawLines( LeafBlock block )
@@ -85,29 +101,54 @@ namespace MG.MDV
         }
 
 
-        //------------------------------------------------------------------------------
+        ////////////////////////////////////////////////////////////////////////////////
 
-        StringBuilder mText = new StringBuilder( 2048 );
+        public bool Bold    { get; set; }
+        public bool Italic  { get; set; }
+
+        //public FontStyle FontStyle = FontStyle.Normal;
+
+        internal GUIStyle GetStyle( string style )
+        {
+            return GUI.skin != null ? GUI.skin.GetStyle( style ) : null;
+        }
+
+
+        //------------------------------------------------------------------------------
 
         internal void Print( string text )
         {
-            //GUIStyle.CalcSize
+            // print words (in current style) with wrapping
+
+            //             ObjectRenderers.Add( new RendererInlineLiteral() );
+
+            //             ObjectRenderers.Add( new RendererInlineEmphasis() );
+            //             ObjectRenderers.Add( new RendererInlineLineBreak() );
+
+            //             ObjectRenderers.Add( new RendererInlineLink() );
+            //             ObjectRenderers.Add( new RendererInlineAutoLink() );
+
+            //             ObjectRenderers.Add( new RendererInlineCode() );
+
+
             mText.Append( text );
         }
 
+
+        //------------------------------------------------------------------------------
+
         internal string GetText()
         {
-            var text = mText.ToString();
-            mText.Clear();
-            return text;
+            throw new NotImplementedException();
         }
 
-        internal void EnsureLine()
+        internal void FlushLine()
         {
             if( mText.Length > 0 )
             {
-                EditorGUILayout.SelectableLabel( GetText(), GUI.skin.label );
-                //GUILayout.Label( GetText() );
+                var text = mText.ToString();
+                mText.Clear();
+                EditorGUILayout.SelectableLabel( text, GUI.skin.label );
             }
         }
     }
