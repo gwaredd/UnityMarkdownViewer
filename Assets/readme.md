@@ -7,6 +7,7 @@
 * look at colour issue
 * test embeded / complex markdown (code/links inside headers for example)
 * compare with known good renderer
+* tables / grids!
 
 # Documentation
 ------------------------------------------------------------------------------
