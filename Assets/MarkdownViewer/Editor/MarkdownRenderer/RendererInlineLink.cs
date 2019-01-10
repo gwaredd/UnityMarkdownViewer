@@ -2,6 +2,7 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using UnityEngine;
 
 namespace MG.MDV
 {
@@ -13,62 +14,28 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, LinkInline node )
         {
-            // TODO: links
-            renderer.Print( node.Title );
+            if( node.IsImage )
+            {
+                // alt = renderer.WriteChildren(link);
+                // TODO: node.IsImage
+                throw new System.NotImplementedException();
+            }
 
-//             if( renderer.EnableHtmlForInline )
-//             {
-//                 renderer.Write( link.IsImage ? "<img src=\"" : "<a href=\"" );
-//                 renderer.WriteEscapeUrl( link.GetDynamicUrl != null ? link.GetDynamicUrl() ?? link.Url : link.Url );
-//                 renderer.Write( "\"" );
-//                 renderer.WriteAttributes( link );
-//             }
-//             if( link.IsImage )
-//             {
-//                 if( renderer.EnableHtmlForInline )
-//                 {
-//                     renderer.Write( " alt=\"" );
-//                 }
-//                 var wasEnableHtmlForInline = renderer.EnableHtmlForInline;
-//                 renderer.EnableHtmlForInline = false;
-//                 renderer.WriteChildren( link );
-//                 renderer.EnableHtmlForInline = wasEnableHtmlForInline;
-//                 if( renderer.EnableHtmlForInline )
-//                 {
-//                     renderer.Write( "\"" );
-//                 }
-//             }
-// 
-//             if( renderer.EnableHtmlForInline && !string.IsNullOrEmpty( link.Title ) )
-//             {
-//                 renderer.Write( " title=\"" );
-//                 renderer.WriteEscape( link.Title );
-//                 renderer.Write( "\"" );
-//             }
-// 
-//             if( link.IsImage )
-//             {
-//                 if( renderer.EnableHtmlForInline )
-//                 {
-//                     renderer.Write( " />" );
-//                 }
-//             }
-//             else
-//             {
-//                 if( renderer.EnableHtmlForInline )
-//                 {
-//                     if( AutoRelNoFollow )
-//                     {
-//                         renderer.Write( " rel=\"nofollow\"" );
-//                     }
-//                     renderer.Write( ">" );
-//                 }
-//                 renderer.WriteChildren( link );
-//                 if( renderer.EnableHtmlForInline )
-//                 {
-//                     renderer.Write( "</a>" );
-//                 }
-//             }
+            var url = node.GetDynamicUrl?.Invoke() ?? node.Url;
+
+            renderer.Link = url;
+
+            if( string.IsNullOrEmpty( node.Title ) == false )
+            {
+                renderer.ToolTip = node.Title;
+            }
+
+            renderer.WriteChildren( node );
+
+            // TODO: push and pop context?
+
+            renderer.ToolTip = null;
+            renderer.Link    = null;
         }
     }
 }

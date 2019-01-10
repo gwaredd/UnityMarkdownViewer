@@ -14,7 +14,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ThematicBreakBlock block )
         {
-            GUILayout.Label( string.Empty, renderer.GetStyle( "hr" ) );
+            renderer.Break();
         }
     }
 }

@@ -1,7 +1,32 @@
+# Code
+
+## Inline
+
 Use the `printf()` function.
 
-``There is a literal backtick (`) here.``
 
+## Block
+
+```
+function SomeCodeHere()
+{
+    // ...
+}
+```
+
+## Styled Block
+
+```cs
+function SomeCodeHere()
+{
+    // ...
+}
+```
+
+
+## Escaped Backticks
+
+``There is a literal backtick (`) here.``
 
 A single backtick in a code span: `` ` ``
 

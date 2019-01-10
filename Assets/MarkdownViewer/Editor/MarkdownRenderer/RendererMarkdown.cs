@@ -36,7 +36,6 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererInlineLiteral() );
         }
 
-
         ////////////////////////////////////////////////////////////////////////////////
 
         float   mPadding    = 8.0f;
@@ -44,8 +43,6 @@ namespace MG.MDV
 
         Vector2 mContentOffset;
         Vector2 mCursor;
-
-        StringBuilder mText = new StringBuilder( 2048 );
 
         public void Init( float headerHeight )
         {
@@ -66,8 +63,6 @@ namespace MG.MDV
 
 
         ////////////////////////////////////////////////////////////////////////////////
-        // 
-
         /// <see cref="Markdig.Renderers.TextRendererBase.WriteLeafInline"/>
 
         internal void WriteLeafBlockInline( LeafBlock block )
@@ -102,91 +97,140 @@ namespace MG.MDV
 
 
         ////////////////////////////////////////////////////////////////////////////////
+        // style
 
-        public bool Bold    { get; set; }
-        public bool Italic  { get; set; }
-        //public FontStyle FontStyle = FontStyle.Normal;
+        public bool     Bold       = false;
+        public bool     Italic     = false;
+        public bool     FixedWidth = false;
+        public string   ToolTip    = null; // TODO: tooltip
+        public string   Link       = null;
 
-        internal GUIStyle GetStyle( string style )
+        int mSize = 0;
+
+        public int Size
         {
-            return GUI.skin != null ? GUI.skin.GetStyle( style ) : null;
+            get { return mSize; }
+            set { mSize = Mathf.Clamp( value, 0, 6 ); }
         }
 
 
         //------------------------------------------------------------------------------
 
-        CharacterInfo mCharacterInfo = new CharacterInfo();
-        StringBuilder mWord          = new StringBuilder( 1024 );
+        GUIStyle      mCurStyle   = null;
+        float         mLineHeight = 12.0f;
+
+        StringBuilder mWord       = new StringBuilder( 1024 );
+        int           mWordStart  = 0;
+        float         mWordWidth  = 0.0f;
+
+        public void NewLine()
+        {
+            mCursor.y += mLineHeight;
+            mCursor.x = mContentOffset.x;
+        }
+
+        private void ClearWord()
+        {
+            mWordWidth = 0.0f;
+            mWordStart = 0;
+            mWord.Clear();
+        }
+
+        private void PrintWord()
+        {
+            if( mWord.Length == mWordStart )
+            {
+                return;
+            }
+
+            if( mCursor.x + mWordWidth > mMaxWidth )
+            {
+                NewLine();
+            }
+
+            // TODO: split word?
+            var rect = new Rect( mCursor, new Vector2( mWordWidth, mLineHeight ) );
+
+            if( Link == null )
+            {
+                GUI.Label( rect, mWord.ToString(), mCurStyle );
+            }
+            else if( GUI.Button( rect, mWord.ToString(), mCurStyle ) )
+            {
+                Debug.Log( "GOTO: " + Link );
+            }
+
+            mCursor.x += mWordWidth;
+
+            ClearWord();
+        }
+
+
+        //------------------------------------------------------------------------------
 
         internal void Print( string text )
         {
-            // print words (in current style) with wrapping
+            // TODO: cache working version?
 
-            var style      = GUI.skin.label;
-            var fontSize   = style.fontSize;
-            var lineHeight = style.lineHeight;
-            var font       = style.font ?? GUI.skin.font;
+            mCurStyle = FixedWidth ? GUI.skin.GetStyle( "code" ) : GUI.skin.label;
 
-            // TODO: pre-cache widths?
-            font.GetCharacterInfo( ' ', out mCharacterInfo, fontSize, FontStyle.Normal );
-            var space = (float) mCharacterInfo.advance;
+            var fontInfo = FixedWidth ? Fonts.Fixed : Fonts.Variable;
+            var fontSize  = 11.0f + (Size == 0 ? 0 : 7 - Size );
+            var fontStyle = Bold ? FontStyle.Bold : FontStyle.Normal;
 
-            var wordWidth = 0.0f;
+            if( Italic )
+            {
+                fontStyle = (FontStyle) ( (int) fontStyle + (int) FontStyle.Italic );
+            }
 
-            mWord.Clear();
+            mCurStyle.fontSize  = (int) fontSize;
+            mCurStyle.fontStyle = fontStyle;
+
+            mCurStyle.normal.textColor = Link != null ? Color.blue : Color.black;
+
+            mLineHeight = mCurStyle.lineHeight;
+
+
+            // TODO: pre-cache
+            float space;
+            float question;
+            float advance;
+
+            fontInfo.GetAdvance( ' ', out space, fontSize, fontStyle );
+            fontInfo.GetAdvance( '?', out question, fontSize, fontStyle );
+
+            ClearWord();
 
             for( var i = 0; i < text.Length; i++ )
             {
                 var ch = text[ i ];
 
-                if( char.IsWhiteSpace( ch ) )
+                if( ch == '\n' )
                 {
-                    if( mWord.Length > 0 )
-                    {
-                        if( ch == '\n' || mCursor.x + wordWidth > mMaxWidth )
-                        {
-                            mCursor.y += lineHeight;
-                            mCursor.x = mContentOffset.x;
-                        }
-
-                        var pos = new Rect( mCursor, new Vector2( wordWidth, lineHeight * 2.0f ) );
-                        GUI.Label( pos, mWord.ToString(), style );
-
-                        mCursor.x += wordWidth;
-
-                        wordWidth = 0.0f;
-                        mWord.Clear();
-                    }
-
-                    mCursor.x += space;
+                    PrintWord();
+                    NewLine();
+                    continue;
                 }
-                else if( font.GetCharacterInfo( ch, out mCharacterInfo, fontSize, FontStyle.Normal ) )
+
+                if( fontInfo.GetAdvance( ch, out advance, fontSize, fontStyle ) )
                 {
-                    wordWidth += mCharacterInfo.advance;
                     mWord.Append( ch );
+                    mWordWidth += advance;
                 }
                 else
                 {
-                    // TODO: better way to handle unknown characters?
+                    mWord.Append( '?' );
+                    mWordWidth += question;
+                }
+
+                if( char.IsWhiteSpace( ch ) )
+                {
+                    PrintWord();
                 }
             }
 
-            // print last word
-
-                // does word fit? - new line (or split?)
-
-                // ObjectRenderers.Add( new RendererInlineLiteral() );
-
-                // ObjectRenderers.Add( new RendererInlineEmphasis() );
-                // ObjectRenderers.Add( new RendererInlineLineBreak() );
-
-                // ObjectRenderers.Add( new RendererInlineLink() );
-                // ObjectRenderers.Add( new RendererInlineAutoLink() );
-
-                // ObjectRenderers.Add( new RendererInlineCode() );
-
+            PrintWord();
         }
-
 
         //------------------------------------------------------------------------------
 
@@ -197,12 +241,19 @@ namespace MG.MDV
 
         internal void FlushLine()
         {
-            if( mText.Length > 0 )
-            {
-                var text = mText.ToString();
-                mText.Clear();
-                EditorGUILayout.SelectableLabel( text, GUI.skin.label );
-            }
+            NewLine();
+            NewLine();
         }
+
+        internal void Break()
+        {
+            NewLine();
+
+            var rect = new Rect( mCursor, new Vector2( Screen.width - 50.0f, 1.0f ) );
+            GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
+
+            NewLine();
+        }
+
     }
 }

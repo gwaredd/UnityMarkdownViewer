@@ -16,9 +16,12 @@ namespace MG.MDV
         {
             renderer.FlushLine();
 
+            renderer.FixedWidth = true;
+
             // TODO: use monospace font / block ...
             renderer.WriteLeafRawLines( block );
-            EditorGUILayout.TextArea( renderer.GetText() );
+
+            renderer.FixedWidth = false;
         }
     }
 }

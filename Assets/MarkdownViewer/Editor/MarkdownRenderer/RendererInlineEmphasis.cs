@@ -13,22 +13,25 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, EmphasisInline node )
         {
-            var tag = null as string;
-
-            if( node.DelimiterChar == '*' || node.DelimiterChar == '_' )
+            if( node.IsDouble )
             {
-                tag = node.IsDouble ? "b" : "i";
+                renderer.Bold = true;
             }
-
-            renderer.Print( "<" );
-            renderer.Print( tag );
-            renderer.Print( ">" );
+            else
+            {
+                renderer.Italic = true;
+            }
 
             renderer.WriteChildren( node );
 
-            renderer.Print( "</" );
-            renderer.Print( tag );
-            renderer.Print( ">" );
+            if( node.IsDouble )
+            {
+                renderer.Bold = false;
+            }
+            else
+            {
+                renderer.Italic = false;
+            }
         }
     }
 }

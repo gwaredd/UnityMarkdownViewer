@@ -2,6 +2,7 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using UnityEngine;
 
 namespace MG.MDV
 {
@@ -13,7 +14,11 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, AutolinkInline node )
         {
-            throw new System.NotImplementedException();
+            // TODO: node.IsEmail
+
+            renderer.Link = node.Url;
+            renderer.Print( node.Url );
+            renderer.Link = null;
         }
     }
 }
