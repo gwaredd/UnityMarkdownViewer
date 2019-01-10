@@ -5,6 +5,8 @@
 * review TODO's
 * review NotImplementedException
 * look at colour issue
+* test embeded / complex markdown (code/links inside headers for example)
+* compare with known good renderer
 
 # Documentation
 ------------------------------------------------------------------------------
@@ -17,6 +19,8 @@
 
 # Reference
 ------------------------------------------------------------------------------
+
+
 
 * https:// answers.unity.com/static/markdown/help.html
 * https:// daringfireball.net/projects/markdown/syntax

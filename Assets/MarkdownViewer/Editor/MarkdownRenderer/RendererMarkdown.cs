@@ -123,6 +123,17 @@ namespace MG.MDV
         int           mWordStart  = 0;
         float         mWordWidth  = 0.0f;
 
+
+        public void Indent( string prefix )
+        {
+            Print( ( prefix ?? "  " ) + "  " );
+        }
+
+        public void Outdent()
+        {
+        }
+
+
         public void NewLine()
         {
             mCursor.y += mLineHeight;
@@ -211,6 +222,10 @@ namespace MG.MDV
                     NewLine();
                     continue;
                 }
+                else if( char.IsWhiteSpace( ch ) )
+                {
+                    ch = ' ';
+                }
 
                 if( fontInfo.GetAdvance( ch, out advance, fontSize, fontStyle ) )
                 {
@@ -223,7 +238,7 @@ namespace MG.MDV
                     mWordWidth += question;
                 }
 
-                if( char.IsWhiteSpace( ch ) )
+                if( ch == ' ' )
                 {
                     PrintWord();
                 }

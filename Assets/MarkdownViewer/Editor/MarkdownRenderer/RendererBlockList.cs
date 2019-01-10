@@ -15,34 +15,12 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ListBlock block )
         {
-            renderer.FlushLine();
-
             for( var i = 0; i < block.Count; i++ )
             {
-                renderer.Print( i.ToString() );
-                renderer.Print( "\t" );
+                renderer.Indent( block.IsOrdered ? i.ToString() : "\u2022" );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
-                renderer.FlushLine();
+                renderer.Outdent();
             }
-
-            //GUILayout.SelectionGrid() !?
-
-//             using( new EditorGUILayout.VerticalScope() )
-//             {
-//                 for( var i = 0; i < block.Count; i++ )
-//                 {
-//                     using( new EditorGUILayout.HorizontalScope() )
-//                     {
-//                         // TODO: renderer.ImplicitParagraph = !listBlock.IsLoose;
-//                         // TODO: if block.IsOrdered <ol> else <ul>
-// 
-//                         GUILayout.Label( i.ToString(), GUILayout.Width( 10 ) );
-// 
-//                         var item = block[i] as ListItemBlock;
-//                         renderer.WriteChildren( item );
-//                     }
-//                 }
-//             }
         }
     }
 }
