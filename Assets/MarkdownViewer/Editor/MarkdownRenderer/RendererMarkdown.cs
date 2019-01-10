@@ -43,7 +43,7 @@ namespace MG.MDV
         float   mMaxWidth   = 100.0f;
 
         Vector2 mContentOffset;
-        Vector2 mPos;
+        Vector2 mCursor;
 
         StringBuilder mText = new StringBuilder( 2048 );
 
@@ -52,7 +52,7 @@ namespace MG.MDV
             mContentOffset.x = mPadding;
             mContentOffset.y = headerHeight + mPadding;
 
-            mPos      = mContentOffset;
+            mCursor   = mContentOffset;
             mMaxWidth = Screen.width - mPadding * 2.0f;
         }
 
@@ -115,69 +115,77 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        GUIStyle mCurrentStyle = null;
+        CharacterInfo mCharacterInfo = new CharacterInfo();
+        StringBuilder mWord          = new StringBuilder( 1024 );
 
         internal void Print( string text )
         {
             // print words (in current style) with wrapping
 
-            //GUIStyle.GetCursorStringIndex
+            var style      = GUI.skin.label;
+            var fontSize   = style.fontSize;
+            var lineHeight = style.lineHeight;
+            var font       = style.font ?? GUI.skin.font;
 
-            // ObjectRenderers.Add( new RendererInlineLiteral() );
+            // TODO: pre-cache widths?
+            font.GetCharacterInfo( ' ', out mCharacterInfo, fontSize, FontStyle.Normal );
+            var space = (float) mCharacterInfo.advance;
 
-            // ObjectRenderers.Add( new RendererInlineEmphasis() );
-            // ObjectRenderers.Add( new RendererInlineLineBreak() );
+            var wordWidth = 0.0f;
 
-            // ObjectRenderers.Add( new RendererInlineLink() );
-            // ObjectRenderers.Add( new RendererInlineAutoLink() );
+            mWord.Clear();
 
-            // ObjectRenderers.Add( new RendererInlineCode() );
+            for( var i = 0; i < text.Length; i++ )
+            {
+                var ch = text[ i ];
 
-
-            mText.Append( text );
-        }
-
-        /*
-
-                var lineHeight = Skin.label.lineHeight;
-                var fontSize   = Skin.label.fontSize;
-                var font       = Skin.font;
-                var dim        = new Vector2( mMaxWidth, lineHeight * 2.0f );
-
-                var pos = 0;
-                var totalWidth = 0.0f;
-
-                for( var i = 0; i < text.Length; i++ )
+                if( char.IsWhiteSpace( ch ) )
                 {
-                    // TODO: actual word wrapping!
-
-                    if( font.GetCharacterInfo( text[ i ], out mCharacterInfo, fontSize, FontStyle.Normal ) )
+                    if( mWord.Length > 0 )
                     {
-                        var newWidth = totalWidth + mCharacterInfo.advance;
-
-                        if( newWidth > mMaxWidth )
+                        if( ch == '\n' || mCursor.x + wordWidth > mMaxWidth )
                         {
-                            GUI.Label( new Rect( mPos, dim ), text.Substring( pos, i - pos ) );
-                            mPos.y += lineHeight;
+                            mCursor.y += lineHeight;
+                            mCursor.x = mContentOffset.x;
+                        }
 
-                            pos = i;
-                            totalWidth = mCharacterInfo.advance;
-                        }
-                        else
-                        {
-                            totalWidth = newWidth;
-                        }
+                        var pos = new Rect( mCursor, new Vector2( wordWidth, lineHeight * 2.0f ) );
+                        GUI.Label( pos, mWord.ToString(), style );
+
+                        mCursor.x += wordWidth;
+
+                        wordWidth = 0.0f;
+                        mWord.Clear();
                     }
-                    else
-                    {
-                        // character not in font!
-                    }
+
+                    mCursor.x += space;
                 }
+                else if( font.GetCharacterInfo( ch, out mCharacterInfo, fontSize, FontStyle.Normal ) )
+                {
+                    wordWidth += mCharacterInfo.advance;
+                    mWord.Append( ch );
+                }
+                else
+                {
+                    // TODO: better way to handle unknown characters?
+                }
+            }
 
-                GUI.Label( new Rect( mPos, dim ), text.Substring( pos ) );
-                mPos.y += lineHeight;
+            // print last word
 
-        /**/
+                // does word fit? - new line (or split?)
+
+                // ObjectRenderers.Add( new RendererInlineLiteral() );
+
+                // ObjectRenderers.Add( new RendererInlineEmphasis() );
+                // ObjectRenderers.Add( new RendererInlineLineBreak() );
+
+                // ObjectRenderers.Add( new RendererInlineLink() );
+                // ObjectRenderers.Add( new RendererInlineAutoLink() );
+
+                // ObjectRenderers.Add( new RendererInlineCode() );
+
+        }
 
 
         //------------------------------------------------------------------------------
