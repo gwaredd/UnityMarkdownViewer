@@ -36,6 +36,11 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererInlineLiteral() );
         }
 
+        internal void Image( string url, string alt, string title )
+        {
+            Debug.Log( "TODO: <img src='" + url + "'/>");
+        }
+
         ////////////////////////////////////////////////////////////////////////////////
 
         float   mPadding    = 8.0f;
@@ -248,11 +253,6 @@ namespace MG.MDV
         }
 
         //------------------------------------------------------------------------------
-
-        internal string GetText()
-        {
-            throw new NotImplementedException();
-        }
 
         internal void FlushLine()
         {

@@ -8,12 +8,13 @@ namespace MG.MDV
     ////////////////////////////////////////////////////////////////////////////////
     // <html>...</html>
     /// <see cref="Markdig.Renderers.Html.Inlines.HtmlInlineRenderer"/>
+    /// <see cref="Markdig.Renderers.Normalize.Inlines.NormalizeHtmlInlineRenderer"/>
 
     public class RendererInlineHtml : MarkdownObjectRenderer<RendererMarkdown, HtmlInline>
     {
         protected override void Write( RendererMarkdown renderer, HtmlInline node )
         {
-            throw new System.NotImplementedException();
+            renderer.Print( node.Tag );
         }
     }
 }

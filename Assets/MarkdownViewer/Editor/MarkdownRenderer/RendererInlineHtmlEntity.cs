@@ -7,12 +7,13 @@ namespace MG.MDV
 {
     ////////////////////////////////////////////////////////////////////////////////
     /// <see cref="Markdig.Renderers.Html.Inlines.HtmlEntityInlineRenderer"/>
+    /// <see cref="Markdig.Renderers.Normalize.Inlines.NormalizeHtmlEntityInlineRenderer"/>
 
     public class RendererInlineHtmlEntity : MarkdownObjectRenderer<RendererMarkdown, HtmlEntityInline>
     {
         protected override void Write( RendererMarkdown renderer, HtmlEntityInline node )
         {
-            throw new System.NotImplementedException();
+            renderer.Print( node.Original.ToString() );
         }
     }
 }

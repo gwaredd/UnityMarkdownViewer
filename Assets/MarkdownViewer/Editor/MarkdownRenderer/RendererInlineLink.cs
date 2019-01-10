@@ -14,14 +14,15 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, LinkInline node )
         {
+            var url = node.GetDynamicUrl?.Invoke() ?? node.Url;
+
             if( node.IsImage )
             {
-                // alt = renderer.WriteChildren(link);
-                // TODO: node.IsImage
-                throw new System.NotImplementedException();
+                var alt = ""; // TODO: renderer.WriteChildren(link);
+                renderer.Image( url, alt, node.Title );
+                return;
             }
 
-            var url = node.GetDynamicUrl?.Invoke() ?? node.Url;
 
             renderer.Link = url;
 
