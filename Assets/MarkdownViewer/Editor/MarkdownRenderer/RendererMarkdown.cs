@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace MG.MDV
 {
@@ -18,9 +17,6 @@ namespace MG.MDV
     public class RendererMarkdown : RendererBase
     {
         public RenderContext Context;
-
-        Texture                    mPlaceholder  = null;
-        Dictionary<string,Texture> mTextureCache = new Dictionary<string, Texture>();
 
         float           mPadding    = 8.0f;
         float           mIndentSize = 20.0f;
@@ -40,10 +36,14 @@ namespace MG.MDV
         StringBuilder   mLine      = new StringBuilder();
 
         GUIContent      mContent   = new GUIContent();
+        IImageFetcher   mImageFetcher = null;
 
 
-        public RendererMarkdown( Texture placeholder, GUISkin skin, Font fontVariable, Font fontFixed )
+        public RendererMarkdown( IImageFetcher imageFetcher, RenderContext context )
         {
+            Context       = context;
+            mImageFetcher = imageFetcher;
+
             ObjectRenderers.Add( new RendererBlockCode() );
             ObjectRenderers.Add( new RendererBlockList() );
             ObjectRenderers.Add( new RendererBlockHeading() );
@@ -61,9 +61,6 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererInlineHtml() );
             ObjectRenderers.Add( new RendererInlineHtmlEntity() );
             ObjectRenderers.Add( new RendererInlineLiteral() );
-
-            mPlaceholder = placeholder;
-            Context = new RenderContext( skin, fontVariable, fontFixed );
         }
 
 
@@ -71,17 +68,13 @@ namespace MG.MDV
 
         internal void Image( string url, string alt, string title )
         {
-            Texture tex;
+            var tex = mImageFetcher.FetchImage( url );
 
-            if( mTextureCache.TryGetValue( url, out tex ) == false )
-            {
-                Debug.Log( $"Fetch {url}" );
-
-                tex = mPlaceholder;
-                mTextureCache[ url ] = mPlaceholder;
-            }
-
-            GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), tex );
+            mContent.text    = null;
+            mContent.image   = tex;
+            mContent.tooltip = alt ?? title;
+ 
+            GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), mContent );
 
             mLineHeight = Mathf.Max( mLineHeight, tex.height );
             mCursor.x += tex.width;
@@ -173,6 +166,7 @@ namespace MG.MDV
             }
 
             mContent.text    = mLine.ToString();
+            mContent.image   = null;
             mContent.tooltip = Context.ToolTip;
 
             var rect = new Rect( mLineOrigin, mCursor.y, mCursor.x - mLineOrigin, Context.Style.lineHeight );

@@ -3,19 +3,108 @@
 using Markdig;
 using Markdig.Syntax;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace MG.MDV
 {
+    public interface IImageFetcher
+    {
+        Texture FetchImage( string url );
+    }
+
     [CustomEditor( typeof( TextAsset ) )]
-    public class MarkdownViewer : Editor
+    public class MarkdownViewer : Editor, IImageFetcher
     {
         public GUISkin Skin;
         public Font    FontVariable;
         public Font    FontFixed;
         public Texture TexturePlaceholder;
+
+
+        //------------------------------------------------------------------------------
+
+        class ImageRequest
+        {
+            public string           URL; // original url
+            public UnityWebRequest  Request;
+
+            public ImageRequest( string url )
+            {
+                URL     = url;
+                Request = UnityWebRequestTexture.GetTexture( url );
+
+                Request.SendWebRequest();
+            }
+
+            public Texture Texture
+            {
+                get
+                {
+                    var handler = Request.downloadHandler as DownloadHandlerTexture;
+                    return handler?.texture;
+                }
+            }
+        }
+
+        List<ImageRequest> mActiveRequests = new List<ImageRequest>();
+        Dictionary<string,Texture> mTextureCache = new Dictionary<string, Texture>();
+
+        private void OnEnable()
+        {
+            EditorApplication.update += UpdateRequests;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= UpdateRequests;
+        }
+
+        public Texture FetchImage( string url )
+        {
+            Texture tex;
+
+            if( mTextureCache.TryGetValue( url, out tex ) )
+            {
+                return tex;
+            }
+
+            mActiveRequests.Add( new ImageRequest( url ) );
+            mTextureCache[ url ] = TexturePlaceholder;
+
+            return TexturePlaceholder;
+        }
+
+        void UpdateRequests()
+        {
+            if( mActiveRequests.Count == 0 )
+            {
+                return;
+            }
+
+            var req = mActiveRequests.Find( r => r.Request.isDone );
+
+            if( req == null )
+            {
+                return;
+            }
+
+            if( req.Request.isNetworkError )
+            {
+                Debug.LogError( $"Error fetching '{req.URL}' - {req.Request.error}" );
+            }
+            else
+            {
+                mTextureCache[ req.URL ] = req.Texture;
+                Repaint();
+            }
+
+            mActiveRequests.Remove( req );
+        }
 
 
         //------------------------------------------------------------------------------
@@ -100,10 +189,13 @@ namespace MG.MDV
                 return;
             }
 
+            var context = new RenderContext( Skin, FontVariable, FontFixed );
+
             // TODO: look at pipeline options ...
             mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            mRenderer = new RendererMarkdown( TexturePlaceholder, Skin, FontVariable, FontFixed );
+            mRenderer = new RendererMarkdown( this, context );
             mPipeline.Setup( mRenderer );
+
 
             mDoc = Markdown.Parse( ( target as TextAsset ).text, mPipeline );
         }
