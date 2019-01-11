@@ -12,19 +12,90 @@ using UnityEngine.Networking;
 
 namespace MG.MDV
 {
-    public interface IImageFetcher
+    public interface IActionHandlers
     {
         Texture FetchImage( string url );
+        void SelectPage( string url );
     }
 
     [CustomEditor( typeof( TextAsset ) )]
-    public class MarkdownViewer : Editor, IImageFetcher
+    public class MarkdownViewer : Editor, IActionHandlers
     {
         public GUISkin Skin;
         public Font    FontVariable;
         public Font    FontFixed;
         public Texture TexturePlaceholder;
 
+
+        //------------------------------------------------------------------------------
+
+        // proper path combine
+
+        char[] mSeparators = new char[] { '/', '\\' };
+
+        private string PathCombine( string a, string b )
+        {
+            var combined = 
+                a.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries )
+                .ToList()
+                .Concat( b.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ) );
+
+            var path = new List<string>();
+
+            foreach( var str in combined )
+            {
+                if( str == "." )
+                {
+                    continue;
+                }
+                else if( str == ".." )
+                {
+                    if( path.Count > 0 )
+                    {
+                        path.RemoveAt( path.Count - 1 );
+                    }
+                }
+                else
+                {
+                    path.Add( str );
+                }
+            }
+
+            return String.Join( "/", path.ToArray() );
+        }
+
+        public void SelectPage( string url )
+        {
+            if( string.IsNullOrEmpty( url ) )
+            {
+                return;
+            }
+
+            var assetPath = string.Empty;
+
+            if( url.StartsWith( "Assets/", StringComparison.OrdinalIgnoreCase ) )
+            {
+                assetPath = url;
+            }
+            else
+            {
+                var targetPath = AssetDatabase.GetAssetPath( target );
+                var targetDir  = Path.GetDirectoryName( targetPath );
+
+                assetPath = PathCombine( targetDir, url );
+            }
+
+            var asset = AssetDatabase.LoadAssetAtPath<TextAsset>( assetPath );
+
+            if( asset != null )
+            {
+                Selection.activeObject = asset;
+            }
+            else
+            {
+                Debug.LogError( $"Could not find asset {assetPath}" );
+            }
+        }
 
         //------------------------------------------------------------------------------
 

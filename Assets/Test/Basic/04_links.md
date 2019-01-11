@@ -15,7 +15,11 @@ This is [an example](http://example.com/ "Title") inline link.
 
 ## Relative Link
 
-See my [About](/about/) page for details.   
+See my [Header](03_headers.md) page for details.   
+
+See my absolute [Header](Assets/Test/Basic/03_headers.md)
+
+See my .. [File](../Extensions/AbbreviationSpecs.md)
 
 ## Reference Style Link
 

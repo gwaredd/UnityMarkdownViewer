@@ -4,8 +4,8 @@ using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace MG.MDV
@@ -36,13 +36,13 @@ namespace MG.MDV
         StringBuilder   mLine      = new StringBuilder();
 
         GUIContent      mContent   = new GUIContent();
-        IImageFetcher   mImageFetcher = null;
+        IActionHandlers mActions   = null;
 
 
-        public RendererMarkdown( IImageFetcher imageFetcher, RenderContext context )
+        public RendererMarkdown( IActionHandlers imageFetcher, RenderContext context )
         {
-            Context       = context;
-            mImageFetcher = imageFetcher;
+            Context  = context;
+            mActions = imageFetcher;
 
             ObjectRenderers.Add( new RendererBlockCode() );
             ObjectRenderers.Add( new RendererBlockList() );
@@ -68,7 +68,7 @@ namespace MG.MDV
 
         internal void Image( string url, string alt, string title )
         {
-            var tex = mImageFetcher.FetchImage( url );
+            var tex = mActions.FetchImage( url );
 
             mContent.text    = null;
             mContent.image   = tex;
@@ -177,7 +177,14 @@ namespace MG.MDV
             }
             else if( GUI.Button( rect, mContent, Context.Style ) )
             {
-                Debug.Log( "TODO: open " + Context.Link );
+                if( Regex.IsMatch( Context.Link, @"^\w+:", RegexOptions.Singleline ) )
+                {
+                    Application.OpenURL( Context.Link );
+                }
+                else
+                {
+                    mActions.SelectPage( Context.Link );
+                }
             }
 
             mLineOrigin = mCursor.x;
