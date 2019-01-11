@@ -17,8 +17,7 @@ namespace MG.MDV
 
             if( node.IsImage )
             {
-                var alt = ""; // TODO: renderer.WriteChildren(link);
-                renderer.Image( url, alt, node.Title );
+                renderer.Image( url, renderer.GetContents( node ), node.Title );
                 return;
             }
 

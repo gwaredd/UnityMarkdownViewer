@@ -21,6 +21,10 @@ See my absolute [Header](Assets/Test/Basic/03_headers.md)
 
 See my .. [File](../Extensions/AbbreviationSpecs.md)
 
+## Broken Link
+
+See my [Broken](doesnotexists.md) page for details.   
+
 ## Reference Style Link
 
 This is [an example][id] reference-style link.

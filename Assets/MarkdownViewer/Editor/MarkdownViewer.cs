@@ -167,14 +167,15 @@ namespace MG.MDV
             if( req.Request.isNetworkError )
             {
                 Debug.LogError( $"Error fetching '{req.URL}' - {req.Request.error}" );
+                mTextureCache[ req.URL ] = null;
             }
             else
             {
                 mTextureCache[ req.URL ] = req.Texture;
-                Repaint();
             }
 
             mActiveRequests.Remove( req );
+            Repaint();
         }
 
 

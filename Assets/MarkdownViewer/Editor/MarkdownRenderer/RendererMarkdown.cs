@@ -70,11 +70,24 @@ namespace MG.MDV
         {
             Flush(); // TODO: need to "park" current segment until whole line in complete
 
-            // TODO: test relative url's
+            // TODO: test relative / project url's
             // TODO: support image resizing?
-            // TODO: use - alt / title if image fetch fails!
 
             var tex = mActions.FetchImage( url );
+
+            if( tex == null )
+            {
+                if( string.IsNullOrEmpty( alt ) )
+                {
+                    Print( $"[{url}]" );
+                }
+                else
+                {
+                    Print( $"[{alt}]" );
+                }
+
+                return;
+            }
 
             mContent.text    = null;
             mContent.image   = tex;
@@ -86,7 +99,6 @@ namespace MG.MDV
             }
 
             GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), mContent );
-
 
             mLineHeight = Mathf.Max( mLineHeight, tex.height );
             mCursor.x += tex.width;
@@ -293,6 +305,33 @@ namespace MG.MDV
             {
                 Print( slices[ i ].ToString() + "\n" );
             }
+        }
+
+        internal string GetContents( ContainerInline node )
+        {
+            if( node == null )
+            {
+                return string.Empty;
+            }
+
+            /// <see cref="Markdig.Renderers.RendererBase.WriteChildren(ContainerInline)"/>
+            
+            var inline  = node.FirstChild;
+            var content = string.Empty;
+
+            while( inline != null )
+            {
+                var lit = inline as LiteralInline;
+
+                if( lit != null )
+                {
+                    content += lit.Content.ToString();
+                }
+
+                inline = inline.NextSibling;
+            }
+
+            return content;
         }
 
 

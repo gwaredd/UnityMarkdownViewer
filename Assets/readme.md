@@ -8,6 +8,7 @@
 * test embeded / complex markdown (code/links inside headers for example)
 * compare with known good renderer
 * tables / grids!
+* test what happens when we have multiple TextAsset editors ...
 
 # Documentation
 ------------------------------------------------------------------------------
@@ -24,14 +25,14 @@
 # Reference
 ------------------------------------------------------------------------------
 
-
-
 * https:// answers.unity.com/static/markdown/help.html
 * https:// daringfireball.net/projects/markdown/syntax
 
 
-    // TODO: variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
-    //          https://github.com/roydejong/chromium-unity-server
-    //          https://ultralig.ht/
+# Investigate
+------------------------------------------------------------------------------
 
-        // TODO: test what happens when we have multiple TextAsset editors ...
+* variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
+ * https://github.com/roydejong/chromium-unity-server
+ * https://ultralig.ht/
+
