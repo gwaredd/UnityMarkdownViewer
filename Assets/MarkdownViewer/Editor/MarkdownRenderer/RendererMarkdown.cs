@@ -68,18 +68,28 @@ namespace MG.MDV
 
         internal void Image( string url, string alt, string title )
         {
+            Flush(); // TODO: need to "park" current segment until whole line in complete
+
+            // TODO: test relative url's
+            // TODO: support image resizing?
+            // TODO: use - alt / title if image fetch fails!
+
             var tex = mActions.FetchImage( url );
 
             mContent.text    = null;
             mContent.image   = tex;
-            mContent.tooltip = alt ?? title;
- 
+            mContent.tooltip = title ?? alt;
+
+            if( mCursor.x + tex.width > mMarginRight )
+            {
+                NewLine();
+            }
+
             GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), mContent );
+
 
             mLineHeight = Mathf.Max( mLineHeight, tex.height );
             mCursor.x += tex.width;
-
-            // TODO: wrap image?
         }
 
 
@@ -88,7 +98,6 @@ namespace MG.MDV
         internal void Print( string text )
         {
             mLineOrigin = mCursor.x;
-            mLineHeight = Context.Style.lineHeight;
 
             for( var i = 0; i < text.Length; i++ )
             {
