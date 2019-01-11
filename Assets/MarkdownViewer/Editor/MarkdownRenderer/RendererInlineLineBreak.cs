@@ -13,7 +13,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, LineBreakInline node )
         {
-            renderer.Flush();
+            renderer.FinishBlock();
         }
     }
 }

@@ -4,7 +4,6 @@ using Markdig;
 using Markdig.Syntax;
 using System;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,7 +13,9 @@ namespace MG.MDV
     public class MarkdownViewer : Editor
     {
         public GUISkin Skin;
-        public Texture Placeholder;
+        public Font    FontVariable;
+        public Font    FontFixed;
+        public Texture TexturePlaceholder;
 
 
         //------------------------------------------------------------------------------
@@ -101,7 +102,7 @@ namespace MG.MDV
 
             // TODO: look at pipeline options ...
             mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            mRenderer = new RendererMarkdown();
+            mRenderer = new RendererMarkdown( TexturePlaceholder, Skin, FontVariable, FontFixed );
             mPipeline.Setup( mRenderer );
 
             mDoc = Markdown.Parse( ( target as TextAsset ).text, mPipeline );
@@ -135,8 +136,7 @@ namespace MG.MDV
             }
             else
             {
-                mRenderer.Setup( mHeaderHeight, Placeholder );
-                mRenderer.Render( mDoc );
+                mRenderer.Render( mDoc, mHeaderHeight );
             }
         }
     }

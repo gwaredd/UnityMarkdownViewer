@@ -23,19 +23,19 @@ namespace MG.MDV
             }
 
 
-            renderer.Link = url;
+            renderer.Context.Link = url;
 
             if( string.IsNullOrEmpty( node.Title ) == false )
             {
-                renderer.ToolTip = node.Title;
+                renderer.Context.ToolTip = node.Title;
             }
 
             renderer.WriteChildren( node );
 
             // TODO: push and pop context?
 
-            renderer.ToolTip = null;
-            renderer.Link    = null;
+            renderer.Context.ToolTip = null;
+            renderer.Context.Link    = null;
         }
     }
 }

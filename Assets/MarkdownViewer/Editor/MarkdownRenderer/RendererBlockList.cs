@@ -22,7 +22,7 @@ namespace MG.MDV
             }
 
             renderer.Outdent();
-            renderer.Flush();
+            renderer.FinishBlock();
         }
     }
 }

@@ -16,6 +16,9 @@
 
 * Edit -> Project Settings -> Editor -> C# Project Generation -> Additional Extentions to include
 
+## Create MD file
+
+* Right Click -> Markdown
 
 
 # Reference

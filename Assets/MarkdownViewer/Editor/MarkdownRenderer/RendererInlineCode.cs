@@ -13,10 +13,10 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeInline node )
         {
-            var prevStyle = renderer.Style;
-            renderer.Style = prevStyle.Set( RenderStyle.FixedWidth );
+            var prevStyle = renderer.Context.Fixed;
+            renderer.Context.Fixed = true;
             renderer.Print( node.Content );
-            renderer.Style = prevStyle;
+            renderer.Context.Fixed = prevStyle;
         }
     }
 }

@@ -7,147 +7,63 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace MG.MDV
 {
-    // RenderContext (style)
-    // Cursor
-    // Indent
-    //
-    // Print Text, Output Image
-    //
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // RenderContext
-
-    [Flags]
-    public enum RenderStyle
-    {
-        Normal     = 0x00,
-        Bold       = 0x01,
-        Italic     = 0x02,
-        FixedWidth = 0x04
-    }
-
-    public static class RenderStyleExt
-    {
-        public static bool IsSet( this RenderStyle style, RenderStyle flags )
-        {
-            return ( style & flags ) != RenderStyle.Normal;
-        }
-
-        public static RenderStyle Set( this RenderStyle style, RenderStyle flags )
-        {
-            return style | flags;
-        }
-
-        public static RenderStyle Clear( this RenderStyle style, RenderStyle flags )
-        {
-            return style & ~flags;
-        }
-    }
-
-    public struct RenderContext
-    {
-        public RenderStyle  Style;
-        public int          Size;
-        public string       ToolTip;
-        public string       Link;
-    }
-
-
     ////////////////////////////////////////////////////////////////////////////////
     /// <see cref="Markdig.Renderers.HtmlRenderer"/>
     /// <see cref="Markdig.Renderers.Normalize.NormalizeRenderer"/>
 
     public class RendererMarkdown : RendererBase
     {
-        public RenderStyle Style
-        {
-            get
-            {
-                return mContext.Style;
-            }
+        public RenderContext Context;
 
-            set
-            {
-                mContext.Style = value;
-            }
-        }
-
-        public string ToolTip
-        {
-            set
-            {
-                mContext.ToolTip = value;
-            }
-        }
-
-        public string Link
-        {
-            set
-            {
-                mContext.Link = value;
-            }
-        }
-
-        public int Size
-        {
-            set { mContext.Size = Mathf.Clamp( value, 0, 6 ); }
-        }
-
-        public void Prefix( string prefix )
-        {
-            // TODO: better prefix!
-            Print( ( prefix ?? "  " ) + "  " );
-        }
-
-        public void Indent()
-        {
-            mIndent.x += mIndentSize;
-        }
-
-        public void Outdent()
-        {
-            mIndent.x = Mathf.Max( mIndent.x - mIndentSize, mOrigin.x );
-        }
-
-
-        //------------------------------------------------------------------------------
-
+        Texture                    mPlaceholder  = null;
         Dictionary<string,Texture> mTextureCache = new Dictionary<string, Texture>();
 
         float           mPadding    = 8.0f;
         float           mIndentSize = 20.0f;
 
         float           mMaxWidth   = 100.0f;
-        Vector2         mOrigin;
+        Vector2         mContentOrigin;
 
-        RenderContext   mContext;
+        //
         Vector2         mCursor;
-        Vector2         mIndent;
+        float           mMarginLeft;
+        float           mMarginRight;
+        float           mLineOrigin;
+        float           mLineHeight;
+
+        float           mWordWidth = 0.0f;
+        StringBuilder   mWord      = new StringBuilder();
+        StringBuilder   mLine      = new StringBuilder();
+
+        GUIContent      mContent   = new GUIContent();
 
 
-        GUIStyle        mCurStyle   = null;
-        float           mLineHeight = 12.0f;
-
-        StringBuilder   mWord       = new StringBuilder( 1024 );
-        float           mWordWidth  = 0.0f;
-
-
-        internal void Setup( float headerHeight, Texture placeholder )
+        public RendererMarkdown( Texture placeholder, GUISkin skin, Font fontVariable, Font fontFixed )
         {
-            mOrigin.x = mPadding;
-            mOrigin.y = headerHeight + mPadding;
+            ObjectRenderers.Add( new RendererBlockCode() );
+            ObjectRenderers.Add( new RendererBlockList() );
+            ObjectRenderers.Add( new RendererBlockHeading() );
+            ObjectRenderers.Add( new RendererBlockHtml() );
+            ObjectRenderers.Add( new RendererBlockParagraph() );
+            ObjectRenderers.Add( new RendererBlockQuote() );
+            ObjectRenderers.Add( new RendererBlockThematicBreak() );
 
-            mCursor   = mOrigin;
-            mIndent   = mCursor;
-            mMaxWidth = Screen.width - mPadding * 2.0f;
+            ObjectRenderers.Add( new RendererInlineLink() );
+            ObjectRenderers.Add( new RendererInlineAutoLink() );
+            ObjectRenderers.Add( new RendererInlineCode() );
+            ObjectRenderers.Add( new RendererInlineDelimiter() );
+            ObjectRenderers.Add( new RendererInlineEmphasis() );
+            ObjectRenderers.Add( new RendererInlineLineBreak() );
+            ObjectRenderers.Add( new RendererInlineHtml() );
+            ObjectRenderers.Add( new RendererInlineHtmlEntity() );
+            ObjectRenderers.Add( new RendererInlineLiteral() );
 
-            if( mTextureCache.Count == 0 )
-            {
-                mTextureCache.Add( string.Empty, placeholder );
-            }
+            mPlaceholder = placeholder;
+            Context = new RenderContext( skin, fontVariable, fontFixed );
         }
 
 
@@ -155,78 +71,124 @@ namespace MG.MDV
 
         internal void Image( string url, string alt, string title )
         {
-            Debug.Log( "TODO: <img src='" + url + "'/>" );
+            Texture tex;
+
+            if( mTextureCache.TryGetValue( url, out tex ) == false )
+            {
+                Debug.Log( $"Fetch {url}" );
+
+                tex = mPlaceholder;
+                mTextureCache[ url ] = mPlaceholder;
+            }
+
+            GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), tex );
+
+            mLineHeight = Mathf.Max( mLineHeight, tex.height );
+            mCursor.x += tex.width;
+
+            // TODO: wrap image?
         }
+
+
+        //------------------------------------------------------------------------------
 
         internal void Print( string text )
         {
-            // TODO: cache working version?
-
-            var fixedWidth = mContext.Style.IsSet( RenderStyle.FixedWidth );
-
-            mCurStyle = fixedWidth ? GUI.skin.GetStyle( "code" ) : GUI.skin.label;
-
-            var fontInfo = fixedWidth ? Fonts.Fixed : Fonts.Variable;
-            var fontSize  = 11.0f + ( mContext.Size == 0 ? 0 : 7 - mContext.Size );
-            var fontStyle = mContext.Style.IsSet( RenderStyle.Bold ) ? FontStyle.Bold : FontStyle.Normal;
-
-            if( mContext.Style.IsSet( RenderStyle.Italic ) )
-            {
-                fontStyle = (FontStyle) ( (int) fontStyle + (int) FontStyle.Italic );
-            }
-
-            mCurStyle.fontSize = (int) fontSize;
-            mCurStyle.fontStyle = fontStyle;
-
-            mCurStyle.normal.textColor = mContext.Link != null ? Color.blue : Color.black;
-
-            mLineHeight = mCurStyle.lineHeight;
-
-
-            // TODO: pre-cache
-            float space;
-            float question;
-            float advance;
-
-            fontInfo.GetAdvance( ' ', out space, fontSize, fontStyle );
-            fontInfo.GetAdvance( '?', out question, fontSize, fontStyle );
-
-            ClearWord();
+            mLineOrigin = mCursor.x;
+            mLineHeight = Context.Style.lineHeight;
 
             for( var i = 0; i < text.Length; i++ )
             {
-                var ch = text[ i ];
-
-                if( ch == '\n' )
+                if( text[ i ] == '\n' )
                 {
-                    PrintWord();
                     NewLine();
-                    continue;
-                }
-                else if( char.IsWhiteSpace( ch ) )
-                {
-                    ch = ' ';
-                }
-
-                if( fontInfo.GetAdvance( ch, out advance, fontSize, fontStyle ) )
-                {
-                    mWord.Append( ch );
-                    mWordWidth += advance;
                 }
                 else
                 {
-                    mWord.Append( '?' );
-                    mWordWidth += question;
-                }
-
-                if( ch == ' ' )
-                {
-                    PrintWord();
+                    AddCharacter( text[ i ] );
                 }
             }
 
-            PrintWord();
+            AddWord();
+            Flush(); // TODO: cause an issue with images?
         }
+
+        private void AddCharacter( char ch )
+        {
+            if( char.IsWhiteSpace( ch ) )
+            {
+                ch = ' '; // ensure any WS is treated as a space
+            }
+
+            // TODO: chains of ws chars??
+
+            float advance;
+
+            if( Context.CharacterWidth( ch, out advance ) )
+            {
+                mWord.Append( ch );
+                mWordWidth += advance;
+            }
+            else
+            {
+                throw new NotImplementedException( "TODO: handle unknown characters" );
+            }
+
+            if( ch == ' ' )
+            {
+                AddWord();
+            }
+        }
+
+        private void AddWord()
+        {
+            if( mWord.Length == 0 )
+            {
+                return;
+            }
+
+            // TODO: split long words?
+            // TODO: some safety for narrow windows!
+
+            if( mCursor.x + mWordWidth > mMarginRight )
+            {
+                NewLine();
+            }
+
+            mLine.Append( mWord.ToString() );
+            mCursor.x += mWordWidth;
+
+            mWord.Clear();
+            mWordWidth = 0.0f;
+        }
+
+        private void Flush()
+        {
+            if( mLine.Length == 0 )
+            {
+                return;
+            }
+
+            mContent.text    = mLine.ToString();
+            mContent.tooltip = Context.ToolTip;
+
+            var rect = new Rect( mLineOrigin, mCursor.y, mCursor.x - mLineOrigin, Context.Style.lineHeight );
+
+            if( string.IsNullOrWhiteSpace( Context.Link ) )
+            {
+                GUI.Label( rect, mContent, Context.Style );
+            }
+            else if( GUI.Button( rect, mContent, Context.Style ) )
+            {
+                Debug.Log( "TODO: open " + Context.Link );
+            }
+
+            mLineOrigin = mCursor.x;
+            mLine.Clear();
+        }
+
+
+        //------------------------------------------------------------------------------
 
         internal void HorizontalBreak()
         {
@@ -238,61 +200,43 @@ namespace MG.MDV
             NewLine();
         }
 
-        internal void Flush()
+        public void Prefix( string prefix )
         {
-            NewLine();
-            NewLine();
+            // TODO: better prefix!
+            Print( ( prefix ?? "  " ) + "  " );
         }
 
+        public void Indent()
+        {
+            // TODO: safety for narrow windows?
+            mMarginLeft += mIndentSize;
+        }
 
-        //------------------------------------------------------------------------------
-
+        public void Outdent()
+        {
+            mMarginLeft = Mathf.Max( mMarginLeft - mIndentSize, mContentOrigin.x );
+        }
 
         private void NewLine()
         {
+            Flush();
+
             mCursor.y += mLineHeight;
-            mCursor.x = mOrigin.x;
+            mCursor.x = mMarginLeft;
+
+            mLineOrigin = mCursor.x;
+            mLineHeight = Context.Style.lineHeight;
         }
 
-        private void ClearWord()
+        internal void FinishBlock( bool emptyLine = false )
         {
-            mWordWidth = 0.0f;
-            mWord.Clear();
-        }
+            NewLine();
 
-        private void PrintWord()
-        {
-            // TODO: some safety for narrow windows!
-
-            if( mWord.Length == 0 )
-            {
-                return;
-            }
-
-            if( mCursor.x + mWordWidth > mMaxWidth )
+            if( emptyLine )
             {
                 NewLine();
             }
-
-            // TODO: ToolTip
-            // TODO: split word?
-            var rect = new Rect( mCursor, new Vector2( mWordWidth, mLineHeight ) );
-
-            
-            if( mContext.Link == null )
-            {
-                GUI.Label( rect, mWord.ToString(), mCurStyle );
-            }
-            else if( GUI.Button( rect, mWord.ToString(), mCurStyle ) )
-            {
-                Debug.Log( "GOTO: " + mContext.Link );
-            }
-
-            mCursor.x += mWordWidth;
-
-            ClearWord();
         }
-
 
 
 
@@ -342,33 +286,27 @@ namespace MG.MDV
         ////////////////////////////////////////////////////////////////////////////////
         // setup
 
-        public RendererMarkdown()
+        public void Render( MarkdownObject document, float headerHeight )
         {
-            ObjectRenderers.Add( new RendererBlockCode() );
-            ObjectRenderers.Add( new RendererBlockList() );
-            ObjectRenderers.Add( new RendererBlockHeading() );
-            ObjectRenderers.Add( new RendererBlockHtml() );
-            ObjectRenderers.Add( new RendererBlockParagraph() );
-            ObjectRenderers.Add( new RendererBlockQuote() );
-            ObjectRenderers.Add( new RendererBlockThematicBreak() );
+            mContentOrigin.x = mPadding;
+            mContentOrigin.y = headerHeight + mPadding;
 
-            ObjectRenderers.Add( new RendererInlineLink() );
-            ObjectRenderers.Add( new RendererInlineAutoLink() );
-            ObjectRenderers.Add( new RendererInlineCode() );
-            ObjectRenderers.Add( new RendererInlineDelimiter() );
-            ObjectRenderers.Add( new RendererInlineEmphasis() );
-            ObjectRenderers.Add( new RendererInlineLineBreak() );
-            ObjectRenderers.Add( new RendererInlineHtml() );
-            ObjectRenderers.Add( new RendererInlineHtmlEntity() );
-            ObjectRenderers.Add( new RendererInlineLiteral() );
+            mCursor   = mContentOrigin;
+            mMaxWidth = Screen.width - mPadding * 2.0f;
+
+            mLineOrigin  = mContentOrigin.x;
+            mMarginLeft  = mContentOrigin.x;
+            mMarginRight = mContentOrigin.x + mMaxWidth;
+
+            Context.Reset();
+
+            Write( document );
+            FinishBlock();
         }
 
         public override object Render( MarkdownObject document )
         {
-            Write( document );
-            Flush();
-
-            return this;
+            throw new NotImplementedException();
         }
     }
 }

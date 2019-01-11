@@ -16,7 +16,7 @@ namespace MG.MDV
             renderer.Indent();
             renderer.WriteChildren( block );
             renderer.Outdent();
-            renderer.Flush();
+            renderer.FinishBlock();
         }
     }
 }

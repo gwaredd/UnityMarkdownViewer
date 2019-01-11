@@ -13,10 +13,29 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, EmphasisInline node )
         {
-            var prevStyle = renderer.Style;
-            renderer.Style = prevStyle.Set( node.IsDouble ? RenderStyle.Bold : RenderStyle.Italic );
+            bool prev = false;
+
+            if( node.IsDouble )
+            {
+                prev = renderer.Context.Bold;
+                renderer.Context.Bold = true;
+            }
+            else
+            {
+                prev = renderer.Context.Italic;
+                renderer.Context.Italic = true;
+            }
+
             renderer.WriteChildren( node );
-            renderer.Style = prevStyle;
+
+            if( node.IsDouble )
+            {
+                renderer.Context.Bold = prev;
+            }
+            else
+            {
+                renderer.Context.Italic = prev;
+            }
         }
     }
 }
