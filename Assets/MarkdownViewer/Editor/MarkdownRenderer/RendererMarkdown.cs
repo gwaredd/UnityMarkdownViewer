@@ -131,7 +131,10 @@ namespace MG.MDV
             }
             else
             {
-                throw new NotImplementedException( "TODO: handle unknown characters" );
+                // bad character
+                Context.CharacterWidth( '?', out advance );
+                mWord.Append( '?' );
+                mWordWidth += advance;
             }
 
             if( ch == ' ' )

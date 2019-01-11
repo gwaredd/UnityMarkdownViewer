@@ -116,7 +116,6 @@ namespace MG.MDV
         public string ToolTip;
         public GUIStyle Style;
 
-
         //------------------------------------------------------------------------------
 
         private Font        mFontVariable;
