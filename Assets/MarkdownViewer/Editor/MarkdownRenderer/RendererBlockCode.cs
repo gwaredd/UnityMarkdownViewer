@@ -2,7 +2,6 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax;
-using UnityEditor;
 
 namespace MG.MDV
 {
@@ -14,14 +13,12 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeBlock block )
         {
-            renderer.FlushLine();
-
-            renderer.FixedWidth = true;
-
-            // TODO: use monospace font / block ...
+            var prevStyle = renderer.Style;
+            renderer.Style = prevStyle.Set( RenderStyle.FixedWidth );
             renderer.WriteLeafRawLines( block );
+            renderer.Style = prevStyle;
 
-            renderer.FixedWidth = false;
+            renderer.Flush();
         }
     }
 }

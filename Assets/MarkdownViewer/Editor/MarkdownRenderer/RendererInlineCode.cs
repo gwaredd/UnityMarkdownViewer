@@ -13,9 +13,10 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeInline node )
         {
-            renderer.FixedWidth = true;
+            var prevStyle = renderer.Style;
+            renderer.Style = prevStyle.Set( RenderStyle.FixedWidth );
             renderer.Print( node.Content );
-            renderer.FixedWidth = false;
+            renderer.Style = prevStyle;
         }
     }
 }

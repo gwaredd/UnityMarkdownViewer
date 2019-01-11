@@ -2,7 +2,6 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax;
-using UnityEngine;
 
 namespace MG.MDV
 {
@@ -18,7 +17,7 @@ namespace MG.MDV
             renderer.WriteLeafBlockInline( block );
             renderer.Size = 0;
 
-            renderer.NewLine();
+            renderer.Flush();
         }
     }
 }

@@ -2,8 +2,6 @@
 
 using Markdig.Renderers;
 using Markdig.Syntax;
-using UnityEditor;
-using UnityEngine;
 
 namespace MG.MDV
 {
@@ -15,12 +13,16 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ListBlock block )
         {
+            renderer.Indent();
+
             for( var i = 0; i < block.Count; i++ )
             {
-                renderer.Indent( block.IsOrdered ? i.ToString() : "\u2022" );
+                renderer.Prefix( block.IsOrdered ? i.ToString() : "\u2022" );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
-                renderer.Outdent();
             }
+
+            renderer.Outdent();
+            renderer.Flush();
         }
     }
 }

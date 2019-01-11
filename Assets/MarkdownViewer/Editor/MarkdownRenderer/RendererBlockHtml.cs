@@ -14,6 +14,7 @@ namespace MG.MDV
         protected override void Write( RendererMarkdown renderer, HtmlBlock block )
         {
             renderer.WriteLeafRawLines( block );
+            renderer.Flush();
         }
     }
 }

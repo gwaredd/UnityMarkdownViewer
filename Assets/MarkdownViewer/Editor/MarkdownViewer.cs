@@ -14,6 +14,7 @@ namespace MG.MDV
     public class MarkdownViewer : Editor
     {
         public GUISkin Skin;
+        public Texture Placeholder;
 
 
         //------------------------------------------------------------------------------
@@ -134,7 +135,7 @@ namespace MG.MDV
             }
             else
             {
-                mRenderer.Init( mHeaderHeight );
+                mRenderer.Setup( mHeaderHeight, Placeholder );
                 mRenderer.Render( mDoc );
             }
         }

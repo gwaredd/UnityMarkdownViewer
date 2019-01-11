@@ -5,6 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - Skin: {fileID: 11400000, guid: 81f272e4a921a5448a30c0e40b4ea003, type: 2}
+  - Placeholder: {fileID: 2800000, guid: ac69bfe862836584bb133bd89a459530, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
