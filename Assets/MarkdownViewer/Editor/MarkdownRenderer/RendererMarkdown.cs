@@ -6,6 +6,7 @@ using Markdig.Syntax.Inlines;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace MG.MDV
@@ -17,12 +18,10 @@ namespace MG.MDV
     public class RendererMarkdown : RendererBase
     {
         public RenderContext Context;
+        public float         ViewWidth = 100.0f;
 
-        float           mPadding    = 8.0f;
+
         float           mIndentSize = 20.0f;
-
-        float           mMaxWidth   = 100.0f;
-        Vector2         mContentOrigin;
 
         //
         Vector2         mCursor;
@@ -133,7 +132,7 @@ namespace MG.MDV
             {
                 ch = ' '; // ensure any WS is treated as a space
             }
-
+            
             // TODO: chains of ws chars??
 
             float advance;
@@ -239,7 +238,7 @@ namespace MG.MDV
 
         public void Outdent()
         {
-            mMarginLeft = Mathf.Max( mMarginLeft - mIndentSize, mContentOrigin.x );
+            mMarginLeft = Mathf.Max( mMarginLeft - mIndentSize, 0.0f );
         }
 
         private void NewLine()
@@ -338,27 +337,19 @@ namespace MG.MDV
         ////////////////////////////////////////////////////////////////////////////////
         // setup
 
-        public void Render( MarkdownObject document, float headerHeight )
+        public override object Render( MarkdownObject document )
         {
-            mContentOrigin.x = mPadding;
-            mContentOrigin.y = headerHeight + mPadding;
-
-            mCursor   = mContentOrigin;
-            mMaxWidth = Screen.width - mPadding * 2.0f;
-
-            mLineOrigin  = mContentOrigin.x;
-            mMarginLeft  = mContentOrigin.x;
-            mMarginRight = mContentOrigin.x + mMaxWidth;
+            mCursor      = Vector2.zero;
+            mLineOrigin  = 0.0f;
+            mMarginLeft  = 0.0f;
+            mMarginRight = ViewWidth;
 
             Context.Reset();
 
             Write( document );
             FinishBlock();
-        }
 
-        public override object Render( MarkdownObject document )
-        {
-            throw new NotImplementedException();
+            return this;
         }
     }
 }

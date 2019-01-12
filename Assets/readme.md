@@ -9,6 +9,7 @@
 * compare with known good renderer
 * tables / grids!
 * test what happens when we have multiple TextAsset editors ...
+* scroll view for large files ...
 
 # Documentation
 ------------------------------------------------------------------------------

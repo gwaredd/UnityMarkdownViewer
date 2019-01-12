@@ -282,11 +282,20 @@ namespace MG.MDV
             GUI.skin    = Skin;
             GUI.enabled = true;
 
+            var padding    = 8.0f;
+            var buttonSize = 20.0f;
+
+            // clear background
+
             GUI.DrawTexture( new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
-            var size    = 20.0f;
-            var padding = 8.0f;
-            mRaw = GUI.Toggle( new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size ), mRaw, "" );
+
+            // draw buttons
+
+            mRaw = GUI.Toggle( new Rect( Screen.width - padding - buttonSize, mHeaderHeight + padding, buttonSize, buttonSize ), mRaw, "" );
+
+
+            // draw content
 
             if( mRaw )
             {
@@ -300,7 +309,14 @@ namespace MG.MDV
             }
             else
             {
-                mRenderer.Render( mDoc, mHeaderHeight );
+                var contentRect = new Rect( padding, mHeaderHeight + padding, Screen.width - padding * 2.0f, Screen.height - mHeaderHeight - padding * 2.0f );
+                
+                GUI.BeginGroup( contentRect );
+
+                mRenderer.ViewWidth = contentRect.width;
+                mRenderer.Render( mDoc );
+
+                GUI.EndGroup();
             }
         }
     }
