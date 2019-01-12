@@ -3,10 +3,8 @@
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using UnityEditor;
 using UnityEngine;
 
 namespace MG.MDV
@@ -261,8 +259,6 @@ namespace MG.MDV
                 NewLine();
             }
         }
-
-
 
 
 

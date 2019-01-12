@@ -289,6 +289,7 @@ namespace MG.MDV
 
             GUI.DrawTexture( new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
+            // TODO: recalc scroll pos when swapping between modes ...
 
             // draw buttons
 
@@ -312,6 +313,7 @@ namespace MG.MDV
                 var contentRect = new Rect( padding, mHeaderHeight + padding, Screen.width - padding * 2.0f, Screen.height - mHeaderHeight - padding * 2.0f );
                 
                 GUI.BeginGroup( contentRect );
+                //GUI.BeginScrollView( Rect, position, Rect );
 
                 mRenderer.ViewWidth = contentRect.width;
                 mRenderer.Render( mDoc );
