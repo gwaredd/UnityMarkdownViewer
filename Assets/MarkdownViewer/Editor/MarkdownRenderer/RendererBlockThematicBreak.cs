@@ -13,7 +13,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ThematicBreakBlock block )
         {
-            renderer.HorizontalBreak();
+            renderer.Layout.HorizontalLine();
             renderer.FinishBlock();
         }
     }

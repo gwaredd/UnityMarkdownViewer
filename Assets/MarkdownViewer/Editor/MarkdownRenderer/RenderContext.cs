@@ -5,144 +5,110 @@ using UnityEngine;
 
 namespace MG.MDV
 {
-    public class RenderContext
+    public interface IRenderContext
     {
-        private void UpdateStyle()
-        {
-            if( mBold )
-            {
-                Style.fontStyle = mItalic ? FontStyle.BoldAndItalic : FontStyle.Bold;
-            }
-            else
-            {
-                Style.fontStyle = mItalic ? FontStyle.Italic : FontStyle.Normal;
-            }
-        }
+        bool     GetCharacter( char inChar, out char outChar, out float outWidth );
+        GUIStyle Apply( LayoutStyle style );
+        void     Reset();
+    }
 
-        bool mBold = false;
 
-        public bool Bold
-        {
-            get
-            {
-                return mBold;
-            }
+    ////////////////////////////////////////////////////////////////////////////////
 
-            set
-            {
-                mBold = value;
-                UpdateStyle();
-            }
-        }
-
-        bool mItalic = false;
-
-        public bool Italic
-        {
-            get
-            {
-                return mItalic;
-            }
-
-            set
-            {
-                mItalic = value;
-                UpdateStyle();
-            }
-        }
-
-        bool mFixed = false;
-
-        public bool Fixed
-        {
-            get
-            {
-                return mFixed;
-            }
-
-            set
-            {
-                mFixed = value;
-
-                if( mFixed )
-                {
-                    Style.font = mFontFixed;
-                    mFontInfo = Fonts.Fixed;
-                }
-                else
-                {
-                    Style.font = mFontVariable;
-                    mFontInfo = Fonts.Variable;
-                }
-            }
-        }
-
-        float[] mSizes    = new float[7] { 11, 20, 18, 16, 14, 13, 12 };
-        float   mFontSize = 11.0f;
-        int     mSize     = 0;
-
-        public int Size
-        {
-            get
-            {
-                return mSize;
-            }
-
-            set
-            {
-                mSize     = Mathf.Clamp( value, 0, mSizes.Length );
-                mFontSize = mSizes[ mSize ];
-
-                Style.fontSize = (int) mFontSize;
-            }
-        }
-
-        string mLink = null;
-
-        public string Link
-        {
-            get
-            {
-                return mLink;
-            }
-
-            set
-            {
-                mLink = value;
-                Style.normal.textColor = string.IsNullOrEmpty( mLink ) ? Color.black : Color.blue;
-            }
-        }
-
-        public string ToolTip;
-        public GUIStyle Style;
-
-        //------------------------------------------------------------------------------
-
+    public class RenderContext : IRenderContext
+    {
+        private GUIStyle    mStyle;
         private Font        mFontVariable;
         private Font        mFontFixed;
         private FontInfo    mFontInfo;
 
+        private bool        mFixed    = false;
+        private int         mSize     = 0;
+        private float       mFontSize = 11.0f;
+
         public RenderContext( GUISkin skin, Font fontVariable, Font fontFixed )
         {
-            Style = new GUIStyle( skin.label );
-            mFontVariable  = fontVariable;
-            mFontFixed     = fontFixed;
+            mStyle        = new GUIStyle( skin.label );
+            mFontVariable = fontVariable;
+            mFontFixed    = fontFixed;
+            mFontSize     = mStyle.fontSize;
+            mFontInfo     = Fonts.Variable;
+            mFixed        = false;
         }
 
-        internal bool CharacterWidth( char ch, out float advance )
+        public void Reset()
         {
-            return mFontInfo.GetAdvance( ch, out advance, mFontSize, Style.fontStyle );
+            Apply( new LayoutStyle() );
         }
 
-        internal void Reset()
+
+        //------------------------------------------------------------------------------
+
+        public bool GetCharacter( char inChar, out char outChar, out float outWidth )
         {
-            Bold    = false;
-            Italic  = false;
-            Fixed   = false;
-            Size    = 0;
-            Link    = null;
-            ToolTip = null;
+            outWidth = 0.0f;
+            outChar  = inChar;
+
+            // chars to ignore
+
+            if( inChar == '\r' )
+            {
+                return false;
+            }
+
+            // chars to covert
+
+            if( char.IsWhiteSpace( inChar ) )
+            {
+                outChar = ' ';
+            }
+
+            // lookup glyph from font
+
+            if( mFontInfo.GetAdvance( inChar, out outWidth, mFontSize, mStyle.fontStyle ) == false )
+            {
+                // if glyph not found
+
+                outChar = '?';
+                mFontInfo.GetAdvance( '?', out outWidth, mFontSize, mStyle.fontStyle );
+            }
+
+            return true;
+        }
+
+
+        //------------------------------------------------------------------------------
+
+        float[] mHeaderSizeToFontSize = new float[7] { 11, 20, 18, 16, 14, 13, 12 };
+
+        public GUIStyle Apply( LayoutStyle style )
+        {
+            if( style.Bold )
+            {
+                mStyle.fontStyle = style.Italic ? FontStyle.BoldAndItalic : FontStyle.Bold;
+            }
+            else
+            {
+                mStyle.fontStyle = style.Italic ? FontStyle.Italic : FontStyle.Normal;
+            }
+
+            mStyle.normal.textColor = style.Link ? Color.blue : Color.black;
+
+            if( mSize != style.Size )
+            {
+                mSize           = style.Size;
+                mFontSize       = mHeaderSizeToFontSize[ mSize ];
+                mStyle.fontSize = (int) mFontSize;
+            }
+
+            if( style.Fixed != mFixed )
+            {
+                mFixed      = style.Fixed;
+                mStyle.font = mFixed ? mFontFixed : mFontVariable;
+                mFontInfo   = mFixed ? Fonts.Fixed : Fonts.Variable;
+            }
+
+            return mStyle;
         }
     }
 }
-

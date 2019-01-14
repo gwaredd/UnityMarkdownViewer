@@ -11,7 +11,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, DelimiterInline node )
         {
-            renderer.Print( node.ToLiteral() );
+            renderer.Text( node.ToLiteral() );
             renderer.WriteChildren( node );
         }
     }

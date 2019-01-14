@@ -17,24 +17,24 @@ namespace MG.MDV
 
             if( node.IsDouble )
             {
-                prev = renderer.Context.Bold;
-                renderer.Context.Bold = true;
+                prev = renderer.Style.Bold;
+                renderer.Style.Bold = true;
             }
             else
             {
-                prev = renderer.Context.Italic;
-                renderer.Context.Italic = true;
+                prev = renderer.Style.Italic;
+                renderer.Style.Italic = true;
             }
 
             renderer.WriteChildren( node );
 
             if( node.IsDouble )
             {
-                renderer.Context.Bold = prev;
+                renderer.Style.Bold = prev;
             }
             else
             {
-                renderer.Context.Italic = prev;
+                renderer.Style.Italic = prev;
             }
         }
     }

@@ -13,7 +13,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, HtmlEntityInline node )
         {
-            renderer.Print( node.Original.ToString() );
+            renderer.Text( node.Original.ToString() );
         }
     }
 }

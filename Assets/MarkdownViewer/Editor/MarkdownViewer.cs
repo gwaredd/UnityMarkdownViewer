@@ -254,6 +254,8 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        RenderContext mContext;
+
         void ParseDocument()
         {
             if( mDoc != null )
@@ -261,11 +263,11 @@ namespace MG.MDV
                 return;
             }
 
-            var context = new RenderContext( Skin, FontVariable, FontFixed );
+            mContext = new RenderContext( Skin, FontVariable, FontFixed );
 
             // TODO: look at pipeline options ...
             mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            mRenderer = new RendererMarkdown( this, context );
+            mRenderer = new RendererMarkdown();
             mPipeline.Setup( mRenderer );
 
 
@@ -312,11 +314,15 @@ namespace MG.MDV
             {
                 var contentRect = new Rect( padding, mHeaderHeight + padding, Screen.width - padding * 2.0f, Screen.height - mHeaderHeight - padding * 2.0f );
                 
-                GUI.BeginGroup( contentRect );
-                //GUI.BeginScrollView( Rect, position, Rect );
+                GUI.BeginGroup( contentRect ); // clipping ...
+                //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
 
-                mRenderer.ViewWidth = contentRect.width;
+                // TODO: cache parse vs render steps!?
+
+                mRenderer.Layout = new Layout( contentRect.width, mContext, this ); // TODO: better init
+
                 mRenderer.Render( mDoc );
+                mRenderer.Layout.Draw();
 
                 GUI.EndGroup();
             }

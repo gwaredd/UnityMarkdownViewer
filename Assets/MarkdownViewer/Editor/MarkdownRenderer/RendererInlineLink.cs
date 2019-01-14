@@ -17,24 +17,24 @@ namespace MG.MDV
 
             if( node.IsImage )
             {
-                renderer.Image( url, renderer.GetContents( node ), node.Title );
-                return;
+                renderer.Layout.Image( url, renderer.GetContents( node ), node.Title );
             }
-
-
-            renderer.Context.Link = url;
-
-            if( string.IsNullOrEmpty( node.Title ) == false )
+            else
             {
-                renderer.Context.ToolTip = node.Title;
+                renderer.Link = url;
+
+                if( string.IsNullOrEmpty( node.Title ) == false )
+                {
+                    renderer.ToolTip = node.Title;
+                }
+
+                renderer.WriteChildren( node );
+
+                // TODO: push and pop context?
+
+                renderer.ToolTip = null;
+                renderer.Link    = null;
             }
-
-            renderer.WriteChildren( node );
-
-            // TODO: push and pop context?
-
-            renderer.Context.ToolTip = null;
-            renderer.Context.Link    = null;
         }
     }
 }

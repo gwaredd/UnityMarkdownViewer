@@ -13,10 +13,10 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, CodeBlock block )
         {
-            var prevStyle = renderer.Context.Fixed;
-            renderer.Context.Fixed = true;
+            var prevStyle = renderer.Style.Fixed;
+            renderer.Style.Fixed = true;
             renderer.WriteLeafRawLines( block );
-            renderer.Context.Fixed = prevStyle;
+            renderer.Style.Fixed = prevStyle;
 
             renderer.FinishBlock();
         }

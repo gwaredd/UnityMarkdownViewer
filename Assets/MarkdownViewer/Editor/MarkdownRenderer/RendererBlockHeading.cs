@@ -13,10 +13,10 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, HeadingBlock block )
         {
-            var prevStyle = renderer.Context.Size;
-            renderer.Context.Size = block.Level;
+            var prevStyle = renderer.Style.Size;
+            renderer.Style.Size = block.Level;
             renderer.WriteLeafBlockInline( block );
-            renderer.Context.Size = prevStyle;
+            renderer.Style.Size = prevStyle;
 
             renderer.FinishBlock();
         }

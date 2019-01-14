@@ -14,9 +14,9 @@ namespace MG.MDV
         protected override void Write( RendererMarkdown renderer, AutolinkInline node )
         {
             // TODO: node.IsEmail
-            renderer.Context.Link = node.Url;
-            renderer.Print( node.Url );
-            renderer.Context.Link = null;
+            renderer.Link = node.Url;
+            renderer.Text( node.Url );
+            renderer.Link = null;
         }
     }
 }

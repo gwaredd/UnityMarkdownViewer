@@ -14,7 +14,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, HtmlInline node )
         {
-            renderer.Print( node.Tag );
+            renderer.Text( node.Tag );
         }
     }
 }

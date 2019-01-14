@@ -1,11 +1,9 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
+using System;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using System.Text;
-using System.Text.RegularExpressions;
-using UnityEngine;
 
 namespace MG.MDV
 {
@@ -15,32 +13,39 @@ namespace MG.MDV
 
     public class RendererMarkdown : RendererBase
     {
-        public RenderContext Context;
-        public float         ViewWidth = 100.0f;
+        internal Layout      Layout;
+        internal LayoutStyle Style   = new LayoutStyle();
+        internal string      ToolTip = null;
 
+        private string mLink = null;
 
-        float           mIndentSize = 20.0f;
-
-        //
-        Vector2         mCursor;
-        float           mMarginLeft;
-        float           mMarginRight;
-        float           mLineOrigin;
-        float           mLineHeight;
-
-        float           mWordWidth = 0.0f;
-        StringBuilder   mWord      = new StringBuilder();
-        StringBuilder   mLine      = new StringBuilder();
-
-        GUIContent      mContent   = new GUIContent();
-        IActionHandlers mActions   = null;
-
-
-        public RendererMarkdown( IActionHandlers imageFetcher, RenderContext context )
+        internal string Link
         {
-            Context  = context;
-            mActions = imageFetcher;
+            get
+            {
+                return mLink;
+            }
 
+            set
+            {
+                mLink = value;
+                Style.Link = !string.IsNullOrEmpty( mLink );
+            }
+        }
+
+        internal void Text( string text ) { Layout.Text( text, Style, Link, ToolTip ); }
+
+
+        //------------------------------------------------------------------------------
+
+        public override object Render( MarkdownObject document )
+        {
+            Write( document );
+            return this;
+        }
+
+        public RendererMarkdown()
+        {
             ObjectRenderers.Add( new RendererBlockCode() );
             ObjectRenderers.Add( new RendererBlockList() );
             ObjectRenderers.Add( new RendererBlockHeading() );
@@ -61,213 +66,8 @@ namespace MG.MDV
         }
 
 
-        //------------------------------------------------------------------------------
-
-        internal void Image( string url, string alt, string title )
-        {
-            Flush(); // TODO: need to "park" current segment until whole line in complete
-
-            // TODO: test relative / project url's
-            // TODO: support image resizing?
-
-            var tex = mActions.FetchImage( url );
-
-            if( tex == null )
-            {
-                if( string.IsNullOrEmpty( alt ) )
-                {
-                    Print( $"[{url}]" );
-                }
-                else
-                {
-                    Print( $"[{alt}]" );
-                }
-
-                return;
-            }
-
-            mContent.text    = null;
-            mContent.image   = tex;
-            mContent.tooltip = title ?? alt;
-
-            if( mCursor.x + tex.width > mMarginRight )
-            {
-                NewLine();
-            }
-
-            GUI.Label( new Rect( mCursor.x, mCursor.y, tex.width, tex.height ), mContent );
-
-            mLineHeight = Mathf.Max( mLineHeight, tex.height );
-            mCursor.x += tex.width;
-        }
-
-
-        //------------------------------------------------------------------------------
-
-        internal void Print( string text )
-        {
-            mLineOrigin = mCursor.x;
-
-            for( var i = 0; i < text.Length; i++ )
-            {
-                if( text[ i ] == '\n' )
-                {
-                    NewLine();
-                }
-                else
-                {
-                    AddCharacter( text[ i ] );
-                }
-            }
-
-            AddWord();
-            Flush(); // TODO: cause an issue with images?
-        }
-
-        private void AddCharacter( char ch )
-        {
-            if( char.IsWhiteSpace( ch ) )
-            {
-                ch = ' '; // ensure any WS is treated as a space
-            }
-            
-            // TODO: chains of ws chars??
-
-            float advance;
-
-            if( Context.CharacterWidth( ch, out advance ) )
-            {
-                mWord.Append( ch );
-                mWordWidth += advance;
-            }
-            else
-            {
-                // bad character
-                Context.CharacterWidth( '?', out advance );
-                mWord.Append( '?' );
-                mWordWidth += advance;
-            }
-
-            if( ch == ' ' )
-            {
-                AddWord();
-            }
-        }
-
-        private void AddWord()
-        {
-            if( mWord.Length == 0 )
-            {
-                return;
-            }
-
-            // TODO: split long words?
-            // TODO: some safety for narrow windows!
-
-            if( mCursor.x + mWordWidth > mMarginRight )
-            {
-                NewLine();
-            }
-
-            mLine.Append( mWord.ToString() );
-            mCursor.x += mWordWidth;
-
-            mWord.Clear();
-            mWordWidth = 0.0f;
-        }
-
-        private void Flush()
-        {
-            if( mLine.Length == 0 )
-            {
-                return;
-            }
-
-            mContent.text    = mLine.ToString();
-            mContent.image   = null;
-            mContent.tooltip = Context.ToolTip;
-
-            var rect = new Rect( mLineOrigin, mCursor.y, mCursor.x - mLineOrigin, Context.Style.lineHeight );
-
-            if( string.IsNullOrWhiteSpace( Context.Link ) )
-            {
-                GUI.Label( rect, mContent, Context.Style );
-            }
-            else if( GUI.Button( rect, mContent, Context.Style ) )
-            {
-                if( Regex.IsMatch( Context.Link, @"^\w+:", RegexOptions.Singleline ) )
-                {
-                    Application.OpenURL( Context.Link );
-                }
-                else
-                {
-                    mActions.SelectPage( Context.Link );
-                }
-            }
-
-            mLineOrigin = mCursor.x;
-            mLine.Clear();
-        }
-
-
-        //------------------------------------------------------------------------------
-
-        internal void HorizontalBreak()
-        {
-            NewLine();
-
-            var rect = new Rect( mCursor, new Vector2( Screen.width - 50.0f, 1.0f ) );
-            GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
-
-            NewLine();
-        }
-
-        public void Prefix( string prefix )
-        {
-            // TODO: better prefix!
-            Print( ( prefix ?? "  " ) + "  " );
-        }
-
-        public void Indent()
-        {
-            // TODO: safety for narrow windows?
-            mMarginLeft += mIndentSize;
-        }
-
-        public void Outdent()
-        {
-            mMarginLeft = Mathf.Max( mMarginLeft - mIndentSize, 0.0f );
-        }
-
-        private void NewLine()
-        {
-            Flush();
-
-            mCursor.y += mLineHeight;
-            mCursor.x = mMarginLeft;
-
-            mLineOrigin = mCursor.x;
-            mLineHeight = Context.Style.lineHeight;
-        }
-
-        internal void FinishBlock( bool emptyLine = false )
-        {
-            NewLine();
-
-            if( emptyLine )
-            {
-                NewLine();
-            }
-        }
-
-
-
         ////////////////////////////////////////////////////////////////////////////////
-        // utils
 
-        /// <summary>
-        /// Output child nodes inline
-        /// </summary>
         /// <see cref="Markdig.Renderers.TextRendererBase.WriteLeafInline"/>
 
         internal void WriteLeafBlockInline( LeafBlock block )
@@ -298,7 +98,8 @@ namespace MG.MDV
 
             for( int i = 0; i < lines.Count; i++ )
             {
-                Print( slices[ i ].ToString() + "\n" );
+                Text( slices[ i ].ToString() );
+                Layout.NewLine();
             }
         }
 
@@ -329,23 +130,14 @@ namespace MG.MDV
             return content;
         }
 
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // setup
-
-        public override object Render( MarkdownObject document )
+        internal void FinishBlock( bool emptyLine = false )
         {
-            mCursor      = Vector2.zero;
-            mLineOrigin  = 0.0f;
-            mMarginLeft  = 0.0f;
-            mMarginRight = ViewWidth;
+            Layout.NewLine();
 
-            Context.Reset();
-
-            Write( document );
-            FinishBlock();
-
-            return this;
+            if( emptyLine )
+            {
+                Layout.NewLine();
+            }
         }
     }
 }
