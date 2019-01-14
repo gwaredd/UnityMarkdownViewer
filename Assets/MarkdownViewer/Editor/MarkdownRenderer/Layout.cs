@@ -305,12 +305,12 @@ namespace MG.MDV
         LayoutStyle mLayoutStyle = new LayoutStyle();
         GUIStyle    mGUIStyle    = null;
 
-        public LayoutStyle CurrentStyle { get { return mLayoutStyle; } }
-        public float CurrentLineHeight { get { return mGUIStyle.lineHeight; } }
-        public float CurrentContainerWidth { get { return mCurrentCol.Width; } }
-        public float CurrentIndent { get; private set; }
-        public string ContextTooltip { get; private set; }
-        public string ContextLink { get; private set; }
+        public LayoutStyle  CurrentStyle          { get { return mLayoutStyle; } }
+        public float        CurrentLineHeight     { get { return mGUIStyle.lineHeight; } }
+        public float        CurrentContainerWidth { get { return mCurrentCol.Width; } }
+        public float        CurrentIndent         { get; private set; }
+        public string       ContextTooltip        { get; private set; }
+        public string       ContextLink           { get; private set; }
 
 
         //------------------------------------------------------------------------------
