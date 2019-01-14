@@ -63,9 +63,18 @@ namespace MG.MDV
                 return;
             }
 
-            if( mLines.Count == 0 || mLines.Last().Width + seg.Width > MaxWidth )
+            if( mLines.Count == 0 )
             {
                 NewLine();
+            }
+            else
+            {
+                var curWidth = mLines.Last().Width;
+
+                if( curWidth + seg.Width > MaxWidth )
+                {
+                    NewLine();
+                }
             }
 
             mLines.Last().Add( seg );
@@ -109,6 +118,7 @@ namespace MG.MDV
         public void Add( LayoutSegment seg )
         {
             mSegments.Add( seg );
+            Width += seg.Width;
             Height = Mathf.Max( Height, seg.Height );
         }
 
@@ -317,9 +327,9 @@ namespace MG.MDV
 
         public void Text( string text, LayoutStyle style, string link, string toolTip )
         {
-            mGUIStyle = mContext.Apply( style );
-            mLayoutStyle = style;
-            ContextLink = link;
+            mGUIStyle      = mContext.Apply( style );
+            mLayoutStyle   = style;
+            ContextLink    = link;
             ContextTooltip = toolTip;
 
             mSegmentBuilder.Print( mLayoutStyle, text );
