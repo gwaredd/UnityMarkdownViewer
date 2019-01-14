@@ -317,6 +317,7 @@ namespace MG.MDV
                 GUI.BeginGroup( contentRect ); // clipping ...
                 //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
 
+
                 // TODO: cache parse vs render steps!?
 
                 mRenderer.Layout = new Layout( contentRect.width, mContext, this ); // TODO: better init
