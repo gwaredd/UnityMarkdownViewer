@@ -65,6 +65,8 @@ namespace MG.MDV
 
             // lookup glyph from font
 
+#warning TODO: replace with GUIStyle.CalcSize!
+
             if( mFontInfo.GetAdvance( inChar, out outWidth, mFontSize, mStyle.fontStyle ) == false )
             {
                 // if glyph not found

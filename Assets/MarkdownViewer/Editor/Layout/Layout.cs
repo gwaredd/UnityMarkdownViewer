@@ -171,6 +171,10 @@ namespace MG.MDV
             Size.y        = layout.CurrentLineHeight;
             mStyle        = layout.CurrentStyle;
             mContent.text = text;
+
+#warning TODO: use GUIStyle.CalcSize!
+            //GUIStyle x;
+            //x.CalcSize( mContent )
         }
 
         public override void Draw( Vector2 pos )
