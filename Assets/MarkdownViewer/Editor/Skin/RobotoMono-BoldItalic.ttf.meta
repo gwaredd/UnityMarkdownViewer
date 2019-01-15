@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dd6e71ff3f507ad47bc2ac0db94b2992
+guid: f751f5187a28f334eb77d972a82ab864
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -18,7 +18,9 @@ TrueTypeFontImporter:
   - {fileID: 12800000, guid: 7ae35498add8de149b26049ac4595fdc, type: 3}
   - {fileID: 12800000, guid: 8c9401e811378124db1833a93ec31eca, type: 3}
   - {fileID: 12800000, guid: aa763b9e8326465478c1036db4c1cd97, type: 3}
+  - {fileID: 12800000, guid: eda4c81ff41637a409d3095691ea55a7, type: 3}
   - {fileID: 12800000, guid: c901c95f184ab4f4b9717ce3de013054, type: 3}
+  - {fileID: 12800000, guid: dd6e71ff3f507ad47bc2ac0db94b2992, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
