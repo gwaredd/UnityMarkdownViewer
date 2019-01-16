@@ -14,8 +14,8 @@ namespace MG.MDV
         private bool        mFixed  = false;
         private int         mSize   = 0;
 
-
-        public GUIStyle Active { get { return mStyleGUI; } }
+        public StyleConfig  Config { get { return mConfig; } }
+        public GUIStyle     Active { get { return mStyleGUI; } }
 
         public StyleCache( GUIStyle style, StyleConfig config )
         {
@@ -53,7 +53,7 @@ namespace MG.MDV
 //             if( mSize != style.Size )
             {
                 mSize = style.Size;
-                mStyleGUI.fontSize = (int) mConfig.GetSize( mSize );
+                mStyleGUI.fontSize = (int) mConfig.GetFontSize( mSize );
             }
 
             if( style.Fixed != mFixed )

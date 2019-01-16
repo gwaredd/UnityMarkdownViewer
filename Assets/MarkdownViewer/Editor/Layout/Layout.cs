@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -96,14 +97,15 @@ namespace MG.MDV
 
         public override void Draw( Context context )
         {
-            GUI.Label( Rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
+            var rect = new Rect( Rect.position.x, Rect.center.y, Rect.width, 1.0f );
+            GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
         public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             Rect.position = pos;
             Rect.width    = maxWidth;
-            Rect.height   = 1.0f;
+            Rect.height   = 10.0f;
 
             return Rect.size;
         }
@@ -155,6 +157,11 @@ namespace MG.MDV
 
             mContent.ForEach( c => c.Update( context ) );
 
+            var marginBottom = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).x );
+            var marginTop    = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).y );
+
+            pos.y += marginTop;
+
             var rowWidth   = mContent[0].Width;
             var rowHeight  = mContent[0].Height;
             var startIndex = 0;
@@ -171,7 +178,6 @@ namespace MG.MDV
                     startIndex = i;
                     rowWidth   = cnt.Width;
                     rowHeight  = cnt.Height;
-
                 }
                 else
                 {
@@ -185,6 +191,8 @@ namespace MG.MDV
                 LayoutRow( pos, startIndex, mContent.Count, rowHeight );
                 pos.y += rowHeight;
             }
+
+            pos.y += marginBottom;
 
             return new Vector2( maxWidth, pos.y - origin.y );
         }
