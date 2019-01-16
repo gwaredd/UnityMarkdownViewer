@@ -17,7 +17,7 @@ namespace MG.MDV
 
             for( var i = 0; i < block.Count; i++ )
             {
-                renderer.Layout.Prefix( block.IsOrdered ? i.ToString() : "\u2022" );
+                renderer.Layout.Prefix( block.IsOrdered ? i.ToString() + "." : "\u2022", renderer.Style );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
             }
 

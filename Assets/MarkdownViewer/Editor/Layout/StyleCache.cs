@@ -15,15 +15,17 @@ namespace MG.MDV
         private int         mSize   = 0;
 
 
+        public GUIStyle Active { get { return mStyleGUI; } }
+
         public StyleCache( GUIStyle style, StyleConfig config )
         {
             mStyleGUI = new GUIStyle( style );
             mConfig   = config;
         }
 
-        public void Reset()
+        public GUIStyle Reset()
         {
-            Apply( new Style() );
+            return Apply( new Style() );
         }
 
 

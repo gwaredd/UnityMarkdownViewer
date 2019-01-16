@@ -12,17 +12,25 @@ namespace MG.MDV
      * Layout
      ******************************************************************************/
 
+    public class Context
+    {
+        public StyleCache       Style;
+        public IActionHandlers  Action;
+
+        public GUIStyle Apply( Style style ) { return Style.Apply( style ); }
+    }
+
     public class Container
     {
         public List<Row> Rows = new List<Row>();
 
-        public Vector2 Layout( Vector2 pos, float maxWidth )
+        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var row in Rows )
             {
-                var size = row.Layout( pos, maxWidth );
+                var size = row.Layout( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -36,13 +44,13 @@ namespace MG.MDV
     {
         public List<Col> Cols = new List<Col>();
 
-        public Vector2 Layout( Vector2 pos, float maxWidth )
+        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var col in Cols )
             {
-                var size = col.Layout( pos, maxWidth );
+                var size = col.Layout( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -58,20 +66,13 @@ namespace MG.MDV
 
         public bool IsEmpty { get { return Blocks.Count == 0; } }
 
-        public Block NewBlock( float indent )
-        {
-            var block = new Block( indent );
-            Blocks.Add( block );
-            return block;
-        }
-
-        public Vector2 Layout( Vector2 pos, float maxWidth )
+        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var block in Blocks )
             {
-                var size = block.Layout( pos, maxWidth );
+                var size = block.Layout( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -81,43 +82,86 @@ namespace MG.MDV
 
     //------------------------------------------------------------------------------
 
-    public class Block
+    public abstract class Block
     {
-        public float         Indent  = 0.0f;
-        public string        Prefix  = null;
-        public List<Content> Content = new List<Content>();
+        protected float mIndent  = 0.0f;
 
-        public Block( float indent )
+        public abstract Vector2 Layout( Context context, Vector2 pos, float maxWidth );
+        public abstract void Draw( Context context );
+    }
+
+    public class BlockLine : Block
+    {
+        private Rect Rect = new Rect();
+
+        public override void Draw( Context context )
         {
-            Indent = indent;
+            GUI.Label( Rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
-        public Vector2 Layout( Vector2 pos, float maxWidth )
+        public override Vector2 Layout( Context context, Vector2 pos, float maxWidth )
         {
-            if( Content.Count == 0 )
+            Rect.position = pos;
+            Rect.width    = maxWidth;
+            Rect.height   = 1.0f;
+
+            return Rect.size;
+        }
+    }
+
+    public class BlockContent : Block
+    {
+        Content       mPrefix  = null;
+        List<Content> mContent = new List<Content>();
+
+        public BlockContent( float indent )
+        {
+            mIndent = indent;
+        }
+
+        public void Add( Content content )
+        {
+            mContent.Add( content );
+        }
+
+        public void Prefix( Content content )
+        {
+            mPrefix = content;
+        }
+
+        public override Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        {
+            var origin = pos;
+
+            pos.x += mIndent;
+            maxWidth -= mIndent;
+
+            Assert.IsTrue( maxWidth > 0.0f ); // TODO: handle narrow windows!
+
+            // prefix
+
+            if( mPrefix != null )
+            {
+                mPrefix.Location.x = pos.x - 20.0f; // IndentSize  / 2.0f
+                mPrefix.Location.y = pos.y;
+            }
+
+            // content
+
+            if( mContent.Count == 0 )
             {
                 return Vector2.zero;
             }
 
-            var origin = pos;
+            mContent.ForEach( c => c.UpdateLayout( context ) );
 
-            pos.x    += Indent;
-            maxWidth -= Indent;
-
-            Assert.IsTrue( maxWidth > 0.0f ); // TODO: handle narrow windows!
-
-            if( !string.IsNullOrEmpty( Prefix ) )
-            {
-                Debug.LogWarning( "TODO: Prefix" );
-            }
-
-            var rowWidth   = Content[0].Width;
-            var rowHeight  = Content[0].Height;
+            var rowWidth   = mContent[0].Width;
+            var rowHeight  = mContent[0].Height;
             var startIndex = 0;
 
-            for( var i = 1; i < Content.Count; i++ )
+            for( var i = 1; i < mContent.Count; i++ )
             {
-                var cnt = Content[i];
+                var cnt = mContent[i];
 
                 if( rowWidth + cnt.Width > maxWidth )
                 {
@@ -136,9 +180,9 @@ namespace MG.MDV
                 }
             }
 
-            if( startIndex < Content.Count )
+            if( startIndex < mContent.Count )
             {
-                LayoutRow( pos, startIndex, Content.Count, rowHeight );
+                LayoutRow( pos, startIndex, mContent.Count, rowHeight );
                 pos.y += rowHeight;
             }
 
@@ -149,7 +193,7 @@ namespace MG.MDV
         {
             for( var i = from; i < until; i++ )
             {
-                var cnt = Content[i];
+                var cnt = mContent[i];
 
                 cnt.Location.x = pos.x;
                 cnt.Location.y = pos.y + rowHeight - cnt.Height;
@@ -157,19 +201,25 @@ namespace MG.MDV
                 pos.x += cnt.Width;
             }
         }
+
+        public override void Draw( Context context  )
+        {
+            mContent.ForEach( c => c.Draw( context ) );
+            mPrefix?.Draw( context );
+        }
     }
 
     //------------------------------------------------------------------------------
 
-    public class Content
+    public abstract class Content
     {
         public Rect         Location;
         public Style        Style;
         public GUIContent   Payload;
         public string       Link;
 
-        public float    Width    { get { return Location.width;  } }
-        public float    Height   { get { return Location.height; } }
+        public float Width  { get { return Location.width; } }
+        public float Height { get { return Location.height; } }
 
         public Content( GUIContent payload, Style style, string link )
         {
@@ -178,7 +228,7 @@ namespace MG.MDV
             Link    = link;
         }
 
-        public void Draw( StyleCache context, IActionHandlers handlers )
+        public void Draw( Context context )
         {
             if( string.IsNullOrEmpty( Link ) )
             {
@@ -192,9 +242,47 @@ namespace MG.MDV
                 }
                 else
                 {
-                    handlers.SelectPage( Link );
+                    context.Action.SelectPage( Link );
                 }
             }
+        }
+
+        public virtual void UpdateLayout( Context context )
+        {
+        }
+    }
+
+    public class ContentText : Content
+    {
+        public ContentText( GUIContent payload, Style style, string link )
+            : base( payload, style, link )
+        {
+        }
+    }
+
+    public class ContentImage : Content
+    {
+        public string URL;
+        public string Alt;
+
+        public ContentImage( GUIContent payload, Style style, string link )
+            : base( payload, style, link )
+        {
+        }
+
+        public override void UpdateLayout( Context context )
+        {
+            Payload.image = context.Action.FetchImage( URL );
+            Payload.text  = null;
+
+            if( Payload.image == null )
+            {
+                context.Apply( Style );
+                var text = !string.IsNullOrEmpty( Alt ) ? Alt : URL;
+                Payload.text = $"[{text}]";
+            }
+
+            Location.size = context.Style.Active.CalcSize( Payload );
         }
     }
 
@@ -204,21 +292,23 @@ namespace MG.MDV
 
     public class Document
     {
-        const float IndentSize = 20.0f;
+        const float IndentSize = 40.0f; // TODO: calculate from font height?
 
-        IActionHandlers mActions    = null;
-        StyleCache      mStyleCache = null;
+        Context         mContext    = new Context();
         List<Container> mContainers = new List<Container>();
-        List<Content>   mContent    = new List<Content>();
+        List<Block>     mBlocks     = new List<Block>();
 
-        float mIndent;
-        Col   mColumn;
-        Block mBlock;
+        float           mIndent;
+        Col             mColumn;
+        BlockContent    mBlock;
 
-        public Document( StyleCache context, IActionHandlers actions )
+
+        public Document( StyleCache styleCahe, IActionHandlers actions )
         {
-            mActions    = actions;
-            mStyleCache = context;
+            mContext.Action = actions;
+            mContext.Style  = styleCahe;
+
+            mStyleGUI       = styleCahe.Reset();
 
             var div = new Container();
             var row = new Row();
@@ -228,9 +318,9 @@ namespace MG.MDV
             div.Rows.Add( row );
             row.Cols.Add( col );
 
+            mIndent = 0.0f;
             mColumn = col;
             mBlock  = null;
-            mIndent = 0.0f;
         }
 
 
@@ -247,7 +337,7 @@ namespace MG.MDV
         {
             if( mColumn.IsEmpty )
             {
-                mBlock = mColumn.NewBlock( mIndent );
+                NewLine();
             }
         }
 
@@ -258,7 +348,7 @@ namespace MG.MDV
             EnsureBlock();
 
             mStyleLayout = style;
-            mStyleGUI    = mStyleCache.Apply( style );
+            mStyleGUI    = mContext.Style.Apply( style );
             mLink        = link;
             mTooltip     = toolTip;
 
@@ -293,14 +383,11 @@ namespace MG.MDV
             }
 
             var payload = new GUIContent( mWord.ToString(), mTooltip );
-            var content = new Content( payload, mStyleLayout, mLink );
+            var content = new ContentText( payload, mStyleLayout, mLink );
 
-            var size = mStyleGUI.CalcSize( payload );
-            content.Location.width  = size.x;
-            content.Location.height = size.y;
+            content.Location.size = mStyleGUI.CalcSize( payload );
 
-            mBlock.Content.Add( content );
-            mContent.Add( content );
+            mBlock.Add( content );
 
             mWord.Clear();
         }
@@ -312,28 +399,14 @@ namespace MG.MDV
         {
             EnsureBlock();
 
-            var tex     = mActions.FetchImage( url );
-            var payload = new GUIContent( mWord.ToString(), mTooltip );
+            var payload = new GUIContent();
+            var content = new ContentImage( payload, mStyleLayout, mLink );
 
-            if( tex != null )
-            {
-                payload.image   = tex;
-                payload.tooltip = !string.IsNullOrEmpty( title ) ? title : alt;
-            }
-            else
-            {
-                var text = !string.IsNullOrEmpty( alt ) ? alt : url;
-                payload.text = $"[{text}]";
-            }
+            content.URL     = url;
+            content.Alt     = alt;
+            payload.tooltip = !string.IsNullOrEmpty( title ) ? title : alt;
 
-            var content = new Content( payload, mStyleLayout, mLink );
-
-            var size = mStyleGUI.CalcSize( payload );
-            content.Location.width = size.x;
-            content.Location.height = size.y;
-
-            mBlock.Content.Add( content );
-            mContent.Add( content );
+            mBlock.Add( content );
         }
 
 
@@ -342,18 +415,24 @@ namespace MG.MDV
         public void HorizontalLine()
         {
             NewLine();
-            Debug.Log( "TODO: horizontal line" );
+            var block = new BlockLine();
+            mColumn.Blocks.Add( block );
+            mBlocks.Add( block );
             NewLine();
         }
 
         public void NewLine()
         {
-            mBlock = mColumn.NewBlock( mIndent );
+            var block = new BlockContent( mIndent );
+            mColumn.Blocks.Add( block );
+            mBlocks.Add( block );
+            mBlock = block;
         }
 
         public void Indent()
         {
             mIndent += IndentSize;
+            NewLine();
         }
 
         public void Outdent()
@@ -361,10 +440,16 @@ namespace MG.MDV
             mIndent = Mathf.Max( mIndent - IndentSize, 0.0f );
         }
 
-        public void Prefix( string prefix )
+        public void Prefix( string text, Style style )
         {
-            EnsureBlock();
-            mBlock.Prefix = prefix;
+            mStyleGUI = mContext.Style.Apply( style );
+
+            var payload = new GUIContent( text );
+            var content = new ContentText( payload, style, null );
+
+            content.Location.size = mStyleGUI.CalcSize( payload );
+
+            mBlock.Prefix( content );
         }
 
 
@@ -373,19 +458,21 @@ namespace MG.MDV
 
         public void Layout( float maxWidth )
         {
+            mStyleGUI = mContext.Style.Reset();
+            
             var pos = Vector2.zero;
 
             foreach( var container in mContainers )
             {
-                var size = container.Layout( pos, maxWidth );
+                var size = container.Layout( mContext, pos, maxWidth );
                 pos.y += size.y;
             }
         }
 
         public void Draw()
         {
-            mStyleCache.Reset();
-            mContent.ForEach( c => c.Draw( mStyleCache, mActions ) );
+            mStyleGUI = mContext.Style.Reset();
+            mBlocks.ForEach( block => block.Draw( mContext ) );
         }
     }
 }

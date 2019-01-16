@@ -262,15 +262,12 @@ namespace MG.MDV
                 return;
             }
 
-            RendererMarkdown renderer;
-            MarkdownPipeline pipeline;
-
             mDoc = new Document( new StyleCache( Skin.label, StyleConfig ), this );
 
-            renderer = new RendererMarkdown( mDoc );
+            var renderer = new RendererMarkdown( mDoc );
 
             // TODO: look at pipeline options ...
-            pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
             pipeline.Setup( renderer );
 
             var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
