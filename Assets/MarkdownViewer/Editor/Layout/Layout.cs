@@ -71,9 +71,9 @@ namespace MG.MDV
         {
             float oy = pos.y;
 
-            foreach( var block in Blocks )
+            for( var i =0; i < Blocks.Count; i++ )
             {
-                var size = block.Arrange( context, pos, maxWidth );
+                var size = Blocks[i].Arrange( i==0, context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -87,7 +87,7 @@ namespace MG.MDV
     {
         protected float mIndent  = 0.0f;
 
-        public abstract Vector2 Arrange( Context context, Vector2 pos, float maxWidth );
+        public abstract Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth );
         public abstract void Draw( Context context );
     }
 
@@ -101,7 +101,7 @@ namespace MG.MDV
             GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth )
         {
             Rect.position = pos;
             Rect.width    = maxWidth;
@@ -131,7 +131,7 @@ namespace MG.MDV
             mPrefix = content;
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth )
         {
             var origin = pos;
 
@@ -157,10 +157,12 @@ namespace MG.MDV
 
             mContent.ForEach( c => c.Update( context ) );
 
-            var marginBottom = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).x );
-            var marginTop    = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).y );
+            if( !first )
+            {
+                var marginTop = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).y );
+                pos.y += marginTop;
+            }
 
-            pos.y += marginTop;
 
             var rowWidth   = mContent[0].Width;
             var rowHeight  = mContent[0].Height;
@@ -192,6 +194,7 @@ namespace MG.MDV
                 pos.y += rowHeight;
             }
 
+            var marginBottom = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).x );
             pos.y += marginBottom;
 
             return new Vector2( maxWidth, pos.y - origin.y );

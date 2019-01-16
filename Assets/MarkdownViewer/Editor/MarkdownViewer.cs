@@ -14,7 +14,7 @@ namespace MG.MDV
     public interface IActionHandlers
     {
         Texture FetchImage( string url );
-        void SelectPage( string url );
+        void    SelectPage( string url );
     }
 
     [CustomEditor( typeof( TextAsset ) )]
@@ -22,11 +22,7 @@ namespace MG.MDV
     {
         public GUISkin      Skin;
         public StyleConfig  StyleConfig;
-
-        public Font    FontVariable;
-        public Font    FontFixed;
-        public Font    FontBold;
-        public Texture TexturePlaceholder;
+        public Texture      TexturePlaceholder;
 
 
         //------------------------------------------------------------------------------
