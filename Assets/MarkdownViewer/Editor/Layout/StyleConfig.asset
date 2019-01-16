@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbd4603f358e2f41977af55d4d2cee5, type: 3}
   m_Name: StyleConfig
   m_EditorClassIdentifier: 
-  FontVariable: {fileID: 12800000, guid: 8063b940cdb736849adab1d67ca02e4d, type: 3}
-  FontFixed: {fileID: 12800000, guid: dd6e71ff3f507ad47bc2ac0db94b2992, type: 3}
+  FontVariable: {fileID: 12800000, guid: a4c5dad696ac465488089b555c4a5ac1, type: 3}
+  FontFixed: {fileID: 12800000, guid: eda4c81ff41637a409d3095691ea55a7, type: 3}
   Sizes:
   - 14
   - 26

@@ -13,13 +13,10 @@ namespace MG.MDV
 
     public class RendererMarkdown : RendererBase
     {
-        internal Document   Layout;
+        internal Layout     Layout;
         internal Style      Style   = new Style();
         internal string     ToolTip = null;
-
-        private string mLink = null;
-
-        internal string Link
+        internal string     Link
         {
             get
             {
@@ -33,6 +30,8 @@ namespace MG.MDV
             }
         }
 
+        private string mLink = null;
+
         internal void Text( string text ) { Layout.Text( text, Style, Link, ToolTip ); }
 
 
@@ -44,7 +43,7 @@ namespace MG.MDV
             return this;
         }
 
-        public RendererMarkdown( Document doc )
+        public RendererMarkdown( Layout doc )
         {
             Layout = doc;
 

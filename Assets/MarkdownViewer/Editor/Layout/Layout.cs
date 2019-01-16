@@ -24,13 +24,13 @@ namespace MG.MDV
     {
         public List<Row> Rows = new List<Row>();
 
-        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var row in Rows )
             {
-                var size = row.Layout( context, pos, maxWidth );
+                var size = row.Arrange( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -44,13 +44,13 @@ namespace MG.MDV
     {
         public List<Col> Cols = new List<Col>();
 
-        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var col in Cols )
             {
-                var size = col.Layout( context, pos, maxWidth );
+                var size = col.Arrange( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -66,13 +66,13 @@ namespace MG.MDV
 
         public bool IsEmpty { get { return Blocks.Count == 0; } }
 
-        public Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             float oy = pos.y;
 
             foreach( var block in Blocks )
             {
-                var size = block.Layout( context, pos, maxWidth );
+                var size = block.Arrange( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -86,7 +86,7 @@ namespace MG.MDV
     {
         protected float mIndent  = 0.0f;
 
-        public abstract Vector2 Layout( Context context, Vector2 pos, float maxWidth );
+        public abstract Vector2 Arrange( Context context, Vector2 pos, float maxWidth );
         public abstract void Draw( Context context );
     }
 
@@ -99,7 +99,7 @@ namespace MG.MDV
             GUI.Label( Rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
-        public override Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             Rect.position = pos;
             Rect.width    = maxWidth;
@@ -129,7 +129,7 @@ namespace MG.MDV
             mPrefix = content;
         }
 
-        public override Vector2 Layout( Context context, Vector2 pos, float maxWidth )
+        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             var origin = pos;
 
@@ -153,7 +153,7 @@ namespace MG.MDV
                 return Vector2.zero;
             }
 
-            mContent.ForEach( c => c.UpdateLayout( context ) );
+            mContent.ForEach( c => c.Update( context ) );
 
             var rowWidth   = mContent[0].Width;
             var rowHeight  = mContent[0].Height;
@@ -247,7 +247,7 @@ namespace MG.MDV
             }
         }
 
-        public virtual void UpdateLayout( Context context )
+        public virtual void Update( Context context )
         {
         }
     }
@@ -270,7 +270,7 @@ namespace MG.MDV
         {
         }
 
-        public override void UpdateLayout( Context context )
+        public override void Update( Context context )
         {
             Payload.image = context.Action.FetchImage( URL );
             Payload.text  = null;
@@ -290,7 +290,7 @@ namespace MG.MDV
      * Document
      ******************************************************************************/
 
-    public class Document
+    public class Layout
     {
         const float IndentSize = 40.0f; // TODO: calculate from font height?
 
@@ -303,7 +303,7 @@ namespace MG.MDV
         BlockContent    mBlock;
 
 
-        public Document( StyleCache styleCahe, IActionHandlers actions )
+        public Layout( StyleCache styleCahe, IActionHandlers actions )
         {
             mContext.Action = actions;
             mContext.Style  = styleCahe;
@@ -456,7 +456,7 @@ namespace MG.MDV
         ////////////////////////////////////////////////////////////////////////////////
         // layout and draw
 
-        public void Layout( float maxWidth )
+        public void Arrange( float maxWidth )
         {
             mStyleGUI = mContext.Style.Reset();
             
@@ -464,7 +464,7 @@ namespace MG.MDV
 
             foreach( var container in mContainers )
             {
-                var size = container.Layout( mContext, pos, maxWidth );
+                var size = container.Arrange( mContext, pos, maxWidth );
                 pos.y += size.y;
             }
         }

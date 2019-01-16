@@ -253,7 +253,7 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        Document mDoc = null;
+        Layout mDoc = null;
 
         void ParseDocument()
         {
@@ -262,7 +262,7 @@ namespace MG.MDV
                 return;
             }
 
-            mDoc = new Document( new StyleCache( Skin.label, StyleConfig ), this );
+            mDoc = new Layout( new StyleCache( Skin.label, StyleConfig ), this );
 
             var renderer = new RendererMarkdown( mDoc );
 
@@ -320,7 +320,7 @@ namespace MG.MDV
 
                 if( Event.current.type == EventType.Layout )
                 {
-                    mDoc.Layout( contentRect.width );
+                    mDoc.Arrange( contentRect.width );
                 }
                 else
                 {
