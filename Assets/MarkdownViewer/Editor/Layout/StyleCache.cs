@@ -7,63 +7,83 @@ namespace MG.MDV
 {
     public class StyleCache
     {
-        private Style       mStyleDoc = new Style();
-        private GUIStyle    mStyleGUI = null;
-        private StyleConfig mConfig   = null;
+        private GUIStyle    mStyleCurrentGUI    = null;
+        private Style       mStyleCurrentLayout = new Style();
 
-        private bool        mFixed  = false;
-        private int         mSize   = 0;
+        public StyleConfig  Config { get; } = null;
+        public GUIStyle     Active { get { return mStyleCurrentGUI; } }
 
-        public StyleConfig  Config { get { return mConfig; } }
-        public GUIStyle     Active { get { return mStyleGUI; } }
+        private GUIStyle[]  mStyles;
 
-        public StyleCache( GUIStyle style, StyleConfig config )
+        public StyleCache( GUISkin skin, StyleConfig config )
         {
-            mStyleGUI = new GUIStyle( style );
-            mConfig   = config;
+            Config = config;
+
+            mStyles = new GUIStyle[ 7 ];
+
+            mStyles[ 0 ] = new GUIStyle( skin.label );
+            mStyles[ 1 ] = new GUIStyle( skin.GetStyle( "h1" ) );
+            mStyles[ 2 ] = new GUIStyle( skin.GetStyle( "h2" ) );
+            mStyles[ 3 ] = new GUIStyle( skin.GetStyle( "h3" ) );
+            mStyles[ 4 ] = new GUIStyle( skin.GetStyle( "h4" ) );
+            mStyles[ 5 ] = new GUIStyle( skin.GetStyle( "h5" ) );
+            mStyles[ 6 ] = new GUIStyle( skin.GetStyle( "h6" ) );
+
+            mStyleCurrentGUI = mStyles[ 0 ];
         }
 
         public GUIStyle Reset()
         {
-            return Apply( new Style() );
+            return Apply( new Style(), true );
         }
 
 
         //------------------------------------------------------------------------------
 
-        public GUIStyle Apply( Style style )
+        public GUIStyle Apply( Style style, bool force = false )
         {
-//             if( mStyleDoc == style )
-//             {
-//                 return mStyleGUI;
-//             }
+            //             if( mStyleDoc == style )
+            //             {
+            //                 return mStyleGUI;
+            //             }
+
+            mStyleCurrentLayout = style;
+            mStyleCurrentGUI    = mStyles[ style.Size ];
+
+            // font
+
+            mStyleCurrentGUI.font = style.Fixed ? Config.FontFixed : Config.FontVariable;
+
+
+            // font style
 
             if( style.Bold )
             {
-                mStyleGUI.fontStyle = style.Italic ? FontStyle.BoldAndItalic : FontStyle.Bold;
+                mStyleCurrentGUI.fontStyle = style.Italic ? FontStyle.BoldAndItalic : FontStyle.Bold;
 
             }
             else
             {
-                mStyleGUI.fontStyle = style.Italic ? FontStyle.Italic : FontStyle.Normal;
+                mStyleCurrentGUI.fontStyle = style.Italic ? FontStyle.Italic : FontStyle.Normal;
             }
 
-            mStyleGUI.normal.textColor = style.Link ? Color.blue : Color.black;
 
-//             if( mSize != style.Size )
+            // highlight
+
+            if( style.Highlight )
             {
-                mSize = style.Size;
-                mStyleGUI.fontSize = (int) mConfig.GetFontSize( mSize );
+                mStyleCurrentGUI.normal.background = Config.Background;
             }
-
-            if( style.Fixed != mFixed )
+            else
             {
-                mFixed = style.Fixed;
-                mStyleGUI.font = mFixed ? mConfig.FontFixed : mConfig.FontVariable;
+                mStyleCurrentGUI.normal.background = null;
             }
 
-            mStyleDoc = style;
-            return mStyleGUI;
+            // color
+
+            mStyleCurrentGUI.normal.textColor = style.Link ? Color.blue : Color.black;
+
+            return mStyleCurrentGUI;
         }
     }
 }

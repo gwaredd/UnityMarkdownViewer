@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System;
 
 namespace MG.MDV
 {
@@ -71,9 +72,9 @@ namespace MG.MDV
         {
             float oy = pos.y;
 
-            for( var i =0; i < Blocks.Count; i++ )
+            foreach( var block in Blocks )
             {
-                var size = Blocks[i].Arrange( i==0, context, pos, maxWidth );
+                var size = block.Arrange(context, pos, maxWidth );
                 pos.y += size.y;
             }
 
@@ -87,7 +88,7 @@ namespace MG.MDV
     {
         protected float mIndent  = 0.0f;
 
-        public abstract Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth );
+        public abstract Vector2 Arrange( Context context, Vector2 pos, float maxWidth );
         public abstract void Draw( Context context );
     }
 
@@ -101,7 +102,7 @@ namespace MG.MDV
             GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
-        public override Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth )
+        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             Rect.position = pos;
             Rect.width    = maxWidth;
@@ -113,8 +114,10 @@ namespace MG.MDV
 
     public class BlockContent : Block
     {
-        Content       mPrefix  = null;
-        List<Content> mContent = new List<Content>();
+        Rect          mRect      = new Rect();
+        bool          mHighlight = false;
+        Content       mPrefix    = null;
+        List<Content> mContent   = new List<Content>();
 
         public BlockContent( float indent )
         {
@@ -131,9 +134,16 @@ namespace MG.MDV
             mPrefix = content;
         }
 
-        public override Vector2 Arrange( bool first, Context context, Vector2 pos, float maxWidth )
+        public void Highlight()
+        {
+            mHighlight = true;
+        }
+
+        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             var origin = pos;
+
+            mRect.position = pos;
 
             pos.x += mIndent;
             maxWidth -= mIndent;
@@ -156,13 +166,6 @@ namespace MG.MDV
             }
 
             mContent.ForEach( c => c.Update( context ) );
-
-            if( !first )
-            {
-                var marginTop = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).y );
-                pos.y += marginTop;
-            }
-
 
             var rowWidth   = mContent[0].Width;
             var rowHeight  = mContent[0].Height;
@@ -194,10 +197,9 @@ namespace MG.MDV
                 pos.y += rowHeight;
             }
 
-            var marginBottom = mContent.Max( c => context.Style.Config.GetMargin( c.Style.Size ).x );
-            pos.y += marginBottom;
+            mRect.size = new Vector2( maxWidth, pos.y - origin.y );
 
-            return new Vector2( maxWidth, pos.y - origin.y );
+            return mRect.size;
         }
 
         void LayoutRow( Vector2 pos, int from, int until, float rowHeight )
@@ -215,6 +217,11 @@ namespace MG.MDV
 
         public override void Draw( Context context  )
         {
+            if( mHighlight )
+            {
+                GUI.Box( mRect, string.Empty );
+            }
+
             mContent.ForEach( c => c.Draw( context ) );
             mPrefix?.Draw( context );
         }
@@ -461,6 +468,12 @@ namespace MG.MDV
             content.Location.size = mStyleGUI.CalcSize( payload );
 
             mBlock.Prefix( content );
+        }
+
+        public void HighLightBlock()
+        {
+            EnsureBlock();
+            mBlock.Highlight();
         }
 
 

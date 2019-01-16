@@ -13,9 +13,8 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, QuoteBlock block )
         {
-            renderer.Layout.Indent();
+            renderer.Layout.HighLightBlock();
             renderer.WriteChildren( block );
-            renderer.Layout.Outdent();
             renderer.FinishBlock();
         }
     }

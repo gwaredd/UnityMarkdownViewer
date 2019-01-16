@@ -258,7 +258,7 @@ namespace MG.MDV
                 return;
             }
 
-            mDoc = new Layout( new StyleCache( Skin.label, StyleConfig ), this );
+            mDoc = new Layout( new StyleCache( Skin, StyleConfig ), this );
 
             var renderer = new RendererMarkdown( mDoc );
 
