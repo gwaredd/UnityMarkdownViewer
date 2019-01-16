@@ -2,7 +2,7 @@
 
 namespace MG.MDV
 {
-    public struct LayoutStyle
+    public struct Style
     {
         const int FlagBold   = 0x0100;
         const int FlagItalic = 0x0200;
@@ -11,6 +11,27 @@ namespace MG.MDV
         const int MaskSize   = 0x000F;
 
         int mStyle;
+
+        public static bool operator==( Style a, Style b )
+        {
+            return a.mStyle == b.mStyle;
+        }
+
+        public static bool operator!=( Style a, Style b )
+        {
+            return a.mStyle != b.mStyle;
+        }
+
+        public override bool Equals( object a )
+        {
+            return a is Style ? ( (Style) ( a ) ).mStyle == mStyle : false;
+        }
+
+        public override int GetHashCode()
+        {
+            return mStyle.GetHashCode();
+        }
+
 
         public void Clear()
         {

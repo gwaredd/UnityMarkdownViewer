@@ -1,7 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
 using Markdig;
-using Markdig.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,9 +20,12 @@ namespace MG.MDV
     [CustomEditor( typeof( TextAsset ) )]
     public class MarkdownViewer : Editor, IActionHandlers
     {
-        public GUISkin Skin;
+        public GUISkin      Skin;
+        public StyleConfig  StyleConfig;
+
         public Font    FontVariable;
         public Font    FontFixed;
+        public Font    FontBold;
         public Texture TexturePlaceholder;
 
 
@@ -217,11 +219,8 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        MarkdownDocument mDoc;
-        RendererMarkdown mRenderer;
-        MarkdownPipeline mPipeline;
-        bool             mRaw = false;
-        float            mHeaderHeight = 0.0f;
+        bool    mRaw = false;
+        float   mHeaderHeight = 0.0f;
 
         public override void OnInspectorGUI()
         {
@@ -254,7 +253,7 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        RenderContext mContext;
+        Document mDoc = null;
 
         void ParseDocument()
         {
@@ -263,15 +262,19 @@ namespace MG.MDV
                 return;
             }
 
-            mContext = new RenderContext( Skin, FontVariable, FontFixed );
+            RendererMarkdown renderer;
+            MarkdownPipeline pipeline;
+
+            mDoc = new Document( new StyleCache( Skin.label, StyleConfig ), this );
+
+            renderer = new RendererMarkdown( mDoc );
 
             // TODO: look at pipeline options ...
-            mPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            mRenderer = new RendererMarkdown();
-            mPipeline.Setup( mRenderer );
+            pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            pipeline.Setup( renderer );
 
-
-            mDoc = Markdown.Parse( ( target as TextAsset ).text, mPipeline );
+            var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
+            renderer.Render( doc );
         }
 
 
@@ -315,15 +318,17 @@ namespace MG.MDV
                 var contentRect = new Rect( padding, mHeaderHeight + padding, Screen.width - padding * 2.0f, Screen.height - mHeaderHeight - padding * 2.0f );
                 
                 GUI.BeginGroup( contentRect ); // clipping ...
-                //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
+                                               //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
 
 
-                // TODO: cache parse vs render steps!?
-
-                mRenderer.Layout = new Layout( contentRect.width, mContext, this ); // TODO: better init
-
-                mRenderer.Render( mDoc );
-                mRenderer.Layout.Draw();
+                if( Event.current.type == EventType.Layout )
+                {
+                    mDoc.Layout( contentRect.width );
+                }
+                else
+                {
+                    mDoc.Draw();
+                }
 
                 GUI.EndGroup();
             }

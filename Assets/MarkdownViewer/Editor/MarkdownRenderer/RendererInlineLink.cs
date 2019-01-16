@@ -30,8 +30,6 @@ namespace MG.MDV
 
                 renderer.WriteChildren( node );
 
-                // TODO: push and pop context?
-
                 renderer.ToolTip = null;
                 renderer.Link    = null;
             }
