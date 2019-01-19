@@ -28,11 +28,19 @@ namespace MG.MDV
         static void CreateMarkdown()
         {
             var filepath = GetFilePath( "NewMarkdown.md" );
+            var writer   = File.CreateText( filepath );
 
-            // TODO: custom markdown template ...
+            var template = EditorGUIUtility.Load("MarkdownTemplate.md") as TextAsset;
 
-            var writer = File.CreateText( filepath );
-            writer.Write( "# Markdown\n" );
+            if( template != null )
+            {
+                writer.Write( template.text );
+            }
+            else
+            {
+                writer.Write( "# Markdown\n" );
+            }
+
             writer.Close();
 
             AssetDatabase.ImportAsset( filepath );
