@@ -13,6 +13,10 @@ This is [an example](http://example.com/) inline link.
 
 This is [an example](http://example.com/ "Title") inline link.
 
+## Mail To
+
+This is [an email example](mailto:gwaredd@hotmail.com)
+
 ## Relative Link
 
 See my [Header](03_headers.md) page for details.   

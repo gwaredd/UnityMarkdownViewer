@@ -6,11 +6,9 @@ MonoImporter:
   defaultReferences:
   - Skin: {fileID: 11400000, guid: 81f272e4a921a5448a30c0e40b4ea003, type: 2}
   - StyleConfig: {fileID: 11400000, guid: 24a03d2d9a29f8d4592d49bb77f6c6f6, type: 2}
-  - FontVariable: {fileID: 12800000, guid: e89e3b79c8a1fc64197664b32a146827, type: 3}
-  - FontFixed: {fileID: 12800000, guid: dd6e71ff3f507ad47bc2ac0db94b2992, type: 3}
-  - FontBold: {fileID: 12800000, guid: 22fbb06a62c4bf3418da0b80768c8b7c, type: 3}
-  - TexturePlaceholder: {fileID: 2800000, guid: ac69bfe862836584bb133bd89a459530,
-      type: 3}
+  - Placeholder: {fileID: 2800000, guid: cbe6d05d9446b554dbb84ead47db6af3, type: 3}
+  - IconMarkdown: {fileID: 2800000, guid: daa1a28557e23d644b821fdd6f8e27b4, type: 3}
+  - IconRaw: {fileID: 2800000, guid: 473c7157841eb4645b5e787b7c698a2b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

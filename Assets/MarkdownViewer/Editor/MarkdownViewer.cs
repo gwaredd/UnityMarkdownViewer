@@ -22,7 +22,9 @@ namespace MG.MDV
     {
         public GUISkin      Skin;
         public StyleConfig  StyleConfig;
-        public Texture      TexturePlaceholder;
+        public Texture      Placeholder;
+        public Texture      IconMarkdown;
+        public Texture      IconRaw;
 
 
         //------------------------------------------------------------------------------
@@ -143,9 +145,9 @@ namespace MG.MDV
             }
 
             mActiveRequests.Add( new ImageRequest( url ) );
-            mTextureCache[ url ] = TexturePlaceholder;
+            mTextureCache[ url ] = Placeholder;
 
-            return TexturePlaceholder;
+            return Placeholder;
         }
 
         void UpdateRequests()
@@ -230,7 +232,6 @@ namespace MG.MDV
                 return;
             }
 
-            // TODO: configurable extensions?
             // file extension is .md
 
             var path = AssetDatabase.GetAssetPath( target );
@@ -281,17 +282,24 @@ namespace MG.MDV
             GUI.enabled = true;
 
             var padding    = 8.0f;
-            var buttonSize = 20.0f;
 
             // clear background
 
             GUI.DrawTexture( new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
-            // TODO: recalc scroll pos when swapping between modes ...
+            // TODO: recalc scroll pos when swapping between modes .. ?
 
             // draw buttons
+            {
+                var style  = GUI.skin.button;
+                var size   = style.fixedHeight;
+                var toggle = new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size );
 
-            mRaw = GUI.Toggle( new Rect( Screen.width - padding - buttonSize, mHeaderHeight + padding, buttonSize, buttonSize ), mRaw, "" );
+                if( GUI.Button( toggle, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
+                {
+                    mRaw = !mRaw;
+                }
+            }
 
 
             // draw content
