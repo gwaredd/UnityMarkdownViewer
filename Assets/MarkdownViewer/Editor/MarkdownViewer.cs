@@ -17,6 +17,7 @@ namespace MG.MDV
         void    SelectPage( string url );
     }
 
+
     [CustomEditor( typeof( TextAsset ) )]
     public class MarkdownViewer : Editor, IActionHandlers
     {
@@ -35,20 +36,17 @@ namespace MG.MDV
 
         private string PathCombine( string a, string b )
         {
-            var combined = 
-                a.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries )
-                .ToList()
-                .Concat( b.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ) );
+            var combined =
+                a.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ).ToList()
+                .Concat( b.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ) )
+                .Where( s => s != "." )
+            ;
 
             var path = new List<string>();
 
             foreach( var str in combined )
             {
-                if( str == "." )
-                {
-                    continue;
-                }
-                else if( str == ".." )
+                if( str == ".." )
                 {
                     if( path.Count > 0 )
                     {
@@ -61,7 +59,7 @@ namespace MG.MDV
                 }
             }
 
-            return String.Join( "/", path.ToArray() );
+            return string.Join( "/", path );
         }
 
         public void SelectPage( string url )
@@ -181,24 +179,6 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        private Editor mDefaultEditor;
-
-        private void DrawDefaultEditor()
-        {
-            if( mDefaultEditor == null )
-            {
-                mDefaultEditor = CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
-            }
-
-            if( mDefaultEditor != null )
-            {
-                GUI.skin = null;
-                mDefaultEditor.OnInspectorGUI();
-            }
-        }
-
-        //------------------------------------------------------------------------------
-
         public override bool UseDefaultMargins()
         {
             return false;
@@ -214,54 +194,40 @@ namespace MG.MDV
             }
         }
 
-
-        //------------------------------------------------------------------------------
-
-        bool    mRaw = false;
-        float   mHeaderHeight = 0.0f;
+        private Editor mDefaultEditor;
 
         public override void OnInspectorGUI()
         {
-            // has target?
-
-            var asset = target as TextAsset;
-
-            if( asset == null )
-            {
-                DrawDefaultEditor();
-                return;
-            }
-
             // file extension is .md
 
             var path = AssetDatabase.GetAssetPath( target );
             var ext  = Path.GetExtension( path );
 
-            if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) == false )
+            if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) )
             {
-                DrawDefaultEditor();
-                return;
+                ParseDocument();
+                DrawIMGUI();
             }
-
-            ParseDocument();
-            DrawIMGUI();
+            else
+            {
+                mDefaultEditor = mDefaultEditor ?? CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
+                mDefaultEditor?.OnInspectorGUI();
+            }
         }
 
 
         //------------------------------------------------------------------------------
 
-        Layout mDoc = null;
-
         void ParseDocument()
         {
-            if( mDoc != null )
+            if( mLayout != null )
             {
                 return;
             }
 
-            mDoc = new Layout( new StyleCache( Skin, StyleConfig ), this );
+            mLayout = new Layout( new StyleCache( Skin, StyleConfig ), this );
 
-            var renderer = new RendererMarkdown( mDoc );
+            var renderer = new RendererMarkdown( mLayout );
 
             // TODO: look at pipeline options ...
             var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
@@ -275,13 +241,16 @@ namespace MG.MDV
         //------------------------------------------------------------------------------
 
         Vector2 mScrollPos;
+        Layout  mLayout       = null;
+        bool    mRaw          = false;
+        float   mHeaderHeight = 0.0f;
 
         void DrawIMGUI()
         {
             GUI.skin    = Skin;
             GUI.enabled = true;
+            var padding = 8.0f;
 
-            var padding    = 8.0f;
 
             // clear background
 
@@ -289,16 +258,19 @@ namespace MG.MDV
 
             // TODO: recalc scroll pos when swapping between modes .. ?
 
+
             // draw buttons
             {
-                var style  = GUI.skin.button;
-                var size   = style.fixedHeight;
-                var toggle = new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size );
+                var style   = GUI.skin.button;
+                var size    = style.fixedHeight;
+                var toggle  = new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size );
 
                 if( GUI.Button( toggle, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
                 {
                     mRaw = !mRaw;
                 }
+
+                // TODO: add a back button (and browsing history?)
             }
 
 
@@ -322,13 +294,27 @@ namespace MG.MDV
                                                //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
 
 
-                if( Event.current.type == EventType.Layout )
+                switch( Event.current.type )
                 {
-                    mDoc.Arrange( contentRect.width );
-                }
-                else
-                {
-                    mDoc.Draw();
+                    case EventType.Ignore:
+                        break;
+
+                    case EventType.ContextClick:
+                        // TODO: EventType.ContextClick
+
+                        var menu = new GenericMenu();
+                        menu.AddItem( new GUIContent( "View Source" ), false, () => mRaw = !mRaw );
+                        menu.ShowAsContext();
+
+                        break;
+
+                    case EventType.Layout:
+                        mLayout.Arrange( contentRect.width );
+                        break;
+
+                    default:
+                        mLayout.Draw();
+                        break;
                 }
 
                 GUI.EndGroup();
