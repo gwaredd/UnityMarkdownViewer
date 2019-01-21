@@ -20,7 +20,7 @@ This is [an email example](mailto:gwaredd@hotmail.com)
 ## Relative Link
 
 See my [Header](03_headers.md) page for details.   
-See my absolute [Header](Assets/Test/Basic/03_headers.md)
+See my absolute [Header](/Assets/Test/Basic/03_headers.md)
 See my .. [File](../Extensions/AbbreviationSpecs.md)
 
 ## Broken Link

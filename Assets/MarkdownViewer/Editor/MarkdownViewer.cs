@@ -15,7 +15,7 @@ namespace MG.MDV
     public interface IActionHandlers
     {
         Texture FetchImage( string url );
-        void    SelectPage( string url );
+        void SelectPage( string url );
     }
 
 
@@ -27,10 +27,12 @@ namespace MG.MDV
         public Texture      Placeholder;
         public Texture      IconMarkdown;
         public Texture      IconRaw;
-
-        //private static Stack<string> History = new Stack<string>();
+        public Texture      IconBack;
+        public Texture      IconForward;
 
         //------------------------------------------------------------------------------
+
+        private static History mHistory = new History();
 
         public void SelectPage( string url )
         {
@@ -39,29 +41,28 @@ namespace MG.MDV
                 return;
             }
 
-            var assetPath = string.Empty;
+            var newPath = string.Empty;
+            var currentPath = AssetDatabase.GetAssetPath( target );
 
-            if( url.StartsWith( "Assets/", StringComparison.OrdinalIgnoreCase ) )
+            if( url.StartsWith( "/" ) )
             {
-                assetPath = url;
+                newPath = url.Substring( 1 );
             }
             else
             {
-                var targetPath = AssetDatabase.GetAssetPath( target );
-                var targetDir  = Path.GetDirectoryName( targetPath );
-
-                assetPath = Utils.PathCombine( targetDir, url );
+                newPath = Utils.PathCombine( Path.GetDirectoryName( currentPath ), url );
             }
 
-            var asset = AssetDatabase.LoadAssetAtPath<TextAsset>( assetPath );
+            var asset = AssetDatabase.LoadAssetAtPath<TextAsset>( newPath );
 
             if( asset != null )
             {
+                mHistory.Add( newPath );
                 Selection.activeObject = asset;
             }
             else
             {
-                Debug.LogError( $"Could not find asset {assetPath}" );
+                Debug.LogError( $"Could not find asset {newPath}" );
             }
         }
 
@@ -74,15 +75,8 @@ namespace MG.MDV
 
             public ImageRequest( string url )
             {
-                URL     = url;
+                URL = url;
                 Request = UnityWebRequestTexture.GetTexture( url );
-
-                // TODO: images with redirect - i.e. loremflickr
-                //                 Request.
-                // 
-                //                 Debug.Log( "Location: " + www.responseHeaders[ "Location" ] );
-                //                 Debug.Log( "Cookie: " + www.responseHeaders[ "Set-Cookie" ] );
-
                 Request.SendWebRequest();
             }
 
@@ -146,18 +140,13 @@ namespace MG.MDV
 
         void UpdateRequests()
         {
-            if( mActiveRequests.Count == 0 )
-            {
-                return;
-            }
-
             var req = mActiveRequests.Find( r => r.Request.isDone );
 
             if( req == null )
             {
                 return;
             }
-            
+
             if( req.Request.isHttpError )
             {
                 Debug.LogError( $"HTTP Error: {req.URL} - {req.Request.responseCode} {req.Request.error}" );
@@ -186,16 +175,6 @@ namespace MG.MDV
             return false;
         }
 
-        protected override void OnHeaderGUI()
-        {
-            base.OnHeaderGUI();
-
-            if( Event.current.type == EventType.Repaint )
-            {
-                mHeaderHeight = GUILayoutUtility.GetLastRect().height;
-            }
-        }
-
         private Editor mDefaultEditor;
 
         public override void OnInspectorGUI()
@@ -207,7 +186,7 @@ namespace MG.MDV
 
             if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) )
             {
-                ParseDocument();
+                ParseDocument( path );
                 DrawIMGUI();
             }
             else
@@ -217,22 +196,26 @@ namespace MG.MDV
             }
         }
 
-
         //------------------------------------------------------------------------------
 
-        void ParseDocument()
+        void ParseDocument( string filename )
         {
             if( mLayout != null )
             {
                 return;
             }
 
+            mHistory.OnOpen( filename );
+
             mLayout = new Layout( new StyleCache( Skin, StyleConfig ), this );
 
             var renderer = new RendererMarkdown( mLayout );
 
             // TODO: look at pipeline options ...
-            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+
+            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var pipeline = new MarkdownPipelineBuilder().Build();
+
             pipeline.Setup( renderer );
 
             var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
@@ -242,92 +225,130 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        Vector2 mScrollPos;
-        Layout  mLayout       = null;
-        bool    mRaw          = false;
-        float   mHeaderHeight = 0.0f;
+        Vector2     mScrollPos;
+        Layout      mLayout = null;
+        bool        mRaw    = false;
+        TextAsset   mText   = null;
 
         void DrawIMGUI()
         {
-            GUI.skin    = Skin;
+            GUI.skin = Skin;
             GUI.enabled = true;
-            var padding = 8.0f;
+
+            mText = target as TextAsset;
+
+            // content rect
+
+            GUILayout.FlexibleSpace();
+            var rectContainer = GUILayoutUtility.GetLastRect();
+            rectContainer.width = Screen.width;
 
 
             // clear background
 
-            GUI.DrawTexture( new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height ), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
+            var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
+            GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
-            // TODO: recalc scroll pos when swapping between modes .. ?
 
+            // scroll window
 
-            // draw buttons
-            {
-                var style      = GUI.skin.button;
-                var size       = style.fixedHeight;
-                var rectButton = new Rect( Screen.width - padding - size - Skin.verticalScrollbar.fixedWidth, mHeaderHeight + padding, size, size );
+            var padLeft     = 8.0f;
+            var padRight    = 4.0f;
+            var padHoriz    = padLeft + padRight;
+            var scrollWidth = Skin.verticalScrollbar.fixedWidth;
+            var minWidth    = rectContainer.width - scrollWidth - padHoriz;
+            var maxHeight   = ContentHeight( minWidth );
 
-                if( GUI.Button( rectButton, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
-                {
-                    mRaw = !mRaw;
-                }
-
-                // TODO: add a back button (and browsing history?)
-            }
-
+            var hasScrollbar =  maxHeight >= rectContainer.height;
+            var contentWidth = hasScrollbar ? minWidth : rectContainer.width - padHoriz;
+            var rectContent  = new Rect( -padLeft, 0.0f, contentWidth, maxHeight );
 
             // draw content
 
-            if( mRaw )
+            DrawToolbar( rectContainer, hasScrollbar ? scrollWidth + padRight : padRight );
+
+            using( var scroll = new GUI.ScrollViewScope( rectContainer, mScrollPos, rectContent ) )
             {
-                var style   = Skin.GetStyle( "pre" );
-                var content = new GUIContent( ( target as TextAsset ).text );
-                var height  = style.CalcHeight( content, Screen.width );
+                mScrollPos = scroll.scrollPosition;
 
-                mScrollPos = GUILayout.BeginScrollView( mScrollPos );
-                EditorGUILayout.SelectableLabel( content.text, style, GUILayout.Height( height ) );
-                GUILayout.EndScrollView();
-            }
-            else
-            {
-                //GetControlRect
-                var rectContainer = new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height - mHeaderHeight * 3.0f );
-
-                var width         = rectContainer.width - padding * 2.0f;
-                var hasScrollBar  = mLayout.Height > rectContainer.height;
-                var widthAdjust   = hasScrollBar ? 0.0f : Skin.verticalScrollbar.fixedWidth;
-                var rectScroll    = new Rect( -padding, -padding, width - widthAdjust, mLayout.Height );
-
-                mScrollPos = GUI.BeginScrollView( rectContainer, mScrollPos, rectScroll );
-                
-                
-                //Debug.Log( Screen.height + "x" + mLayout.Height );
-                //EditorGUIUtility.currentViewWidth
-
-                switch( Event.current.type )
+                if( mRaw )
                 {
-                    case EventType.Ignore:
-                        break;
-
-                    case EventType.ContextClick:
-                        // TODO: EventType.ContextClick
-
-                        var menu = new GenericMenu();
-                        menu.AddItem( new GUIContent( "View Source" ), false, () => mRaw = !mRaw );
-                        menu.ShowAsContext();
-
-                        break;
-
-                    case EventType.Layout:
-                        mLayout.Arrange( rectScroll.width );
-                        break;
-
-                    default:
-                        mLayout.Draw();
-                        break;
+                    DrawRaw( rectContent );
                 }
+                else
+                {
+                    DrawMarkdown( rectContent );
+                }
+            }
+        }
 
-                GUI.EndScrollView();
+        //------------------------------------------------------------------------------
+
+        float ContentHeight( float width )
+        {
+            return mRaw ? Skin.GetStyle( "raw" ).CalcHeight( new GUIContent( mText.text ), width ) : mLayout.Height;
+        }
+
+        //------------------------------------------------------------------------------
+
+        void DrawToolbar( Rect rect, float marginRight )
+        {
+            var style  = GUI.skin.button;
+            var size   = style.fixedHeight;
+            var btn    = new Rect( rect.xMax - size - marginRight, rect.yMin, size, size );
+
+            if( GUI.Button( btn, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
+            {
+                mRaw = !mRaw;
+            }
+
+            if( mHistory.CanForward )
+            {
+                btn.x -= size;
+
+                if( GUI.Button( btn, IconForward, Skin.button ) )
+                {
+                    Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Forward() );
+                }
+            }
+
+            if( mHistory.CanBack )
+            {
+                btn.x -= size;
+
+                if( GUI.Button( btn, IconBack, Skin.button ) )
+                {
+                    Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Back() );
+                }
+            }
+        }
+
+        void DrawRaw( Rect rect )
+        {
+            EditorGUI.SelectableLabel( rect, mText.text, Skin.GetStyle( "raw" ) );
+        }
+
+        void DrawMarkdown( Rect rect )
+        {
+            switch( Event.current.type )
+            {
+                case EventType.Ignore:
+                    break;
+
+                case EventType.ContextClick:
+                    var menu = new GenericMenu();
+                    menu.AddItem( new GUIContent( "View Source" ), false, () => mRaw = !mRaw );
+                    menu.ShowAsContext();
+
+                    break;
+
+                case EventType.Layout:
+                    mLayout.Arrange( rect.width );
+                    break;
+
+                default:
+                    mLayout.Draw();
+                    break;
             }
         }
     }

@@ -5,8 +5,8 @@
 #### Direct
 ![Placeholder Alt](https://via.placeholder.com/300x200)
 
-#### Redirected
-![Alt Cat](https://loremflickr.com/320/240/cat "Alt Cat")
+#### TODO: Redirected
+![Redirected Cat](https://loremflickr.com/320/240/cat "Redirected Cat")
 
 ## Local Images
 
