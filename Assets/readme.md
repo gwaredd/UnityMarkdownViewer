@@ -22,6 +22,9 @@
 
 * Right Click -> Markdown
 
+## JIRA links
+## images (local and remote)
+## Local links
 
 # Reference
 ------------------------------------------------------------------------------
