@@ -3,10 +3,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
-using System;
 
 namespace MG.MDV
 {
@@ -18,6 +15,8 @@ namespace MG.MDV
     {
         public StyleCache       Style;
         public IActionHandlers  Action;
+        public float            MinWidth   = 40.0f; // will be calculated from font size
+        public float            IndentSize = 40.0f; // will be calculated from font size
 
         public GUIStyle Apply( Style style ) { return Style.Apply( style ); }
     }
@@ -146,15 +145,13 @@ namespace MG.MDV
             mRect.position = pos;
 
             pos.x += mIndent;
-            maxWidth -= mIndent;
-
-            Assert.IsTrue( maxWidth > 0.0f ); // TODO: handle narrow windows!
+            maxWidth = Mathf.Max( maxWidth - mIndent, context.MinWidth );
 
             // prefix
 
             if( mPrefix != null )
             {
-                mPrefix.Location.x = pos.x - 20.0f; // IndentSize  / 2.0f
+                mPrefix.Location.x = pos.x - context.IndentSize * 0.5f;
                 mPrefix.Location.y = pos.y;
             }
 
@@ -310,8 +307,6 @@ namespace MG.MDV
 
     public class Layout
     {
-        const float IndentSize = 40.0f; // TODO: calculate from font height?
-
         public float Height = 100.0f;
 
         Context         mContext    = new Context();
@@ -323,12 +318,12 @@ namespace MG.MDV
         BlockContent    mBlock;
 
 
-        public Layout( StyleCache styleCahe, IActionHandlers actions )
+        public Layout( StyleCache styleCache, IActionHandlers actions )
         {
             mContext.Action = actions;
-            mContext.Style  = styleCahe;
+            mContext.Style  = styleCache;
 
-            mStyleGUI       = styleCahe.Reset();
+            mStyleGUI       = styleCache.Reset();
 
             var div = new Container();
             var row = new Row();
@@ -341,6 +336,9 @@ namespace MG.MDV
             mIndent = 0.0f;
             mColumn = col;
             mBlock  = null;
+
+            mContext.IndentSize = mStyleGUI.lineHeight * 2.0f;
+            mContext.MinWidth   = mStyleGUI.lineHeight * 2.0f;
         }
 
 
@@ -451,13 +449,13 @@ namespace MG.MDV
 
         public void Indent()
         {
-            mIndent += IndentSize;
+            mIndent += mContext.IndentSize;
             NewLine();
         }
 
         public void Outdent()
         {
-            mIndent = Mathf.Max( mIndent - IndentSize, 0.0f );
+            mIndent = Mathf.Max( mIndent - mContext.IndentSize, 0.0f );
         }
 
         public void Prefix( string text, Style style )

@@ -23,7 +23,6 @@ namespace MG.MDV
     public class MarkdownViewer : Editor, IActionHandlers
     {
         public GUISkin      Skin;
-        public StyleConfig  StyleConfig;
         public Texture      Placeholder;
         public Texture      IconMarkdown;
         public Texture      IconRaw;
@@ -207,7 +206,7 @@ namespace MG.MDV
 
             mHistory.OnOpen( filename );
 
-            mLayout = new Layout( new StyleCache( Skin, StyleConfig ), this );
+            mLayout = new Layout( new StyleCache( Skin ), this );
 
             var renderer = new RendererMarkdown( mLayout );
 

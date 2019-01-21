@@ -25,6 +25,8 @@
 ## JIRA links
 ## images (local and remote)
 ## Local links
+## Markdown Template
+
 
 # Reference
 ------------------------------------------------------------------------------

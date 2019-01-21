@@ -1,6 +1,5 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using UnityEngine;
 
 namespace MG.MDV
@@ -10,15 +9,15 @@ namespace MG.MDV
         private GUIStyle    mStyleCurrentGUI    = null;
         private Style       mStyleCurrentLayout = new Style();
 
-        public StyleConfig  Config { get; } = null;
         public GUIStyle     Active { get { return mStyleCurrentGUI; } }
 
         private GUIStyle[]  mStyles;
+        private Font        mFontVariable;
+        private Font        mFontFixed;
+        private Texture2D   mHighlight;
 
-        public StyleCache( GUISkin skin, StyleConfig config )
+        public StyleCache( GUISkin skin )
         {
-            Config = config;
-
             mStyles = new GUIStyle[ 7 ];
 
             mStyles[ 0 ] = new GUIStyle( skin.label );
@@ -30,6 +29,12 @@ namespace MG.MDV
             mStyles[ 6 ] = new GUIStyle( skin.GetStyle( "h6" ) );
 
             mStyleCurrentGUI = mStyles[ 0 ];
+
+            var fixedStyle = skin.GetStyle( "fixed" );
+
+            mFontVariable = skin.label.font;
+            mFontFixed    = fixedStyle.font;
+            mHighlight    = fixedStyle.normal.background;
         }
 
         public GUIStyle Reset()
@@ -52,7 +57,7 @@ namespace MG.MDV
 
             // font
 
-            mStyleCurrentGUI.font = style.Fixed ? Config.FontFixed : Config.FontVariable;
+            mStyleCurrentGUI.font = style.Fixed ? mFontFixed : mFontVariable;
 
 
             // font style
@@ -70,7 +75,7 @@ namespace MG.MDV
 
             // highlight
 
-            mStyleCurrentGUI.normal.background = style.Highlight ? Config.Background : null;
+            mStyleCurrentGUI.normal.background = style.Highlight ? mHighlight : null;
 
             // color
 
