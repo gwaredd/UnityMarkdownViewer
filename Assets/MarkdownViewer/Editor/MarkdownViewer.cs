@@ -30,38 +30,6 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        // proper path combine
-
-        char[] mSeparators = new char[] { '/', '\\' };
-
-        private string PathCombine( string a, string b )
-        {
-            var combined =
-                a.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ).ToList()
-                .Concat( b.Split( mSeparators, StringSplitOptions.RemoveEmptyEntries ) )
-                .Where( s => s != "." )
-            ;
-
-            var path = new List<string>();
-
-            foreach( var str in combined )
-            {
-                if( str == ".." )
-                {
-                    if( path.Count > 0 )
-                    {
-                        path.RemoveAt( path.Count - 1 );
-                    }
-                }
-                else
-                {
-                    path.Add( str );
-                }
-            }
-
-            return string.Join( "/", path );
-        }
-
         public void SelectPage( string url )
         {
             if( string.IsNullOrEmpty( url ) )
@@ -80,7 +48,7 @@ namespace MG.MDV
                 var targetPath = AssetDatabase.GetAssetPath( target );
                 var targetDir  = Path.GetDirectoryName( targetPath );
 
-                assetPath = PathCombine( targetDir, url );
+                assetPath = Utils.PathCombine( targetDir, url );
             }
 
             var asset = AssetDatabase.LoadAssetAtPath<TextAsset>( assetPath );
@@ -135,6 +103,8 @@ namespace MG.MDV
 
         public Texture FetchImage( string url )
         {
+            // TODO: images with redirect - i.e. loremflickr
+
             Texture tex;
 
             if( mTextureCache.TryGetValue( url, out tex ) )

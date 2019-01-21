@@ -70,14 +70,7 @@ namespace MG.MDV
 
             // highlight
 
-            if( style.Highlight )
-            {
-                mStyleCurrentGUI.normal.background = Config.Background;
-            }
-            else
-            {
-                mStyleCurrentGUI.normal.background = null;
-            }
+            mStyleCurrentGUI.normal.background = style.Highlight ? Config.Background : null;
 
             // color
 
