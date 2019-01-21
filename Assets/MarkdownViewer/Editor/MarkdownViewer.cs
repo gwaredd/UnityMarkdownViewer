@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -27,6 +28,7 @@ namespace MG.MDV
         public Texture      IconMarkdown;
         public Texture      IconRaw;
 
+        //private static Stack<string> History = new Stack<string>();
 
         //------------------------------------------------------------------------------
 
@@ -75,6 +77,12 @@ namespace MG.MDV
                 URL     = url;
                 Request = UnityWebRequestTexture.GetTexture( url );
 
+                // TODO: images with redirect - i.e. loremflickr
+                //                 Request.
+                // 
+                //                 Debug.Log( "Location: " + www.responseHeaders[ "Location" ] );
+                //                 Debug.Log( "Cookie: " + www.responseHeaders[ "Set-Cookie" ] );
+
                 Request.SendWebRequest();
             }
 
@@ -101,9 +109,27 @@ namespace MG.MDV
             EditorApplication.update -= UpdateRequests;
         }
 
+        private string RemapURL( string url )
+        {
+            if( Regex.IsMatch( url, @"^\w+:", RegexOptions.Singleline ) )
+            {
+                return url;
+            }
+
+            var projectDir = Path.GetDirectoryName( Application.dataPath );
+
+            if( url.StartsWith( "/" ) )
+            {
+                return $"file:///{projectDir}{url}";
+            }
+
+            var assetDir = Path.GetDirectoryName( AssetDatabase.GetAssetPath( target ) );
+            return Utils.PathNormalise( $"file:///{projectDir}/{assetDir}/{url}" );
+        }
+
         public Texture FetchImage( string url )
         {
-            // TODO: images with redirect - i.e. loremflickr
+            url = RemapURL( url );
 
             Texture tex;
 
@@ -131,10 +157,15 @@ namespace MG.MDV
             {
                 return;
             }
-
-            if( req.Request.isNetworkError )
+            
+            if( req.Request.isHttpError )
             {
-                Debug.LogError( $"Error fetching '{req.URL}' - {req.Request.error}" );
+                Debug.LogError( $"HTTP Error: {req.URL} - {req.Request.responseCode} {req.Request.error}" );
+                mTextureCache[ req.URL ] = null;
+            }
+            else if( req.Request.isNetworkError )
+            {
+                Debug.LogError( $"Network Error: {req.URL} - {req.Request.error}" );
                 mTextureCache[ req.URL ] = null;
             }
             else
@@ -148,6 +179,7 @@ namespace MG.MDV
 
 
         //------------------------------------------------------------------------------
+        // TOOD: add preview
 
         public override bool UseDefaultMargins()
         {
@@ -231,11 +263,11 @@ namespace MG.MDV
 
             // draw buttons
             {
-                var style   = GUI.skin.button;
-                var size    = style.fixedHeight;
-                var toggle  = new Rect( Screen.width - padding - size, mHeaderHeight + padding, size, size );
+                var style      = GUI.skin.button;
+                var size       = style.fixedHeight;
+                var rectButton = new Rect( Screen.width - padding - size - Skin.verticalScrollbar.fixedWidth, mHeaderHeight + padding, size, size );
 
-                if( GUI.Button( toggle, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
+                if( GUI.Button( rectButton, mRaw ? IconRaw : IconMarkdown, Skin.button ) )
                 {
                     mRaw = !mRaw;
                 }
@@ -258,11 +290,19 @@ namespace MG.MDV
             }
             else
             {
-                var contentRect = new Rect( padding, mHeaderHeight + padding, Screen.width - padding * 2.0f, Screen.height - mHeaderHeight - padding * 2.0f );
-                
-                GUI.BeginGroup( contentRect ); // clipping ...
-                                               //GUI.BeginScrollView( Rect, position, Rect ); // TODO: scroll view
+                //GetControlRect
+                var rectContainer = new Rect( 0.0f, mHeaderHeight, Screen.width, Screen.height - mHeaderHeight * 3.0f );
 
+                var width         = rectContainer.width - padding * 2.0f;
+                var hasScrollBar  = mLayout.Height > rectContainer.height;
+                var widthAdjust   = hasScrollBar ? 0.0f : Skin.verticalScrollbar.fixedWidth;
+                var rectScroll    = new Rect( -padding, -padding, width - widthAdjust, mLayout.Height );
+
+                mScrollPos = GUI.BeginScrollView( rectContainer, mScrollPos, rectScroll );
+                
+                
+                //Debug.Log( Screen.height + "x" + mLayout.Height );
+                //EditorGUIUtility.currentViewWidth
 
                 switch( Event.current.type )
                 {
@@ -279,7 +319,7 @@ namespace MG.MDV
                         break;
 
                     case EventType.Layout:
-                        mLayout.Arrange( contentRect.width );
+                        mLayout.Arrange( rectScroll.width );
                         break;
 
                     default:
@@ -287,7 +327,7 @@ namespace MG.MDV
                         break;
                 }
 
-                GUI.EndGroup();
+                GUI.EndScrollView();
             }
         }
     }

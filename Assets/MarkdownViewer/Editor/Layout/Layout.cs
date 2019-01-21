@@ -312,6 +312,8 @@ namespace MG.MDV
     {
         const float IndentSize = 40.0f; // TODO: calculate from font height?
 
+        public float Height = 100.0f;
+
         Context         mContext    = new Context();
         List<Container> mContainers = new List<Container>();
         List<Block>     mBlocks     = new List<Block>();
@@ -491,6 +493,8 @@ namespace MG.MDV
                 var size = container.Arrange( mContext, pos, maxWidth );
                 pos.y += size.y;
             }
+
+            Height = pos.y;
         }
 
         public void Draw()

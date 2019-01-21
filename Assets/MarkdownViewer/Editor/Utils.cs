@@ -36,5 +36,30 @@ namespace MG.MDV
 
             return string.Join( separator, path );
         }
+
+        public static string PathNormalise( string _a, string separator = "/" )
+        {
+            var a = (_a ?? "").Split( separators, StringSplitOptions.RemoveEmptyEntries );
+
+            var path = new List<string>();
+
+            foreach( var el in a )
+            {
+                if( el == "." )
+                {
+                    continue;
+                }
+                if( el != ".." )
+                {
+                    path.Add( el );
+                }
+                else if( path.Count > 0 )
+                {
+                    path.RemoveAt( path.Count - 1 );
+                }
+            }
+
+            return string.Join( separator, path );
+        }
     }
 }
