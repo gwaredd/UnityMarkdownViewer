@@ -4,11 +4,11 @@ using Markdig;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Markdig.Extensions.JiraLinks;
 
 namespace MG.MDV
 {
@@ -211,11 +211,23 @@ namespace MG.MDV
 
             var renderer = new RendererMarkdown( mLayout );
 
-            // TODO: look at pipeline options ...
+            var builder = new MarkdownPipelineBuilder()
+                .UseAutoLinks()
+                // TODO: .UsePipeTables()
+                // TODO: .UseGridTables()
+                // TODO: .UseEmphasisExtras()
+                // TODO: .UseEmojiAndSmiley()
+                // TODO: .UseListExtras()
+                // TODO: .UseTaskLists()
+                .DisableHtml()
+            ;
 
-            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            var pipeline = new MarkdownPipelineBuilder().Build();
+            if( !string.IsNullOrEmpty( MarkdownPreferences.JIRA ) )
+            {
+                builder.UseJiraLinks( new JiraLinkOptions( MarkdownPreferences.JIRA ) );
+            }
 
+            var pipeline = builder.Build();
             pipeline.Setup( renderer );
 
             var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
