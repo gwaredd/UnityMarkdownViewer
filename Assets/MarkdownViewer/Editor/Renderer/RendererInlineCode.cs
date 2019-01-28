@@ -14,12 +14,8 @@ namespace MG.MDV
         protected override void Write( RendererMarkdown renderer, CodeInline node )
         {
             var prevStyle = renderer.Style;
-
-            renderer.Style.Fixed     = true;
-            renderer.Style.Highlight = true;
-
+            renderer.Style.Fixed = true;
             renderer.Text( node.Content );
-
             renderer.Style = prevStyle;
         }
     }

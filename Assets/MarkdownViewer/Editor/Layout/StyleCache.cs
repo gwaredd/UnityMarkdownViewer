@@ -6,10 +6,7 @@ namespace MG.MDV
 {
     public class StyleCache
     {
-        private GUIStyle    mStyleCurrentGUI    = null;
         private Style       mStyleCurrentLayout = new Style();
-
-        public GUIStyle     Active { get { return mStyleCurrentGUI; } }
 
         private GUIStyle[]  mStyles;
         private Font        mFontVariable;
@@ -28,8 +25,6 @@ namespace MG.MDV
             mStyles[ 5 ] = new GUIStyle( skin.GetStyle( "h5" ) );
             mStyles[ 6 ] = new GUIStyle( skin.GetStyle( "h6" ) );
 
-            mStyleCurrentGUI = mStyles[ 0 ];
-
             var fixedStyle = skin.GetStyle( "fixed" );
 
             mFontVariable = skin.label.font;
@@ -37,51 +32,57 @@ namespace MG.MDV
             mHighlight    = fixedStyle.normal.background;
         }
 
-        public GUIStyle Reset()
-        {
-            return Apply( new Style(), true );
-        }
-
 
         //------------------------------------------------------------------------------
 
-        public GUIStyle Apply( Style style, bool force = false )
+        public GUIStyle Apply( Style style )
         {
-            //             if( mStyleDoc == style )
-            //             {
-            //                 return mStyleGUI;
-            //             }
+            // if( mStyleDoc == style )
+            // {
+            //     return mStyleGUI;
+            // }
 
             mStyleCurrentLayout = style;
-            mStyleCurrentGUI    = mStyles[ style.Size ];
+            var guiStyle = mStyles[ style.Size ];
 
             // font
 
-            mStyleCurrentGUI.font = style.Fixed ? mFontFixed : mFontVariable;
+            guiStyle.font = style.Fixed ? mFontFixed : mFontVariable;
 
 
             // font style
 
             if( style.Bold )
             {
-                mStyleCurrentGUI.fontStyle = style.Italic ? FontStyle.BoldAndItalic : FontStyle.Bold;
+                guiStyle.fontStyle = style.Italic ? FontStyle.BoldAndItalic : FontStyle.Bold;
 
             }
             else
             {
-                mStyleCurrentGUI.fontStyle = style.Italic ? FontStyle.Italic : FontStyle.Normal;
+                guiStyle.fontStyle = style.Italic ? FontStyle.Italic : FontStyle.Normal;
             }
 
 
             // highlight
 
-            mStyleCurrentGUI.normal.background = style.Highlight ? mHighlight : null;
+            //guiStyle.normal.background = style.Highlight ? mHighlight : null;
 
             // color
 
-            mStyleCurrentGUI.normal.textColor = style.Link ? Color.blue : Color.black;
+            if( style.Link )
+            {
+                guiStyle.normal.textColor = Color.blue;
+            }
+            else if( style.Fixed )
+            {
+                guiStyle.normal.textColor = Color.grey;
+            }
+            else
+            {
+                guiStyle.normal.textColor = Color.black;
+            }
 
-            return mStyleCurrentGUI;
+            return guiStyle;
         }
     }
 }

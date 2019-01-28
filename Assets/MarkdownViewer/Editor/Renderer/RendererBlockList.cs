@@ -13,15 +13,19 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, ListBlock block )
         {
-            renderer.Layout.Indent();
+            var layout = renderer.Layout;
+
+            renderer.ImplicitParagraph = true;
+            layout.Indent();
 
             for( var i = 0; i < block.Count; i++ )
             {
-                renderer.Layout.Prefix( block.IsOrdered ? i.ToString() + "." : "\u2022", renderer.Style );
+                layout.Prefix( block.IsOrdered ? i.ToString() + "." : "\u2022", renderer.Style );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
             }
 
-            renderer.Layout.Outdent();
+            layout.Outdent();
+            renderer.ImplicitParagraph = false;
             renderer.FinishBlock();
         }
     }

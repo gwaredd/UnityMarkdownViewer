@@ -8,7 +8,6 @@ namespace MG.MDV
         const int FlagItalic    = 0x0200;
         const int FlagFixed     = 0x0400;
         const int FlagLink      = 0x0800;
-        const int FlagHighlight = 0x1000;
         const int MaskSize      = 0x000F;
 
         int mStyle;
@@ -62,13 +61,6 @@ namespace MG.MDV
             get { return ( mStyle & FlagLink ) != 0x0000; }
             set { if( value ) mStyle |= FlagLink; else mStyle &= ~FlagLink; }
         }
-
-        public bool Highlight
-        {
-            get { return ( mStyle & FlagHighlight ) != 0x0000; }
-            set { if( value ) mStyle |= FlagHighlight; else mStyle &= ~FlagHighlight; }
-        }
-        
 
         public int Size
         {

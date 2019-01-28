@@ -13,7 +13,14 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, LineBreakInline node )
         {
-            renderer.FinishBlock();
+            if( node.IsHard )
+            {
+                renderer.FinishBlock();
+            }
+            else
+            {
+                renderer.Text( " " );
+            }
         }
     }
 }

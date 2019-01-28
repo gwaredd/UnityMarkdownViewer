@@ -18,6 +18,11 @@ namespace MG.MDV
             renderer.WriteLeafBlockInline( block );
             renderer.Style.Size = prevStyle;
 
+            if( block.Level == 1 )
+            {
+                renderer.Layout.HorizontalLine();
+            }
+
             renderer.FinishBlock();
         }
     }

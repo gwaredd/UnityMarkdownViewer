@@ -30,6 +30,8 @@ namespace MG.MDV
             }
         }
 
+        public bool ImplicitParagraph { get; internal set; }
+
         private string mLink = null;
 
         internal void Text( string text ) { Layout.Text( text, Style, Link, ToolTip ); }
@@ -135,7 +137,7 @@ namespace MG.MDV
         {
             Layout.NewLine();
 
-            if( emptyLine )
+            if( emptyLine && !ImplicitParagraph )
             {
                 Layout.NewLine();
             }
