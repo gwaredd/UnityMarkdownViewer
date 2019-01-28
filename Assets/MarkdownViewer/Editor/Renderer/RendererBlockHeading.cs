@@ -23,7 +23,7 @@ namespace MG.MDV
                 renderer.Layout.HorizontalLine();
             }
 
-            renderer.FinishBlock();
+            renderer.FinishBlock( true );
         }
     }
 }

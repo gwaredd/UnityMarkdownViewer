@@ -15,8 +15,10 @@ namespace MG.MDV
         {
             var layout = renderer.Layout;
 
-            renderer.ImplicitParagraph = true;
             layout.Indent();
+
+            var prevImplicit = renderer.ImplicitParagraph;
+            renderer.ImplicitParagraph = true;
 
             for( var i = 0; i < block.Count; i++ )
             {
@@ -24,9 +26,10 @@ namespace MG.MDV
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
             }
 
+            renderer.ImplicitParagraph = prevImplicit;
             layout.Outdent();
-            renderer.ImplicitParagraph = false;
-            renderer.FinishBlock();
+
+            renderer.FinishBlock( true );
         }
     }
 }

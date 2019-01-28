@@ -197,6 +197,27 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        void Dump()
+        {
+            var renderer = new DebugRenderer();
+
+            var builder = new MarkdownPipelineBuilder()
+                .UseAutoLinks()
+                .DisableHtml()
+            ;
+
+            if( !string.IsNullOrEmpty( MarkdownPreferences.JIRA ) )
+            {
+                builder.UseJiraLinks( new JiraLinkOptions( MarkdownPreferences.JIRA ) );
+            }
+
+            var pipeline = builder.Build();
+            pipeline.Setup( renderer );
+
+            var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
+            renderer.Render( doc );
+        }
+
         void ParseDocument( string filename )
         {
             if( mLayout != null )
@@ -231,6 +252,8 @@ namespace MG.MDV
 
             var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
             renderer.Render( doc );
+
+            //Dump();
         }
 
 

@@ -1,6 +1,5 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -30,7 +29,7 @@ namespace MG.MDV
             }
         }
 
-        public bool ImplicitParagraph { get; internal set; }
+        public bool ImplicitParagraph = false;
 
         private string mLink = null;
 
@@ -133,11 +132,15 @@ namespace MG.MDV
             return content;
         }
 
-        internal void FinishBlock( bool emptyLine = false )
-        {
-            Layout.NewLine();
+        //------------------------------------------------------------------------------
 
-            if( emptyLine && !ImplicitParagraph )
+        internal void FinishBlock( bool space = false )
+        {
+            if( space && !ImplicitParagraph )
+            {
+                Layout.Space();
+            }
+            else
             {
                 Layout.NewLine();
             }
