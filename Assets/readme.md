@@ -10,6 +10,8 @@
 * tables / grids!
 * test what happens when we have multiple TextAsset editors ...
 * scroll view for large files ...
+* syntax highlighting
+
 
 # Documentation
 ------------------------------------------------------------------------------
@@ -41,4 +43,15 @@
 * variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
  * https://github.com/roydejong/chromium-unity-server
  * https://ultralig.ht/
+ 
+# ref
+
+https://github.com/lunet-io/markdig
+https://www.nuget.org/packages/Markdig.Signed/
+https://github.com/RichardSlater/Markdig.SyntaxHighlighting/
+
+
+# markdown reference
+
+https://daringfireball.net/projects/markdown/
 
