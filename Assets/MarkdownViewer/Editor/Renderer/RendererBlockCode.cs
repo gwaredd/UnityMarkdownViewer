@@ -15,7 +15,11 @@ namespace MG.MDV
         {
             var prevStyle = renderer.Style;
             renderer.Style.Fixed = true;
+
+            renderer.Layout.QuoteBegin();
             renderer.WriteLeafRawLines( block );
+            renderer.Layout.QuoteEnd();
+
             renderer.Style = prevStyle;
 
             renderer.FinishBlock( true );

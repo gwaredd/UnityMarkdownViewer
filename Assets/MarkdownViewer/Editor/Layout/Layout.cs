@@ -6,8 +6,6 @@ namespace MG.MDV
 {
     public class Layout
     {
-        public float Height = 100.0f;
-
         Context        mContext;
         BlockContainer mDocument;
 
@@ -17,11 +15,17 @@ namespace MG.MDV
             mDocument = doc;
         }
 
+        public float Height { get { return mDocument.Rect.height; } }
+
+        public Block Find( string id )
+        {
+            return mDocument.Find( id );
+        }
+
         public void Arrange( float maxWidth )
         {
             mContext.Reset();
-            var size = mDocument.Arrange( mContext, Vector2.zero, maxWidth );
-            Height = size.y;
+            mDocument.Arrange( mContext, Vector2.zero, maxWidth );
         }
 
         public void Draw()

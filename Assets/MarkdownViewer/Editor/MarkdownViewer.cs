@@ -33,8 +33,27 @@ namespace MG.MDV
                 return;
             }
 
+            // internal link
+
+            if( url.StartsWith( "#" ) )
+            {
+                var block = mLayout.Find( url.ToLower() );
+
+                if( block != null )
+                {
+                    mScrollPos.y = block.Rect.y;
+                }
+                else
+                {
+                    Debug.LogWarning( $"Unable to find section header {url}" );
+                }
+
+                return;
+            }
+
+            // relative or absolute link ...
+
             var newPath = string.Empty;
-            var currentPath = AssetDatabase.GetAssetPath( target );
 
             if( url.StartsWith( "/" ) )
             {
@@ -42,8 +61,11 @@ namespace MG.MDV
             }
             else
             {
+                var currentPath = AssetDatabase.GetAssetPath( target );
                 newPath = Utils.PathCombine( Path.GetDirectoryName( currentPath ), url );
             }
+
+            // load file
 
             var asset = AssetDatabase.LoadAssetAtPath<TextAsset>( newPath );
 
@@ -298,8 +320,6 @@ namespace MG.MDV
 
             // draw content
 
-            DrawToolbar( rectContainer, hasScrollbar ? scrollWidth + padRight : padRight );
-
             using( var scroll = new GUI.ScrollViewScope( rectContainer, mScrollPos, rectContent ) )
             {
                 mScrollPos = scroll.scrollPosition;
@@ -313,6 +333,9 @@ namespace MG.MDV
                     DrawMarkdown( rectContent );
                 }
             }
+
+            DrawToolbar( rectContainer, hasScrollbar ? scrollWidth + padRight : padRight );
+
         }
 
         //------------------------------------------------------------------------------

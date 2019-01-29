@@ -29,7 +29,7 @@ namespace MG.MDV
             }
         }
 
-        public bool ImplicitParagraph = false;
+        public bool ConsumeSpace = false;
 
         private string mLink = null;
 
@@ -136,7 +136,7 @@ namespace MG.MDV
 
         internal void FinishBlock( bool space = false )
         {
-            if( space && !ImplicitParagraph )
+            if( space && !ConsumeSpace )
             {
                 Layout.Space();
             }

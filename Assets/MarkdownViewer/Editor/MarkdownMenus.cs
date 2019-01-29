@@ -30,7 +30,7 @@ namespace MG.MDV
             var filepath = GetFilePath( "NewMarkdown.md" );
             var writer   = File.CreateText( filepath );
 
-            var template = EditorGUIUtility.Load("MarkdownTemplate.md") as TextAsset;
+            var template = EditorGUIUtility.Load( "MarkdownTemplate.md" ) as TextAsset;
 
             if( template != null )
             {

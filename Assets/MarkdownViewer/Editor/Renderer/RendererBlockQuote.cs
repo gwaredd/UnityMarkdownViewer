@@ -13,14 +13,14 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, QuoteBlock block )
         {
-            var prevImplicit = renderer.ImplicitParagraph;
-            renderer.ImplicitParagraph = false;
+            var prevImplicit = renderer.ConsumeSpace;
+            renderer.ConsumeSpace = false;
 
             renderer.Layout.QuoteBegin();
             renderer.WriteChildren( block );
             renderer.Layout.QuoteEnd();
 
-            renderer.ImplicitParagraph = prevImplicit;
+            renderer.ConsumeSpace = prevImplicit;
 
             renderer.FinishBlock( true );
         }

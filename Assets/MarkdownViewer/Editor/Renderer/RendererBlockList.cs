@@ -17,16 +17,16 @@ namespace MG.MDV
 
             layout.Indent();
 
-            var prevImplicit = renderer.ImplicitParagraph;
-            renderer.ImplicitParagraph = true;
+            var prevImplicit = renderer.ConsumeSpace;
+            renderer.ConsumeSpace = true;
 
             for( var i = 0; i < block.Count; i++ )
             {
-                layout.Prefix( block.IsOrdered ? i.ToString() + "." : "\u2022", renderer.Style );
+                layout.Prefix( block.IsOrdered ? (i+1).ToString() + "." : "\u2022", renderer.Style );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
             }
 
-            renderer.ImplicitParagraph = prevImplicit;
+            renderer.ConsumeSpace = prevImplicit;
             layout.Outdent();
 
             renderer.FinishBlock( true );

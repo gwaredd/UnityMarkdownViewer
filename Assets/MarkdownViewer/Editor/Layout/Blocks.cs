@@ -1,5 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -11,11 +12,18 @@ namespace MG.MDV
 
     public abstract class Block
     {
-        public Block Parent = null;
-        public float Indent = 0.0f;
+        public string   ID      = null;
+        public Rect     Rect    = new Rect();
+        public Block    Parent  = null;
+        public float    Indent  = 0.0f;
 
-        public abstract Vector2 Arrange( Context context, Vector2 pos, float maxWidth );
-        public abstract void    Draw( Context context );
+        public abstract void Arrange( Context context, Vector2 anchor, float maxWidth );
+        public abstract void Draw( Context context );
+
+        public virtual Block Find( string id )
+        {
+            return id.Equals( ID, StringComparison.Ordinal ) ? this : null;
+        }
     }
 
     //------------------------------------------------------------------------------
@@ -24,9 +32,6 @@ namespace MG.MDV
     {
         public bool Quote = false;
 
-        const float Padding = 4.0f;
-
-        Rect        mRect   = new Rect();
         List<Block> mBlocks = new List<Block>();
 
         public Block Add( Block block )
@@ -36,36 +41,67 @@ namespace MG.MDV
             return block;
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override Block Find( string id )
         {
-            float oy = pos.y;
-
-            mRect.position = pos;
-
-            if( Quote )
+            if( id.Equals( ID, StringComparison.Ordinal ) )
             {
-                pos += new Vector2( Padding, Padding );
+                return this;
             }
 
             foreach( var block in mBlocks )
             {
-                var size = block.Arrange( context, pos, maxWidth );
-                pos.y += size.y;
+                var match = block.Find( id );
+
+                if( match != null )
+                {
+                    return match;
+                }
             }
 
-            mRect.size = new Vector2( maxWidth, pos.y - oy + ( Quote ? Padding : 0.0f ) );
+            return null;
+        }
 
-            return mRect.size;
+        public override void Arrange( Context context, Vector2 pos, float maxWidth )
+        {
+            float oy = pos.y;
+
+            Rect.position = pos;
+
+            var padding = 0.0f;
+
+            if( Quote )
+            {
+                Rect.x += Indent;
+                padding = context.LineHeight * 0.5f;
+                pos += new Vector2( context.IndentSize, padding );
+            }
+
+            foreach( var block in mBlocks )
+            {
+                block.Arrange( context, pos, maxWidth );
+                pos.y += block.Rect.height;
+            }
+
+            Rect.width = maxWidth - Indent;
+            Rect.height = pos.y - oy + padding;
         }
 
         public override void Draw( Context context )
         {
             if( Quote )
             {
-                GUI.Box( mRect, string.Empty );
+                GUI.Box( Rect, string.Empty );
             }
 
             mBlocks.ForEach( block => block.Draw( context ) );
+        }
+
+        public void RemoveTrailingSpace()
+        {
+            if( mBlocks.Count > 0 && mBlocks[ mBlocks.Count - 1 ] is BlockSpace )
+            {
+                mBlocks.RemoveAt( mBlocks.Count - 1 );
+            }
         }
     }
 
@@ -74,21 +110,17 @@ namespace MG.MDV
 
     public class BlockLine : Block
     {
-        private Rect Rect = new Rect();
-
         public override void Draw( Context context )
         {
             var rect = new Rect( Rect.position.x, Rect.center.y, Rect.width, 1.0f );
             GUI.Label( rect, string.Empty, GUI.skin.GetStyle( "hr" ) );
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override void Arrange( Context context, Vector2 pos, float maxWidth )
         {
             Rect.position = pos;
-            Rect.width = maxWidth;
-            Rect.height = 10.0f;
-
-            return Rect.size;
+            Rect.width    = maxWidth;
+            Rect.height   = 10.0f;
         }
     }
 
@@ -100,9 +132,11 @@ namespace MG.MDV
         {
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override void Arrange( Context context, Vector2 pos, float maxWidth )
         {
-            return new Vector2( 1.0f, context.LineHeight );
+            Rect.position = pos;
+            Rect.width    = 1.0f;
+            Rect.height   = context.LineHeight;
         }
     }
 
@@ -131,12 +165,14 @@ namespace MG.MDV
             mPrefix = content;
         }
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        public override void Arrange( Context context, Vector2 pos, float maxWidth )
         {
             var origin = pos;
 
             pos.x += Indent;
             maxWidth = Mathf.Max( maxWidth - Indent, context.MinWidth );
+
+            Rect.position = pos;
 
             // prefix
 
@@ -150,7 +186,9 @@ namespace MG.MDV
 
             if( mContent.Count == 0 )
             {
-                return Vector2.zero;
+                Rect.width  = 0.0f;
+                Rect.height = 0.0f;
+                return;
             }
 
             mContent.ForEach( c => c.Update( context ) );
@@ -185,7 +223,8 @@ namespace MG.MDV
                 pos.y += rowHeight;
             }
 
-            return new Vector2( maxWidth, pos.y - origin.y );
+            Rect.width  = maxWidth;
+            Rect.height = pos.y - origin.y;
         }
 
         void LayoutRow( Vector2 pos, int from, int until, float rowHeight )

@@ -19,6 +19,20 @@ namespace MG.MDV
 
             mContext.Apply( style );
 
+            if( style.Size > 0 )
+            {
+                if( mCurrentContent.ID == null )
+                {
+                    mCurrentContent.ID = "#";
+                }
+                else
+                {
+                    mCurrentContent.ID += "-";
+                }
+
+                mCurrentContent.ID += text.Trim().Replace( ' ', '-' ).ToLower();
+            }
+
             mStyle   = style;
             mLink    = link;
             mTooltip = tooltip;
@@ -147,6 +161,8 @@ namespace MG.MDV
 
         public void QuoteEnd()
         {
+            mCurrentContainer.RemoveTrailingSpace();
+
             mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
             CurrentBlock = null;
         }
