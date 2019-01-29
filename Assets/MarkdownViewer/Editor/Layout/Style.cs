@@ -4,6 +4,8 @@ namespace MG.MDV
 {
     public struct Style
     {
+        public static readonly Style Default = new Style();
+
         const int FlagBold      = 0x0100;
         const int FlagItalic    = 0x0200;
         const int FlagFixed     = 0x0400;

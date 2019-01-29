@@ -142,7 +142,7 @@ namespace MG.MDV
 
         public void QuoteEnd()
         {
-            mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? Document;
+            mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
             CurrentBlock = null;
         }
 
@@ -150,7 +150,6 @@ namespace MG.MDV
         ////////////////////////////////////////////////////////////////////////////////
         // private
 
-        public BlockContainer Document { get; private set; }
 
         Context         mContext;
 
@@ -160,6 +159,7 @@ namespace MG.MDV
         StringBuilder   mWord;
         float           mIndent;
 
+        BlockContainer  mDocument;
         BlockContainer  mCurrentContainer;
         Block           mCurrentBlock;
         BlockContent    mCurrentContent;
@@ -181,7 +181,7 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        public void Setup( Context context )
+        public LayoutBuilder( Context context )
         {
             mContext          = context;
 
@@ -190,14 +190,18 @@ namespace MG.MDV
             mTooltip          = null;
             mWord             = new StringBuilder( 1024 );
 
-            Document         = new BlockContainer();
-            mCurrentContainer = Document;
+            mDocument         = new BlockContainer();
+            mCurrentContainer = mDocument;
             mCurrentBlock     = null;
             mCurrentContent   = null;
 
             mIndent           = 0.0f;
         }
 
+        public Layout GetLayout()
+        {
+            return new Layout( mContext, mDocument );
+        }
 
         //------------------------------------------------------------------------------
 

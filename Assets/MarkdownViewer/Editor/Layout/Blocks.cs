@@ -1,79 +1,13 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace MG.MDV
 {
-    public class Container
-    {
-        public List<Row> Rows = new List<Row>();
-
-        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
-        {
-            float oy = pos.y;
-
-            foreach( var row in Rows )
-            {
-                var size = row.Arrange( context, pos, maxWidth );
-                pos.y += size.y;
-            }
-
-            return new Vector2( maxWidth, pos.y - oy );
-        }
-    }
-
-    //------------------------------------------------------------------------------
-
-    public class Row
-    {
-        public List<Col> Cols = new List<Col>();
-
-        public Row Add( Col col )
-        {
-            Cols.Add( col );
-            return this;
-        }
-
-        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
-        {
-            float oy = pos.y;
-
-            foreach( var col in Cols )
-            {
-                var size = col.Arrange( context, pos, maxWidth );
-                pos.y += size.y;
-            }
-
-            return new Vector2( maxWidth, pos.y - oy );
-        }
-    }
-
-    //------------------------------------------------------------------------------
-
-    public class Col
-    {
-        public List<Block> Blocks = new List<Block>();
-
-        public bool IsEmpty { get { return Blocks.Count == 0; } }
-
-        public Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
-        {
-            float oy = pos.y;
-
-            foreach( var block in Blocks )
-            {
-                var size = block.Arrange( context, pos, maxWidth );
-                pos.y += size.y;
-            }
-
-            return new Vector2( maxWidth, pos.y - oy );
-        }
-    }
-
-    //------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////
+    // block
 
     public abstract class Block
     {
@@ -81,29 +15,39 @@ namespace MG.MDV
         public float Indent = 0.0f;
 
         public abstract Vector2 Arrange( Context context, Vector2 pos, float maxWidth );
-        public abstract void Draw( Context context );
+        public abstract void    Draw( Context context );
     }
+
+    //------------------------------------------------------------------------------
 
     public class BlockContainer : Block
     {
         public bool Quote = false;
         List<Block> mBlocks = new List<Block>();
 
-        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void Draw( Context context )
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Block Add( Block block )
         {
             block.Parent = this;
             mBlocks.Add( block );
             return block;
+        }
+
+        public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
+        {
+            float oy = pos.y;
+
+            foreach( var block in mBlocks )
+            {
+                var size = block.Arrange( context, pos, maxWidth );
+                pos.y += size.y;
+            }
+
+            return new Vector2( maxWidth, pos.y - oy );
+        }
+
+        public override void Draw( Context context )
+        {
+            mBlocks.ForEach( block => block.Draw( context ) );
         }
     }
 
@@ -257,7 +201,9 @@ namespace MG.MDV
         }
     }
 
-    //------------------------------------------------------------------------------
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Content
 
     public abstract class Content
     {
@@ -305,6 +251,8 @@ namespace MG.MDV
         }
     }
 
+    //------------------------------------------------------------------------------
+
     public class ContentText : Content
     {
         public ContentText( GUIContent payload, Style style, string link )
@@ -312,6 +260,8 @@ namespace MG.MDV
         {
         }
     }
+
+    //------------------------------------------------------------------------------
 
     public class ContentImage : Content
     {

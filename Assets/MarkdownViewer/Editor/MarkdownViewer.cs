@@ -188,6 +188,8 @@ namespace MG.MDV
             }
         }
 
+
+#if MDV_DEV
         //------------------------------------------------------------------------------
 
         void Dump()
@@ -211,6 +213,8 @@ namespace MG.MDV
             renderer.Render( doc );
         }
 
+#endif
+
         void ParseDocument( string filename )
         {
             if( mLayout != null )
@@ -218,13 +222,15 @@ namespace MG.MDV
                 return;
             }
 
+            //Dump();
+
             mHistory.OnOpen( filename );
 
-            mLayout = new Layout( new StyleCache( Skin ), this );
+            var context  = new Context( Skin, this );
+            var builder  = new LayoutBuilder( context );
+            var renderer = new RendererMarkdown( builder );
 
-            var renderer = new RendererMarkdown( mLayout );
-
-            var builder = new MarkdownPipelineBuilder()
+            var pipelineBuilder = new MarkdownPipelineBuilder()
                 .UseAutoLinks()
                 // TODO: .UsePipeTables()
                 // TODO: .UseGridTables()
@@ -237,16 +243,16 @@ namespace MG.MDV
 
             if( !string.IsNullOrEmpty( Preferences.JIRA ) )
             {
-                builder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
+                pipelineBuilder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
             }
 
-            var pipeline = builder.Build();
+            var pipeline = pipelineBuilder.Build();
             pipeline.Setup( renderer );
 
             var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
             renderer.Render( doc );
 
-            //Dump();
+            mLayout = builder.GetLayout();
         }
 
 
