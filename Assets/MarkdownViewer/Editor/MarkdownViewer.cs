@@ -206,9 +206,9 @@ namespace MG.MDV
                 .DisableHtml()
             ;
 
-            if( !string.IsNullOrEmpty( MarkdownPreferences.JIRA ) )
+            if( !string.IsNullOrEmpty( Preferences.JIRA ) )
             {
-                builder.UseJiraLinks( new JiraLinkOptions( MarkdownPreferences.JIRA ) );
+                builder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
             }
 
             var pipeline = builder.Build();
@@ -242,9 +242,9 @@ namespace MG.MDV
                 .DisableHtml()
             ;
 
-            if( !string.IsNullOrEmpty( MarkdownPreferences.JIRA ) )
+            if( !string.IsNullOrEmpty( Preferences.JIRA ) )
             {
-                builder.UseJiraLinks( new JiraLinkOptions( MarkdownPreferences.JIRA ) );
+                builder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
             }
 
             var pipeline = builder.Build();

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MG.MDV
 {
-    public class MarkdownMenus
+    public class Menus
     {
         static string GetFilePath( string filename )
         {

@@ -1,8 +1,6 @@
 {
-    "name": "MDV",
-    "references": [
-        "MDVDev"
-    ],
+    "name": "MDVDev",
+    "references": [],
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"

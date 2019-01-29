@@ -1,9 +1,11 @@
-﻿using UnityEditor;
+﻿////////////////////////////////////////////////////////////////////////////////
+
+using UnityEditor;
 using UnityEngine;
 
 namespace MG.MDV
 {
-    public class MarkdownPreferences
+    public class Preferences
     {
         private static readonly string KeyJIRA = "MG/MDV/JIRA";
 
