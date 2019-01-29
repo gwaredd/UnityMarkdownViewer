@@ -20,6 +20,11 @@ namespace MG.MDV
         public abstract void Arrange( Context context, Vector2 anchor, float maxWidth );
         public abstract void Draw( Context context );
 
+        public Block( float indent )
+        {
+            Indent = indent;
+        }
+
         public virtual Block Find( string id )
         {
             return id.Equals( ID, StringComparison.Ordinal ) ? this : null;
@@ -27,12 +32,15 @@ namespace MG.MDV
     }
 
     //------------------------------------------------------------------------------
+    // <div>
 
     public class BlockContainer : Block
     {
         public bool Quote = false;
 
         List<Block> mBlocks = new List<Block>();
+
+        public BlockContainer( float indent ) : base( indent ) { }
 
         public Block Add( Block block )
         {
@@ -82,7 +90,7 @@ namespace MG.MDV
                 pos.y += block.Rect.height;
             }
 
-            Rect.width = maxWidth - Indent;
+            Rect.width  = maxWidth - Indent;
             Rect.height = pos.y - oy + padding;
         }
 
@@ -105,11 +113,14 @@ namespace MG.MDV
         }
     }
 
+
     //------------------------------------------------------------------------------
-    // hr
+    // <hr/>
 
     public class BlockLine : Block
     {
+        public BlockLine( float indent ) : base( indent ) {}
+
         public override void Draw( Context context )
         {
             var rect = new Rect( Rect.position.x, Rect.center.y, Rect.width, 1.0f );
@@ -124,10 +135,14 @@ namespace MG.MDV
         }
     }
 
+
     //------------------------------------------------------------------------------
+    // <br/>
 
     public class BlockSpace : Block
     {
+        public BlockSpace( float indent ) : base( indent ) { }
+
         public override void Draw( Context context )
         {
         }
@@ -136,12 +151,13 @@ namespace MG.MDV
         {
             Rect.position = pos;
             Rect.width    = 1.0f;
-            Rect.height   = context.LineHeight;
+            Rect.height   = context.LineHeight * 0.75f;
         }
     }
 
+
     //------------------------------------------------------------------------------
-    // <div>..</div>
+    // <p>
 
     public class BlockContent : Block
     {
@@ -150,10 +166,7 @@ namespace MG.MDV
 
         public bool IsEmpty { get { return mContent.Count == 0; } }
 
-        public BlockContent( float indent )
-        {
-            Indent = indent;
-        }
+        public BlockContent( float indent ) : base( indent ) { }
 
         public void Add( Content content )
         {

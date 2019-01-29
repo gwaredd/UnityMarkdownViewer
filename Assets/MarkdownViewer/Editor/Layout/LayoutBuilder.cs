@@ -94,7 +94,7 @@ namespace MG.MDV
                 return;
             }
 
-            AddBlock( new BlockSpace() );
+            AddBlock( new BlockSpace( mIndent ) );
         }
 
         public void HorizontalLine()
@@ -104,7 +104,7 @@ namespace MG.MDV
                 return;
             }
 
-            AddBlock( new BlockLine() );
+            AddBlock( new BlockLine( mIndent ) );
         }
 
 
@@ -155,7 +155,8 @@ namespace MG.MDV
 
         public void QuoteBegin()
         {
-            mCurrentContainer = AddBlock( new BlockContainer() { Quote = true } );
+            Space();
+            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Quote = true } );
             CurrentBlock = null;
         }
 
@@ -165,6 +166,7 @@ namespace MG.MDV
 
             mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
             CurrentBlock = null;
+            Space();
         }
 
 
@@ -211,12 +213,12 @@ namespace MG.MDV
             mTooltip          = null;
             mWord             = new StringBuilder( 1024 );
 
-            mDocument         = new BlockContainer();
+            mIndent           = 0.0f;
+
+            mDocument         = new BlockContainer( mIndent );
             mCurrentContainer = mDocument;
             mCurrentBlock     = null;
             mCurrentContent   = null;
-
-            mIndent           = 0.0f;
         }
 
         public Layout GetLayout()
