@@ -12,15 +12,8 @@ using Markdig.Extensions.JiraLinks;
 
 namespace MG.MDV
 {
-    public interface IActionHandlers
-    {
-        Texture FetchImage( string url );
-        void SelectPage( string url );
-    }
-
-
     [CustomEditor( typeof( TextAsset ) )]
-    public class MarkdownViewer : Editor, IActionHandlers
+    public class MarkdownViewer : Editor, IActions
     {
         public GUISkin      Skin;
         public Texture      Placeholder;

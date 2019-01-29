@@ -1,7 +1,7 @@
 {
     "name": "MDV",
     "references": [
-        "MDVDev"
+        "MDV.Dev"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
