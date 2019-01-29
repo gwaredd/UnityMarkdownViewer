@@ -12,6 +12,11 @@ namespace MG.MDV
 
         public void Text( string text, Style style, string link, string tooltip )
         {
+            if( mCurrentContent == null )
+            {
+                NewContentBlock();
+            }
+
             mContext.Apply( style );
 
             mStyle   = style;
@@ -60,7 +65,7 @@ namespace MG.MDV
 
         public void NewLine()
         {
-            if( mCurrentContent != null && !mCurrentContent.IsEmpty )
+            if( mCurrentContent != null && mCurrentContent.IsEmpty )
             {
                 return;
             }

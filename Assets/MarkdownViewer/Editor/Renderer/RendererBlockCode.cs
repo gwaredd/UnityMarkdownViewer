@@ -18,7 +18,7 @@ namespace MG.MDV
             renderer.WriteLeafRawLines( block );
             renderer.Style = prevStyle;
 
-            renderer.FinishBlock();
+            renderer.FinishBlock( true );
         }
     }
 }

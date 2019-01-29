@@ -23,6 +23,10 @@ namespace MG.MDV
     public class BlockContainer : Block
     {
         public bool Quote = false;
+
+        const float Padding = 4.0f;
+
+        Rect        mRect   = new Rect();
         List<Block> mBlocks = new List<Block>();
 
         public Block Add( Block block )
@@ -36,17 +40,31 @@ namespace MG.MDV
         {
             float oy = pos.y;
 
+            mRect.position = pos;
+
+            if( Quote )
+            {
+                pos += new Vector2( Padding, Padding );
+            }
+
             foreach( var block in mBlocks )
             {
                 var size = block.Arrange( context, pos, maxWidth );
                 pos.y += size.y;
             }
 
-            return new Vector2( maxWidth, pos.y - oy );
+            mRect.size = new Vector2( maxWidth, pos.y - oy + ( Quote ? Padding : 0.0f ) );
+
+            return mRect.size;
         }
 
         public override void Draw( Context context )
         {
+            if( Quote )
+            {
+                GUI.Box( mRect, string.Empty );
+            }
+
             mBlocks.ForEach( block => block.Draw( context ) );
         }
     }
@@ -93,12 +111,10 @@ namespace MG.MDV
 
     public class BlockContent : Block
     {
-        Rect          mRect      = new Rect();
         Content       mPrefix    = null;
         List<Content> mContent   = new List<Content>();
 
         public bool IsEmpty { get { return mContent.Count == 0; } }
-        public bool Highlight  = false;
 
         public BlockContent( float indent )
         {
@@ -118,8 +134,6 @@ namespace MG.MDV
         public override Vector2 Arrange( Context context, Vector2 pos, float maxWidth )
         {
             var origin = pos;
-
-            mRect.position = pos;
 
             pos.x += Indent;
             maxWidth = Mathf.Max( maxWidth - Indent, context.MinWidth );
@@ -171,9 +185,7 @@ namespace MG.MDV
                 pos.y += rowHeight;
             }
 
-            mRect.size = new Vector2( maxWidth, pos.y - origin.y );
-
-            return mRect.size;
+            return new Vector2( maxWidth, pos.y - origin.y );
         }
 
         void LayoutRow( Vector2 pos, int from, int until, float rowHeight )
@@ -191,11 +203,6 @@ namespace MG.MDV
 
         public override void Draw( Context context )
         {
-            if( Highlight )
-            {
-                GUI.Box( mRect, string.Empty );
-            }
-
             mContent.ForEach( c => c.Draw( context ) );
             mPrefix?.Draw( context );
         }
