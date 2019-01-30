@@ -107,12 +107,17 @@ namespace MG.MDV
         List<ImageRequest> mActiveRequests = new List<ImageRequest>();
         Dictionary<string,Texture> mTextureCache = new Dictionary<string, Texture>();
 
-        private void OnEnable()
+        protected void OnEnable()
         {
+            if( mContent == null )
+            {
+                mContent = ( target as TextAsset ).text;
+            }
+
             EditorApplication.update += UpdateRequests;
         }
 
-        private void OnDisable()
+        protected void OnDisable()
         {
             EditorApplication.update -= UpdateRequests;
         }
@@ -210,33 +215,6 @@ namespace MG.MDV
             }
         }
 
-
-#if MDV_DEV
-        //------------------------------------------------------------------------------
-
-        void Dump()
-        {
-            var renderer = new DebugRenderer();
-
-            var builder = new MarkdownPipelineBuilder()
-                .UseAutoLinks()
-                .DisableHtml()
-            ;
-
-            if( !string.IsNullOrEmpty( Preferences.JIRA ) )
-            {
-                builder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
-            }
-
-            var pipeline = builder.Build();
-            pipeline.Setup( renderer );
-
-            var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
-            renderer.Render( doc );
-        }
-
-#endif
-
         void ParseDocument( string filename )
         {
             if( mLayout != null )
@@ -252,13 +230,6 @@ namespace MG.MDV
 
             var pipelineBuilder = new MarkdownPipelineBuilder()
                 .UseAutoLinks()
-                // TODO: .UsePipeTables()
-                // TODO: .UseGridTables()
-                // TODO: .UseEmphasisExtras()
-                // TODO: .UseEmojiAndSmiley()
-                // TODO: .UseListExtras()
-                // TODO: .UseTaskLists()
-                //.DisableHtml()
             ;
 
             if( !string.IsNullOrEmpty( Preferences.JIRA ) )
@@ -269,7 +240,7 @@ namespace MG.MDV
             var pipeline = pipelineBuilder.Build();
             pipeline.Setup( renderer );
 
-            var doc = Markdown.Parse( ( target as TextAsset ).text, pipeline );
+            var doc = Markdown.Parse( mContent, pipeline );
             renderer.Render( doc );
 
             mLayout = builder.GetLayout();
@@ -279,16 +250,15 @@ namespace MG.MDV
         //------------------------------------------------------------------------------
 
         Vector2     mScrollPos;
-        Layout      mLayout = null;
-        bool        mRaw    = false;
-        TextAsset   mText   = null;
+        Layout      mLayout    = null;
+        bool        mRaw       = false;
+
+        protected string mContent = null;
 
         void DrawIMGUI()
         {
             GUI.skin = Skin;
             GUI.enabled = true;
-
-            mText = target as TextAsset;
 
             // content rect
 
@@ -341,7 +311,7 @@ namespace MG.MDV
 
         float ContentHeight( float width )
         {
-            return mRaw ? Skin.GetStyle( "raw" ).CalcHeight( new GUIContent( mText.text ), width ) : mLayout.Height;
+            return mRaw ? Skin.GetStyle( "raw" ).CalcHeight( new GUIContent( mContent ), width ) : mLayout.Height;
         }
 
         //------------------------------------------------------------------------------
@@ -383,8 +353,7 @@ namespace MG.MDV
 
         void DrawRaw( Rect rect )
         {
-            //EditorGUI.TextArea( rect, mText.text, Skin.GetStyle( "raw" ) );
-            EditorGUI.SelectableLabel( rect, mText.text, Skin.GetStyle( "raw" ) );
+            EditorGUI.SelectableLabel( rect, mContent, Skin.GetStyle( "raw" ) );
         }
 
         void DrawMarkdown( Rect rect )

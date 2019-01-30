@@ -1,34 +1,34 @@
-# TODO
-------------------------------------------------------------------------------
+TODO
+==============================================================================
 
-* strip embeded HTML?
-* find good reference document
+* see if .markdown files are relavent?
 
-* compare with known good renderer
 * test what happens when we have multiple TextAsset editors ...
 
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
 * test runtimes ...
 
-# Future Versions
-------------------------------------------------------------------------------
+Future Versions
+==============================================================================
+
 * tables / grids!
 * syntax highlighting
 
 
-# Release Checks
-------------------------------------------------------------------------------
+Release Checks
+==============================================================================
 
 * Check TODO's
 * Check NotImplementedException
 * Check Debug.Log
 * Check verions - Unity 2017, 2018, 2019
 * Check Reference 
+* Remove asm def?
 
+Documentation
+==============================================================================
 
-# Documentation
-------------------------------------------------------------------------------
 
 ## Add .md files to project
 
@@ -44,28 +44,30 @@
 ## Markdown Template
 
 
-# Reference
-------------------------------------------------------------------------------
+Reference
+==============================================================================
 
 * https:// answers.unity.com/static/markdown/help.html
 * https:// daringfireball.net/projects/markdown/syntax
 
 
-# Investigate
-------------------------------------------------------------------------------
+Investigate
+==============================================================================
 
 * variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
  * https://github.com/roydejong/chromium-unity-server
  * https://ultralig.ht/
  
-# ref
+ref
+==============================================================================
 
 https://github.com/lunet-io/markdig
 https://www.nuget.org/packages/Markdig.Signed/
 https://github.com/RichardSlater/Markdig.SyntaxHighlighting/
 
 
-# markdown reference
+markdown reference
+==============================================================================
 
 https://daringfireball.net/projects/markdown/
 
