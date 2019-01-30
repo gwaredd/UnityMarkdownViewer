@@ -383,6 +383,7 @@ namespace MG.MDV
 
         void DrawRaw( Rect rect )
         {
+            //EditorGUI.TextArea( rect, mText.text, Skin.GetStyle( "raw" ) );
             EditorGUI.SelectableLabel( rect, mText.text, Skin.GetStyle( "raw" ) );
         }
 
