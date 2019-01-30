@@ -15,21 +15,28 @@ namespace MG.MDV
         {
             var layout = renderer.Layout;
 
+            layout.Space();
             layout.Indent();
 
             var prevImplicit = renderer.ConsumeSpace;
             renderer.ConsumeSpace = true;
 
+            var prefixStyle = renderer.Style;
+
+            if( !block.IsOrdered )
+            {
+                prefixStyle.Bold = true;
+            }
+
             for( var i = 0; i < block.Count; i++ )
             {
-                layout.Prefix( block.IsOrdered ? (i+1).ToString() + "." : "\u2022", renderer.Style );
+                layout.Prefix( block.IsOrdered ? (i+1).ToString() + "." : "\u2022", prefixStyle );
                 renderer.WriteChildren( block[ i ] as ListItemBlock );
             }
 
             renderer.ConsumeSpace = prevImplicit;
             layout.Outdent();
-
-            renderer.FinishBlock( true );
+            layout.Space();
         }
     }
 }

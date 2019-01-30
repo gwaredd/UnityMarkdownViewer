@@ -5,8 +5,8 @@ using Markdig.Syntax.Inlines;
 
 namespace MG.MDV
 {
-    // text
     /// <see cref="Markdig.Renderers.Html.Inlines.LiteralInlineRenderer"/>
+    /// <see cref="Markdig.Renderers.Normalize.Inlines.LiteralInlineRenderer"/>
 
     public class RendererInlineLiteral : MarkdownObjectRenderer<RendererMarkdown, LiteralInline>
     {

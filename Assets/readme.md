@@ -1,19 +1,20 @@
 # TODO
 ------------------------------------------------------------------------------
 
+* strip embeded HTML?
 * find good reference document
 
-* work through test files until it all works ...
-* test embeded / complex markdown (code/links inside headers for example)
 * compare with known good renderer
-* tables / grids!
 * test what happens when we have multiple TextAsset editors ...
-* scroll view for large files ...
-* syntax highlighting
 
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
 * test runtimes ...
+
+# Future Versions
+------------------------------------------------------------------------------
+* tables / grids!
+* syntax highlighting
 
 
 # Release Checks

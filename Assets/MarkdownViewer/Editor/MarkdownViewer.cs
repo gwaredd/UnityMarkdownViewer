@@ -198,7 +198,7 @@ namespace MG.MDV
             var path = AssetDatabase.GetAssetPath( target );
             var ext  = Path.GetExtension( path );
 
-            if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) )
+            if( ".md".Equals( ext, StringComparison.OrdinalIgnoreCase ) || ".markdown".Equals( ext, StringComparison.OrdinalIgnoreCase ) )
             {
                 ParseDocument( path );
                 DrawIMGUI();
@@ -258,7 +258,7 @@ namespace MG.MDV
                 // TODO: .UseEmojiAndSmiley()
                 // TODO: .UseListExtras()
                 // TODO: .UseTaskLists()
-                .DisableHtml()
+                //.DisableHtml()
             ;
 
             if( !string.IsNullOrEmpty( Preferences.JIRA ) )
