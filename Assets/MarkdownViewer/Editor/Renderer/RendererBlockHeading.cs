@@ -21,9 +21,12 @@ namespace MG.MDV
             if( block.Level == 1 )
             {
                 renderer.Layout.HorizontalLine();
+                renderer.FinishBlock( true );
             }
-
-            renderer.FinishBlock( true );
+            else
+            {
+                renderer.FinishBlock();
+            }
         }
     }
 }

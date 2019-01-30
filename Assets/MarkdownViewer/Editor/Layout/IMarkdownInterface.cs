@@ -15,7 +15,7 @@ namespace MG.MDV
         void Outdent();
         void Prefix( string text, Style style );
 
-        void QuoteBegin();
-        void QuoteEnd();
+        void StartBlock( bool quote );
+        void EndBlock();
     }
 }

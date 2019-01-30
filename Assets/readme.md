@@ -12,6 +12,10 @@
 * scroll view for large files ...
 * syntax highlighting
 
+* test multiple unity versions 2017 - 2019
+* test .net 3.5 vs .net 4.0
+* test runtimes ...
+
 
 # Documentation
 ------------------------------------------------------------------------------

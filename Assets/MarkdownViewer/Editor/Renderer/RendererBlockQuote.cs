@@ -16,9 +16,9 @@ namespace MG.MDV
             var prevImplicit = renderer.ConsumeSpace;
             renderer.ConsumeSpace = false;
 
-            renderer.Layout.QuoteBegin();
+            renderer.Layout.StartBlock( true );
             renderer.WriteChildren( block );
-            renderer.Layout.QuoteEnd();
+            renderer.Layout.EndBlock();
 
             renderer.ConsumeSpace = prevImplicit;
 

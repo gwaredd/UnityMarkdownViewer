@@ -1,2 +1,2 @@
-# Markdown *header*
+# Markdown *italic* **bold** `code`
 content

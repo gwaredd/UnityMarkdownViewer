@@ -153,19 +153,19 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        public void QuoteBegin()
+        public void StartBlock( bool quoted )
         {
             Space();
-            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Quote = true } );
+            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Highlight = true, Quoted = quoted } );
             CurrentBlock = null;
         }
 
-        public void QuoteEnd()
+        public void EndBlock()
         {
             mCurrentContainer.RemoveTrailingSpace();
-
             mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
             CurrentBlock = null;
+
             Space();
         }
 

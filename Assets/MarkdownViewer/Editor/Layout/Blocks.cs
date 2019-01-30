@@ -36,7 +36,8 @@ namespace MG.MDV
 
     public class BlockContainer : Block
     {
-        public bool Quote = false;
+        public bool Quoted    = false;
+        public bool Highlight = false;
 
         List<Block> mBlocks = new List<Block>();
 
@@ -71,17 +72,20 @@ namespace MG.MDV
 
         public override void Arrange( Context context, Vector2 pos, float maxWidth )
         {
-            float oy = pos.y;
+            Rect.position = new Vector2( pos.x + Indent, pos.y );
+            Rect.width    = maxWidth - Indent - context.IndentSize;
 
-            Rect.position = pos;
+            var paddingBottom = 0.0f;
 
-            var padding = 0.0f;
-
-            if( Quote )
+            if( Highlight )
             {
-                Rect.x += Indent;
-                padding = context.LineHeight * 0.5f;
-                pos += new Vector2( context.IndentSize, padding );
+                var style = GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" );
+
+                pos.x += style.padding.left;
+                pos.y += style.padding.top;
+
+                maxWidth -= style.padding.horizontal;
+                paddingBottom = style.padding.bottom;
             }
 
             foreach( var block in mBlocks )
@@ -90,18 +94,22 @@ namespace MG.MDV
                 pos.y += block.Rect.height;
             }
 
-            Rect.width  = maxWidth - Indent;
-            Rect.height = pos.y - oy + padding;
+            Rect.height = pos.y - Rect.position.y + paddingBottom;
         }
 
         public override void Draw( Context context )
         {
-            if( Quote )
+            if( Highlight && !Quoted )
             {
-                GUI.Box( Rect, string.Empty );
+                GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "blockcode" ) );
             }
 
             mBlocks.ForEach( block => block.Draw( context ) );
+
+            if( Highlight && Quoted )
+            {
+                GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "blockquote" ) );
+            }
         }
 
         public void RemoveTrailingSpace()

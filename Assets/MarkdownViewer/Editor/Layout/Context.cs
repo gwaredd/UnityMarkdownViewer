@@ -8,22 +8,22 @@ namespace MG.MDV
     {
         public Context( GUISkin skin, IActions actions )
         {
-            StyleLayout = new StyleCache( skin );
-            Actions     = actions;
+            mStyleConverter = new StyleConverter( skin );
+            Actions = actions;
 
             Apply( Style.Default );
         }
 
-        public StyleCache   StyleLayout;
-        public GUIStyle     StyleGUI;
-        public IActions     Actions;
+        StyleConverter  mStyleConverter;
+        GUIStyle        mStyleGUI;
 
-        public float LineHeight { get { return StyleGUI.lineHeight; } }
-        public float MinWidth   { get { return LineHeight * 2.0f; } }
-        public float IndentSize { get { return LineHeight * 2.0f; } }
+        public IActions Actions         { get; private set; }
+        public float    LineHeight      { get { return mStyleGUI.lineHeight; } }
+        public float    MinWidth        { get { return LineHeight * 2.0f; } }
+        public float    IndentSize      { get { return LineHeight * 1.5f; } }
 
         public void     Reset()                         { Apply( Style.Default ); }
-        public GUIStyle Apply( Style style )            { StyleGUI = StyleLayout.Apply( style ); return StyleGUI; }
-        public Vector2  CalcSize( GUIContent content )  { return StyleGUI.CalcSize( content ); }
+        public GUIStyle Apply( Style style )            { mStyleGUI = mStyleConverter.Apply( style ); return mStyleGUI; }
+        public Vector2  CalcSize( GUIContent content )  { return mStyleGUI.CalcSize( content ); }
     }
 }

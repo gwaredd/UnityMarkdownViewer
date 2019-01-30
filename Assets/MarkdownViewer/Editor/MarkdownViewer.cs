@@ -244,8 +244,6 @@ namespace MG.MDV
                 return;
             }
 
-            //Dump();
-
             mHistory.OnOpen( filename );
 
             var context  = new Context( Skin, this );
@@ -326,6 +324,7 @@ namespace MG.MDV
 
                 if( mRaw )
                 {
+                    rectContent.width = minWidth - GUI.skin.button.fixedWidth;
                     DrawRaw( rectContent );
                 }
                 else
@@ -358,23 +357,26 @@ namespace MG.MDV
                 mRaw = !mRaw;
             }
 
-            if( mHistory.CanForward )
+            if( mRaw == false )
             {
-                btn.x -= size;
-
-                if( GUI.Button( btn, IconForward, Skin.button ) )
+                if( mHistory.CanForward )
                 {
-                    Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Forward() );
+                    btn.x -= size;
+
+                    if( GUI.Button( btn, IconForward, Skin.button ) )
+                    {
+                        Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Forward() );
+                    }
                 }
-            }
 
-            if( mHistory.CanBack )
-            {
-                btn.x -= size;
-
-                if( GUI.Button( btn, IconBack, Skin.button ) )
+                if( mHistory.CanBack )
                 {
-                    Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Back() );
+                    btn.x -= size;
+
+                    if( GUI.Button( btn, IconBack, Skin.button ) )
+                    {
+                        Selection.activeObject = AssetDatabase.LoadAssetAtPath<TextAsset>( mHistory.Back() );
+                    }
                 }
             }
         }

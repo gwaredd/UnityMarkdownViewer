@@ -24,11 +24,13 @@ namespace MG.MDV
 
 
             var prevStyle = renderer.Style;
-            renderer.Style.Fixed = true;
 
-            renderer.Layout.QuoteBegin();
+            renderer.Style.Fixed = true;
+            renderer.Style.Block = true;
+
+            renderer.Layout.StartBlock( false );
             renderer.WriteLeafRawLines( block );
-            renderer.Layout.QuoteEnd();
+            renderer.Layout.EndBlock();
 
             renderer.Style = prevStyle;
 

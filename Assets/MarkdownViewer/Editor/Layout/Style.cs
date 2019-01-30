@@ -1,5 +1,7 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
+using UnityEngine;
+
 namespace MG.MDV
 {
     public struct Style
@@ -10,7 +12,10 @@ namespace MG.MDV
         const int FlagItalic    = 0x0200;
         const int FlagFixed     = 0x0400;
         const int FlagLink      = 0x0800;
+        const int FlagBlock     = 0x1000;
+
         const int MaskSize      = 0x000F;
+        const int MaskWeight    = 0x0300;
 
         int mStyle;
 
@@ -64,10 +69,27 @@ namespace MG.MDV
             set { if( value ) mStyle |= FlagLink; else mStyle &= ~FlagLink; }
         }
 
+        public bool Block
+        {
+            get { return ( mStyle & FlagBlock ) != 0x0000; }
+            set { if( value ) mStyle |= FlagBlock; else mStyle &= ~FlagBlock; }
+        }
+
         public int Size
         {
             get { return mStyle & MaskSize; }
             set { mStyle = ( mStyle & ~MaskSize ) | UnityEngine.Mathf.Clamp( value, 0, 6 ); }
+        }
+
+        public FontStyle GetFontStyle()
+        {
+            switch( mStyle & MaskWeight )
+            {
+                case FlagBold:              return FontStyle.Bold;
+                case FlagItalic:            return FontStyle.Italic;
+                case FlagBold | FlagItalic: return FontStyle.BoldAndItalic;
+                default:                    return FontStyle.Normal;
+            }
         }
     }
 }

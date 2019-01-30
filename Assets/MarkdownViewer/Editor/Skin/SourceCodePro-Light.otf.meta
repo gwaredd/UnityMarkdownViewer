@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 12754c6871e93064aaa6b16e9040950e
+guid: 81e054eaea012b04c9d4e59572982fc2
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,11 +8,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Roboto
+  fontName: Source Code Pro
   fontNames:
-  - Roboto
+  - Source Code Pro
   fallbackFontReferences:
-  - {fileID: 12800000, guid: e89e3b79c8a1fc64197664b32a146827, type: 3}
+  - {fileID: 12800000, guid: 5913ca9e0980c5945aeed1966b3140e7, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
