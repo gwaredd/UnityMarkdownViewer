@@ -1,10 +1,9 @@
 # TODO
 ------------------------------------------------------------------------------
 
+* find good reference document
+
 * work through test files until it all works ...
-* review TODO's
-* review NotImplementedException
-* look at colour issue
 * test embeded / complex markdown (code/links inside headers for example)
 * compare with known good renderer
 * tables / grids!
@@ -15,6 +14,16 @@
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
 * test runtimes ...
+
+
+# Release Checks
+------------------------------------------------------------------------------
+
+* Check TODO's
+* Check NotImplementedException
+* Check Debug.Log
+* Check verions - Unity 2017, 2018, 2019
+* Check Reference 
 
 
 # Documentation
