@@ -13,7 +13,7 @@ namespace MG.MDV
     {
         protected override void Write( RendererMarkdown renderer, LinkInline node )
         {
-            var url = node.GetDynamicUrl?.Invoke() ?? node.Url;
+            var url = node.GetDynamicUrl != null ? node.GetDynamicUrl() : node.Url;
 
             if( node.IsImage )
             {
