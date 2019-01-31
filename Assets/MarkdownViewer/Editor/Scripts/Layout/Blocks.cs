@@ -264,7 +264,11 @@ namespace MG.MDV
         public override void Draw( Context context )
         {
             mContent.ForEach( c => c.Draw( context ) );
-            mPrefix?.Draw( context );
+
+            if( mPrefix != null )
+            {
+                mPrefix.Draw( context );
+            }
         }
     }
 
@@ -349,7 +353,7 @@ namespace MG.MDV
             {
                 context.Apply( Style );
                 var text = !string.IsNullOrEmpty( Alt ) ? Alt : URL;
-                Payload.text = $"[{text}]";
+                Payload.text = string.Format( "[{0}]", text );
             }
 
             Location.size = context.CalcSize( Payload );

@@ -45,7 +45,7 @@ namespace MG.MDV
                 }
                 else
                 {
-                    Debug.LogWarning( $"Unable to find section header {url}" );
+                    Debug.LogWarning( string.Format( "Unable to find section header {0}", url ) );
                 }
 
                 return;
@@ -76,7 +76,7 @@ namespace MG.MDV
             }
             else
             {
-                Debug.LogError( $"Could not find asset {newPath}" );
+                Debug.LogError( string.Format( "Could not find asset {0}", newPath ) );
             }
         }
 
@@ -99,7 +99,7 @@ namespace MG.MDV
                 get
                 {
                     var handler = Request.downloadHandler as DownloadHandlerTexture;
-                    return handler?.texture;
+                    return handler != null ? handler.texture : null;
                 }
             }
         }
@@ -133,11 +133,11 @@ namespace MG.MDV
 
             if( url.StartsWith( "/" ) )
             {
-                return $"file:///{projectDir}{url}";
+                return string.Format( "file:///{0}{1}", projectDir, url );
             }
 
             var assetDir = Path.GetDirectoryName( AssetDatabase.GetAssetPath( target ) );
-            return Utils.PathNormalise( $"file:///{projectDir}/{assetDir}/{url}" );
+            return Utils.PathNormalise( string.Format( "file:///{0}/{1}/{2}", projectDir, assetDir, url ) );
         }
 
         public Texture FetchImage( string url )
@@ -168,12 +168,12 @@ namespace MG.MDV
 
             if( req.Request.isHttpError )
             {
-                Debug.LogError( $"HTTP Error: {req.URL} - {req.Request.responseCode} {req.Request.error}" );
+                Debug.LogError( string.Format( "HTTP Error: {0} - {1} {2}", req.URL, req.Request.responseCode, req.Request.error ) );
                 mTextureCache[ req.URL ] = null;
             }
             else if( req.Request.isNetworkError )
             {
-                Debug.LogError( $"Network Error: {req.URL} - {req.Request.error}" );
+                Debug.LogError( string.Format( "Network Error: {0} - {1}", req.URL, req.Request.error ) );
                 mTextureCache[ req.URL ] = null;
             }
             else
@@ -211,7 +211,11 @@ namespace MG.MDV
             else
             {
                 mDefaultEditor = mDefaultEditor ?? CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
-                mDefaultEditor?.OnInspectorGUI();
+
+                if( mDefaultEditor != null )
+                {
+                    mDefaultEditor.OnInspectorGUI();
+                }
             }
         }
 

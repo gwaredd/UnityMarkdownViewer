@@ -235,7 +235,7 @@ namespace MG.MDV
                 NewContentBlock();
             }
 
-            mCurrentContent?.Add( content );
+            mCurrentContent.Add( content );
         }
 
         T AddBlock<T>( T block ) where T : Block
@@ -265,7 +265,7 @@ namespace MG.MDV
 
             AddContent( content );
 
-            mWord.Clear();
+            mWord.Length = 0;
         }
     }
 }
