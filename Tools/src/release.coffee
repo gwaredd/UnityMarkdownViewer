@@ -5,6 +5,7 @@ chalk = require "chalk"
 yargs = require "yargs"
 axios = require "axios"
 path  = require "path"
+glob  = require "glob"
 fs    = require "fs-extra"
 
 log   = require "./libs/log"
@@ -34,46 +35,48 @@ argv = yargs
 
 
 #------------------------------------------------------------------------------
+# utils
 
-log.info "Output directory: #{chalk.cyan argv.out}"
+root = ""
 
-root = path.join __dirname, "../.."
-dst  = path.join root, argv.out
+relative = (f) -> f.replace root, ""
 
-toCopy = [
-  "ProjectSettings",
-  "Packages",
-  "Assets/AssetStoreTools",
-  "Assets/MarkdownViewer",
-  "Assets/Editor Default Resources"
-]
+remove = (file) ->
+  log.info "#{chalk.red 'Deleting'} #{relative file}"
+  fs.removeSync file
 
-toDelete = [
-  "Assets/MarkdownViewer/Editor/MarkdownViewerAssembly.asmdef"
-  "Assets/MarkdownViewer/Editor/MarkdownViewerAssembly.asmdef.meta"
-]
+copy = (src,dst) ->
+  log.info "#{chalk.cyan 'Copying'} #{relative src}"
+  fs.copySync src, dst
+
+
+#------------------------------------------------------------------------------
 
 try
 
-  log.info "Removing #{chalk.cyan dst}"
-  fs.removeSync dst
+  log.info "#{chalk.green 'Output'} #{argv.out}"
 
-  dir = "#{dst}/Assets"
-  log.info "Creating #{chalk.cyan dir}"
-  fs.ensureDirSync dir
+  root = path.join( __dirname, "../.." ).replace /\\/g, "/" 
+  dst  = path.join( root, argv.out ).replace /\\/g, "/" 
 
-  for dir in toCopy
-    log.info "Copying #{chalk.cyan dir}"
-    fs.copySync "#{root}/#{dir}", "#{dst}/#{dir}"
+  remove dst
 
-  for f in toDelete
-    log.info "Deleting #{chalk.cyan f}"
-    fs.removeSync "#{dst}/#{f}"
-  
-  log.warn "TODO: copy markdig.dll"
+  copy "#{root}/#{dir}", "#{dst}/#{dir}" for dir in [
+    "ProjectSettings",
+    "Packages",
+    "Assets/AssetStoreTools",
+    "Assets/MarkdownViewer",
+    "Assets/Editor Default Resources"
+  ]
+
+  remove f for f in glob.sync "#{dst}/**/*.asmdef*"
+
+  copy "#{root}/Tools/res/Markdig_35.dll", "#{dst}/Assets/MarkdownViewer/Editor/Markdig.dll"
+
+  log.success "Done"
 
 
 catch err
 
-  log.error err
+  log.error "#{err}"
 

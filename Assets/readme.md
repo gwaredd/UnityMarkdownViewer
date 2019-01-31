@@ -1,17 +1,26 @@
 TODO
 ==============================================================================
 
-* see if .markdown files are relavent?
-
-* test what happens when we have multiple TextAsset editors ...
-
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
 * test runtimes ...
 
+* check / include licenses for 3p
+  * fonts
+  * icons
+  * markdig
+
+* write documentation
+* release checklist
+
+* see if .markdown files are relavent?
+* test what happens when we have multiple TextAsset editors ...
+
+
 Future Versions
 ==============================================================================
 
+* quick edit!
 * tables / grids!
 * syntax highlighting
 
@@ -23,8 +32,8 @@ Release Checks
 * Check NotImplementedException
 * Check Debug.Log
 * Check verions - Unity 2017, 2018, 2019
-* Check Reference 
-* Remove asm def?
+* Check markdown reference documents
+
 
 Documentation
 ==============================================================================
@@ -42,21 +51,8 @@ Documentation
 ## images (local and remote)
 ## Local links
 ## Markdown Template
+## Strip HTML
 
-
-Reference
-==============================================================================
-
-* https:// answers.unity.com/static/markdown/help.html
-* https:// daringfireball.net/projects/markdown/syntax
-
-
-Investigate
-==============================================================================
-
-* variants - rich text, powerUI (or other HTML renderer), "side" browser (chromium)
- * https://github.com/roydejong/chromium-unity-server
- * https://ultralig.ht/
  
 ref
 ==============================================================================
