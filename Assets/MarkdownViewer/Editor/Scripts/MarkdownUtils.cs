@@ -34,7 +34,7 @@ namespace MG.MDV
                 }
             }
 
-            return string.Join( separator, path );
+            return string.Join( separator, path.ToArray() );
         }
 
         public static string PathNormalise( string _a, string separator = "/" )
@@ -59,7 +59,8 @@ namespace MG.MDV
                 }
             }
 
-            return string.Join( separator, path );
+            return string.Join( separator, path.ToArray() );
         }
     }
 }
+

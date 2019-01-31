@@ -23,7 +23,7 @@ namespace MG.MDV
 
         public string Join()
         {
-            return string.Join( ";", mHistory.GetRange( 0, mIndex + 1 ) );
+            return string.Join( ";", mHistory.GetRange( 0, mIndex + 1 ).ToArray() );
         }
 
         public string Forward()

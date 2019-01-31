@@ -1,4 +1,5 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
+#if NET_4_6
 
 using System.Collections.Generic;
 using System.Linq;
@@ -124,3 +125,6 @@ namespace MG.MDV
         }
     }
 }
+
+#endif
+

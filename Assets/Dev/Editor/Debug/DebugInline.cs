@@ -1,4 +1,5 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
+#if NET_4_6
 
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
@@ -105,3 +106,4 @@ namespace MG.MDV
     }
 }
 
+#endif
