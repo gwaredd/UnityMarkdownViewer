@@ -1,9 +1,20 @@
 TODO
 ==============================================================================
 
+## Version Testing
+
+x | 2017 | 2018 | 2019
+--|------|------|------
+4.0 | ✓ | ✓ | X
+3.5 | ? | ? | ?
+
+
+
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
 * test runtimes ...
+
+## Release Checks
 
 * check / include licenses for 3p
   * fonts
