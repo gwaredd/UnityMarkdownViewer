@@ -3,13 +3,13 @@ TODO
 
 ## Release Checks
 
-* check / include licenses for 3p
-  * fonts
-  * icons
-  * markdig
-
 * write documentation
-* release checklist
+
+  * check / include licenses for 3p
+    * fonts
+    * icons
+    * markdig
+
 * test on mac?
 
 
@@ -33,6 +33,7 @@ Release Checks
 * Check NotImplementedException
 * Check Debug.Log
 * Check markdown reference documents
+* 3rd Party Licences
 
 
 Documentation
