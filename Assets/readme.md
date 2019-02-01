@@ -1,14 +1,6 @@
 TODO
 ==============================================================================
 
-## Version Testing
-
-  x  | 2017.4 | 2018.3 | 2019.1 |
------|--------|--------|--------|
-4.0  |   Y    |   Y    |   Y    |
-3.5  |   Y    |   Y    |   ?    |
-
-
 ## Release Checks
 
 * check / include licenses for 3p
@@ -18,11 +10,8 @@ TODO
 
 * write documentation
 * release checklist
-* test supported unity versions
 * test on mac?
 
-* test what happens when we have multiple TextAsset editors ...
-* custom importer?
 
 
 Future Versions
@@ -32,14 +21,17 @@ Future Versions
 * tables / grids!
 * syntax highlighting
 
+* ISSUE: TextAsset editors clash...
+
 
 Release Checks
 ==============================================================================
 
+* Check verions - Unity 2017, 2018, 2019 & .NET 3.5
+
 * Check TODO's
 * Check NotImplementedException
 * Check Debug.Log
-* Check verions - Unity 2017, 2018, 2019
 * Check markdown reference documents
 
 
