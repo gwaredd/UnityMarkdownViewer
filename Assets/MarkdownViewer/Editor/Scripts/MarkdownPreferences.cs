@@ -28,11 +28,11 @@ namespace MG.MDV
             }
         }
 
-#if UNITY_2019_OR_NEWER
+#if UNITY_2019_1_OR_NEWER
 
         public class MarkownSettings : SettingsProvider
         {
-            public MarkownSettings( string path, SettingsScope scopes = SettingsScope.Project, IEnumerable<string> keywords = null )
+            public MarkownSettings( string path, SettingsScope scopes = SettingsScope.User, IEnumerable<string> keywords = null )
                 : base( path, scopes, keywords )
             {
             }
@@ -48,7 +48,6 @@ namespace MG.MDV
         {
             return new MarkownSettings( "Preferences/Markdown" );
         }
-
 #else
         [PreferenceItem( "Markdown" )]
 #endif
