@@ -4,6 +4,7 @@ using System.IO;
 
 namespace MG.MDV
 {
+    // TODO: support markdown asset type as ScriptedImporter
     [ScriptedImporter( 1, "markdown" )]
     public class MarkdownImporter : ScriptedImporter
     {

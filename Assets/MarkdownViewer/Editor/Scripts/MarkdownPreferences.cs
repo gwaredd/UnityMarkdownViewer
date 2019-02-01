@@ -27,6 +27,7 @@ namespace MG.MDV
             }
         }
 
+        // TODO: obsolete in 2019
         [PreferenceItem( "Markdown" )]
         private static void DrawPreferences()
         {
