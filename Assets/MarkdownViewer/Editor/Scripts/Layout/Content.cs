@@ -40,7 +40,7 @@ namespace MG.MDV
                 }
                 else
                 {
-                    context.Actions.SelectPage( Link );
+                    context.SelectPage( Link );
                 }
             }
         }

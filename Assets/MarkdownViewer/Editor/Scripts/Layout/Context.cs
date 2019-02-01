@@ -4,21 +4,26 @@ namespace MG.MDV
 {
     public class Context
     {
-        public Context( GUISkin skin, IActions actions )
+        public Context( GUISkin skin, HandlerImages images, HandlerNavigate navigate )
         {
             mStyleConverter = new StyleConverter( skin );
-            Actions = actions;
+            mImages         = images;
+            mNagivate       = navigate;
 
             Apply( Style.Default );
         }
 
-        StyleConverter  mStyleConverter;
-        GUIStyle        mStyleGUI;
+        StyleConverter      mStyleConverter;
+        GUIStyle            mStyleGUI;
+        HandlerImages       mImages;
+        HandlerNavigate     mNagivate;
 
-        public IActions Actions         { get; private set; }
-        public float    LineHeight      { get { return mStyleGUI.lineHeight; } }
-        public float    MinWidth        { get { return LineHeight * 2.0f; } }
-        public float    IndentSize      { get { return LineHeight * 1.5f; } }
+        public void     SelectPage( string path )   { mNagivate.SelectPage( path ); }
+        public Texture  FetchImage( string url )    { return mImages.FetchImage( url ); }
+
+        public float    LineHeight                  { get { return mStyleGUI.lineHeight; } }
+        public float    MinWidth                    { get { return LineHeight * 2.0f; } }
+        public float    IndentSize                  { get { return LineHeight * 1.5f; } }
 
         public void     Reset()                         { Apply( Style.Default ); }
         public GUIStyle Apply( Style style )            { mStyleGUI = mStyleConverter.Apply( style ); return mStyleGUI; }

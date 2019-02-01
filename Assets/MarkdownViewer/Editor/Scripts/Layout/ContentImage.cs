@@ -14,7 +14,7 @@ namespace MG.MDV
 
         public override void Update( Context context )
         {
-            Payload.image = context.Actions.FetchImage( URL );
+            Payload.image = context.FetchImage( URL );
             Payload.text = null;
 
             if( Payload.image == null )
