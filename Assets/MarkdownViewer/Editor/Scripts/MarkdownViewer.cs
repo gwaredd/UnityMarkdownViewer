@@ -10,10 +10,8 @@ namespace MG.MDV
 {
     public class MarkdownViewer
     {
-        public bool     IsMarkdown  { get; private set; }
-        public string   Text        { get; private set; }
-
         private GUISkin         mSkin            = null;
+        private string          mText            = string.Empty;
         private string          mCurrentPath     = string.Empty;
         private HandlerImages   mHandlerImages   = new HandlerImages();
         private HandlerNavigate mHandlerNavigate = new HandlerNavigate();
@@ -22,16 +20,23 @@ namespace MG.MDV
         private Layout          mLayout          = null;
         private bool            mRaw             = false;
 
-        private static List<string> mExtensions = new List<string> { ".md", ".markdown" };
-        private static History      mHistory    = new History();
+        private static History  mHistory         = new History();
 
         public MarkdownViewer( GUISkin skin, string path, string content )
         {
             mSkin        = skin;
             mCurrentPath = path;
-            Text         = content;
+            mText        = content;
 
-            Setup( path, content );
+            mHistory.OnOpen( mCurrentPath );
+            mLayout = ParseDocument();
+
+            mHandlerImages.CurrentPath   = mCurrentPath;
+
+            mHandlerNavigate.CurrentPath = mCurrentPath;
+            mHandlerNavigate.History     = mHistory;
+            mHandlerNavigate.FindBlock   = ( id ) => mLayout.Find( id );
+            mHandlerNavigate.ScrollTo    = ( pos ) => mScrollPos.y = pos;
         }
 
 
@@ -42,37 +47,11 @@ namespace MG.MDV
             return mHandlerImages.UpdateRequests();
         }
 
-        //------------------------------------------------------------------------------
-
-        void Setup( string path, string contents )
-        {
-            Text         = contents;
-            mCurrentPath = path;
-
-            var ext = Path.GetExtension( mCurrentPath ).ToLower();
-            IsMarkdown = mExtensions.Contains( ext );
-
-            if( !IsMarkdown )
-            {
-                return;
-            }
-
-            mLayout = ParseDocument( mCurrentPath );
-
-            mHandlerImages.CurrentPath = mCurrentPath;
-
-            mHandlerNavigate.CurrentPath = mCurrentPath;
-            mHandlerNavigate.History     = mHistory;
-            mHandlerNavigate.FindBlock   = ( id ) => mLayout.Find( id );
-            mHandlerNavigate.ScrollTo    = ( pos ) => mScrollPos.y = pos;
-        }
 
         //------------------------------------------------------------------------------
 
-        Layout ParseDocument( string filename )
+        Layout ParseDocument()
         {
-            mHistory.OnOpen( filename );
-
             var context  = new Context( mSkin, mHandlerImages, mHandlerNavigate );
             var builder  = new LayoutBuilder( context );
             var renderer = new RendererMarkdown( builder );
@@ -89,7 +68,7 @@ namespace MG.MDV
             var pipeline = pipelineBuilder.Build();
             pipeline.Setup( renderer );
 
-            var doc = Markdown.Parse( Text, pipeline );
+            var doc = Markdown.Parse( mText, pipeline );
             renderer.Render( doc );
 
             return builder.GetLayout();
@@ -117,7 +96,7 @@ namespace MG.MDV
 
         public void Draw()
         {
-            GUI.skin = mSkin;
+            GUI.skin    = mSkin;
             GUI.enabled = true;
 
             // content rect
@@ -168,7 +147,7 @@ namespace MG.MDV
 
         float ContentHeight( float width )
         {
-            return mRaw ? GUI.skin.GetStyle( "raw" ).CalcHeight( new GUIContent( Text ), width ) : mLayout.Height;
+            return mRaw ? GUI.skin.GetStyle( "raw" ).CalcHeight( new GUIContent( mText ), width ) : mLayout.Height;
         }
 
         //------------------------------------------------------------------------------
@@ -212,7 +191,7 @@ namespace MG.MDV
 
         void DrawRaw( Rect rect )
         {
-            EditorGUI.SelectableLabel( rect, Text, GUI.skin.GetStyle( "raw" ) );
+            EditorGUI.SelectableLabel( rect, mText, GUI.skin.GetStyle( "raw" ) );
         }
 
         //------------------------------------------------------------------------------

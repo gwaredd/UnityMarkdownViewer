@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,27 +13,29 @@ namespace MG.MDV
 
         MarkdownViewer mViewer;
 
+        private static List<string> mExtensions = new List<string> { ".md", ".markdown" };
+
         protected void OnEnable()
         {
             var content = ( target as TextAsset ).text;
             var path    = AssetDatabase.GetAssetPath( target );
 
-            mViewer = new MarkdownViewer( Skin, path, content );
+            var ext = Path.GetExtension( path ).ToLower();
 
-            if( mViewer.IsMarkdown )
+            if( mExtensions.Contains( ext ) )
             {
+                mViewer = new MarkdownViewer( Skin, path, content );
                 EditorApplication.update += UpdateRequests;
             }
         }
 
         protected void OnDisable()
         {
-            if( mViewer.IsMarkdown )
+            if( mViewer != null )
             {
                 EditorApplication.update -= UpdateRequests;
+                mViewer = null;
             }
-
-            mViewer = null;
         }
 
         void UpdateRequests()
@@ -52,7 +56,7 @@ namespace MG.MDV
 
         public override void OnInspectorGUI()
         {
-            if( mViewer.IsMarkdown )
+            if( mViewer != null )
             {
                 mViewer.Draw();
             }
