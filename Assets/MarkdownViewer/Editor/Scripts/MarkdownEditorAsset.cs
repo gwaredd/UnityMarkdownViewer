@@ -12,7 +12,7 @@ namespace MG.MDV
 
         protected void OnEnable()
         {
-            var content = ( target as MarkdownAsset ).Text;
+            var content = ( target as MarkdownAsset ).text;
             var path    = AssetDatabase.GetAssetPath( target );
 
             mViewer = new MarkdownViewer( Skin, path, content );
@@ -28,6 +28,11 @@ namespace MG.MDV
         public override bool UseDefaultMargins()
         {
             return false;
+        }
+
+        protected override void OnHeaderGUI()
+        {
+            //base.OnHeaderGUI(); 
         }
 
         public override void OnInspectorGUI()

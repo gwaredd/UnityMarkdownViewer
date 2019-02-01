@@ -9,10 +9,9 @@ namespace MG.MDV
     {
         public override void OnImportAsset( AssetImportContext ctx )
         {
-            var md = ScriptableObject.CreateInstance<MarkdownAsset>();
-            md.Text = File.ReadAllText( ctx.assetPath );
+            var md = new TextAsset( File.ReadAllText( ctx.assetPath ) );
 
-            ctx.AddObjectToAsset( "contents", md );
+            ctx.AddObjectToAsset( "main", md );
             ctx.SetMainObject( md );
         }
     }
