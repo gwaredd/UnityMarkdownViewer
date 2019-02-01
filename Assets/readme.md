@@ -23,6 +23,7 @@ TODO
 * write documentation
 * release checklist
 * test supported unity versions
+* test on mac?
 
 * test what happens when we have multiple TextAsset editors ...
 * custom importer?
