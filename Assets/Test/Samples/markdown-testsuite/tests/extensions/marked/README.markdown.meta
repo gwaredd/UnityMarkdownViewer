@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: b5c62f5220c875a418252529da3a6df2
 ScriptedImporter:
   fileIDToRecycleName:
-    11400000: contents
+    4900000: main
     2186277476908879412: ImportLogs
   externalObjects: {}
   userData: 
