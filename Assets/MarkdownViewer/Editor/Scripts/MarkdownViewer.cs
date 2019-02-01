@@ -137,7 +137,7 @@ namespace MG.MDV
             }
 
             var assetDir = Path.GetDirectoryName( AssetDatabase.GetAssetPath( target ) );
-            return Utils.PathNormalise( string.Format( "file:///{0}/{1}/{2}", projectDir, assetDir, url ) );
+            return "file:///" + Utils.PathNormalise( string.Format( "{0}/{1}/{2}", projectDir, assetDir, url ) );
         }
 
         public Texture FetchImage( string url )
