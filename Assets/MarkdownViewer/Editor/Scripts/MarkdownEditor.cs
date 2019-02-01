@@ -13,7 +13,7 @@ using Markdig.Extensions.JiraLinks;
 namespace MG.MDV
 {
     [CustomEditor( typeof( TextAsset ) )]
-    public class MarkdownViewer : Editor, IActions
+    public class MarkdownEditor : Editor, IActions
     {
         public GUISkin      Skin;
         public Texture      Placeholder;

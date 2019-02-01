@@ -8,7 +8,10 @@ TODO
 4.0  |   Y    |   Y    |   N    |
 3.5  |   Y    |   Y    |   ?    |
 
-markdown 2019?
+## Misc
+
+* custom importer
+* refactor MD Editor
 
 ## Release Checks
 
@@ -21,8 +24,8 @@ markdown 2019?
 * release checklist
 * test supported unity versions
 
-* see if .markdown files are relavent?
 * test what happens when we have multiple TextAsset editors ...
+* custom importer?
 
 
 Future Versions
