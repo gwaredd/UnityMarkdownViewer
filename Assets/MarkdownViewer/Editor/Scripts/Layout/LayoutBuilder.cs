@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MG.MDV
 {
-    public class LayoutBuilder : IMarkdownInterface
+    public class LayoutBuilder : IBuilder
     {
         ////////////////////////////////////////////////////////////////////////////////
         // IMarkdownInterface

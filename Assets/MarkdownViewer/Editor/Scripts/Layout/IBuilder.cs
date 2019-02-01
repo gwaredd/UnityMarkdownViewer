@@ -2,7 +2,7 @@
 
 namespace MG.MDV
 {
-    public interface IMarkdownInterface
+    public interface IBuilder
     {
         void Text( string text, Style style, string link, string tooltip );
         void Image( string url, string alt, string tooltip );
