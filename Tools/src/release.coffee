@@ -71,7 +71,7 @@ try
 
   remove f for f in glob.sync "#{dst}/**/*.asmdef*"
 
-  copy "#{root}/Tools/res/Markdig_35.dll", "#{dst}/Assets/MarkdownViewer/Editor/Markdig.dll"
+  # copy "#{root}/Tools/res/Markdig_35.dll", "#{dst}/Assets/MarkdownViewer/Editor/Markdig.dll"
 
   log.success "Done"
 
