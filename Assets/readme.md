@@ -5,10 +5,6 @@ TODO
 
 * write documentation
 
-  * check / include licenses for 3p
-    * fonts
-    * icons
-    * markdig
 
 * test on mac?
 
@@ -17,9 +13,6 @@ TODO
 Future Versions
 ==============================================================================
 
-* quick edit!
-* tables / grids!
-* syntax highlighting
 
 * ISSUE: TextAsset editors clash...
 
@@ -35,24 +28,6 @@ Release Checks
 * Check markdown reference documents
 * 3rd Party Licences
 
-
-Documentation
-==============================================================================
-
-
-## Add .md files to project
-
-* Edit -> Project Settings -> Editor -> C# Project Generation -> Additional Extentions to include
-
-## Create MD file
-
-* Right Click -> Markdown
-
-## JIRA links
-## images (local and remote)
-## Local links
-## Markdown Template
-## Strip HTML
 
  
 ref
