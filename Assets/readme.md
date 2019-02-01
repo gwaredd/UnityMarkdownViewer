@@ -4,15 +4,10 @@ TODO
 ## Release Checks
 
 * write documentation
-
-
 * test on mac?
-
-
 
 Future Versions
 ==============================================================================
-
 
 * ISSUE: TextAsset editors clash...
 
@@ -30,16 +25,12 @@ Release Checks
 
 
  
-ref
+references
 ==============================================================================
 
-https://github.com/lunet-io/markdig
-https://www.nuget.org/packages/Markdig.Signed/
-https://github.com/RichardSlater/Markdig.SyntaxHighlighting/
+* https://github.com/lunet-io/markdig
+* https://www.nuget.org/packages/Markdig.Signed/
+* https://github.com/RichardSlater/Markdig.SyntaxHighlighting/
+* https://daringfireball.net/projects/markdown/
 
-
-markdown reference
-==============================================================================
-
-https://daringfireball.net/projects/markdown/
 
