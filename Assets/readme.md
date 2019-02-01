@@ -5,13 +5,9 @@ TODO
 
   x  | 2017.4 | 2018.3 | 2019.1 |
 -----|--------|--------|--------|
-4.0  |   Y    |   Y    |   N    |
+4.0  |   Y    |   Y    |   Y    |
 3.5  |   Y    |   Y    |   ?    |
 
-## Misc
-
-* custom importer
-* refactor MD Editor
 
 ## Release Checks
 
