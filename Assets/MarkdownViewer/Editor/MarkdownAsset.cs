@@ -2,7 +2,7 @@
 
 namespace MG.MDV
 {
-    public class MarkdownObject : ScriptableObject
+    public class MarkdownAsset : ScriptableObject
     {
         public string Text;
     }
