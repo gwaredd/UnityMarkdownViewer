@@ -10,7 +10,9 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "Markdig.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": []
 }

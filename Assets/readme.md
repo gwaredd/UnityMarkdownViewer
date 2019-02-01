@@ -8,10 +8,6 @@ TODO
 4.0  |   Y    |   Y    |   N    |
 3.5  |   Y    |   Y    |   ?    |
 
-
-* test multiple unity versions 2017 - 2019
-* test .net 3.5 vs .net 4.0
-
 markdown 2019?
 
 ## Release Checks
@@ -23,6 +19,7 @@ markdown 2019?
 
 * write documentation
 * release checklist
+* test supported unity versions
 
 * see if .markdown files are relavent?
 * test what happens when we have multiple TextAsset editors ...
