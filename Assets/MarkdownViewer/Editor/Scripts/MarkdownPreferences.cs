@@ -1,11 +1,12 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace MG.MDV
 {
-    public class Preferences
+    public static class Preferences
     {
         private static readonly string KeyJIRA = "MG/MDV/JIRA";
         private static readonly string KeyHTML = "MG/MDV/HTML";
@@ -27,14 +28,40 @@ namespace MG.MDV
             }
         }
 
-        // TODO: obsolete in 2019
+#if UNITY_2019_OR_NEWER
+
+        public class MarkownSettings : SettingsProvider
+        {
+            public MarkownSettings( string path, SettingsScope scopes = SettingsScope.Project, IEnumerable<string> keywords = null )
+                : base( path, scopes, keywords )
+            {
+            }
+
+            public override void OnGUI( string searchContext )
+            {
+                DrawPreferences();
+            }
+        }
+
+        [SettingsProvider]
+        static SettingsProvider MarkdownPreferences()
+        {
+            return new MarkownSettings( "Preferences/Markdown" );
+        }
+
+#else
         [PreferenceItem( "Markdown" )]
+#endif
         private static void DrawPreferences()
         {
             LoadPrefs();
 
+            EditorGUI.BeginChangeCheck();
+
             mJIRA      = EditorGUILayout.TextField( "JIRA URL", mJIRA );
             mStripHTML = EditorGUILayout.Toggle( "Strip HTML", mStripHTML );
+
+            EditorGUI.EndChangeCheck();
 
             if( GUI.changed )
             {
