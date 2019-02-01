@@ -250,6 +250,21 @@ namespace MG.MDV
             mLayout = builder.GetLayout();
         }
 
+        protected Rect GetEditorRect()
+        {
+#if UNITY_2019
+            var height = Screen.height - 138.0f; // TODO: need better way of getting height!
+            GUILayout.Space( height );
+            return new Rect( 0.0f, 4.0f, Screen.width, height );
+#else
+
+            GUILayout.FlexibleSpace();
+            var rectContainer = GUILayoutUtility.GetLastRect();
+            rectContainer.width = Screen.width;
+
+            return rectContainer;
+#endif
+        }
 
         //------------------------------------------------------------------------------
 
@@ -261,14 +276,12 @@ namespace MG.MDV
 
         void DrawIMGUI()
         {
-            GUI.skin = Skin;
+            GUI.skin    = Skin;
             GUI.enabled = true;
 
             // content rect
 
-            GUILayout.FlexibleSpace();
-            var rectContainer = GUILayoutUtility.GetLastRect();
-            rectContainer.width = Screen.width;
+            var rectContainer = GetEditorRect();
 
 
             // clear background
@@ -308,7 +321,6 @@ namespace MG.MDV
             }
 
             DrawToolbar( rectContainer, hasScrollbar ? scrollWidth + padRight : padRight );
-
         }
 
         //------------------------------------------------------------------------------
