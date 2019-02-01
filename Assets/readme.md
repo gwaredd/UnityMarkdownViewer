@@ -3,14 +3,16 @@ TODO
 
 ## Version Testing
 
-  x  | 2017.4 | 2018.3.3 | 2019.1
------|--------|----------|--------
-4.0  |   Y    |    Y     |   N
-3.5  |   ?    |    ?     |   ?
+  x  | 2017.4 | 2018.3 | 2019.1 |
+-----|--------|--------|--------|
+4.0  |   Y    |   Y    |   N    |
+3.5  |   Y    |   Y    |   ?    |
 
 
 * test multiple unity versions 2017 - 2019
 * test .net 3.5 vs .net 4.0
+
+markdown 2019?
 
 ## Release Checks
 
