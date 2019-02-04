@@ -4,7 +4,7 @@ TODO
 ## Release Checks
 
 * write documentation
-* test on mac?
+
 
 Future Versions
 ==============================================================================

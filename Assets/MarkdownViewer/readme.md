@@ -93,11 +93,6 @@ Adding support for popular extensions to the markdown format (such as to do list
 
 
 ## Licenses
-This project has been made possible through the generosity of others and comes with the associated licensing stipulations.
-
-#### Icons by icons8
-* https://icons8.com/
-* [Creative Commons Attribution-NoDerivs 3.0 Unported](https://creativecommons.org/licenses/by-nd/3.0/)
 
 #### Fonts by Adobe
 * [SIL Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
