@@ -91,17 +91,6 @@ Adding support for the table extension.
 #### Popular Markdown Extensions
 Adding support for popular extensions to the markdown format (such as to do lists and strike through).
 
-
-## Licenses
-
-#### Fonts by Adobe
-* [SIL Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
-
-#### Markdig
-* https://github.com/lunet-io/markdig
-* [BSD 2-Clause "Simplified" License](https://github.com/lunet-io/markdig/blob/master/license.txt)
-
-
 
 ### Support
 Questions or feature requests can be sent to me at [gwaredd@hotmail.com](mailto:gwaredd@hotmail.com)
