@@ -1,0 +1,8 @@
+{
+    "name": "Mischief.MDV.Editor",
+    "references": [
+        "Mischief.MDV.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

@@ -1,2 +1,0 @@
---require coffeescript/register
-./src/test/**/*.coffee

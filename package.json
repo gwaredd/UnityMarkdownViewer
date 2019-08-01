@@ -1,0 +1,14 @@
+{
+  "name": "com.gwaredd.unium",
+  "version": "1.0.0",
+  "displayName": "Unity Markdown Viewer",
+  "description": "Editor inspector for markdown files",
+  "unity": "2017.4",
+  "author": {
+    "name": "Gwaredd",
+    "email": "gwaredd@hotmail.com",
+    "url": "https://github.com/gwaredd/UnityMarkdownViewer"
+  },
+  "dependencies": {
+  }
+}
