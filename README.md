@@ -5,7 +5,7 @@ UMV is a Unity editor extension for displaying markdown files in the inspector w
 
 ## Installation
 
-YHou ca
+There are a number of options for installing the package.
 
 ### Asset Store
 
