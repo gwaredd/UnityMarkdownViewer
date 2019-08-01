@@ -6,7 +6,7 @@ UMV is a Unity editor extension for displaying markdown files in the inspector w
 This lets you embed easy to read, easy to write documentation directly into your projects
 
 ## Screenshots
-![Screenshot](https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/b3e194dc-8a98-479a-8417-546e769a7bf0_scaled.jpg)
-![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/master/Marketing/Screenshot%20-%20Sample%20-%20render-%20v1.png)
 
+![Screenshot](Documentation/images/Screenshot_render_v1.png)
 
+![Screenshot](Documentation/images/Screenshot_render_v2.png)
