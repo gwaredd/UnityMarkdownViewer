@@ -54,6 +54,15 @@ namespace MG.MDV
             return false;
         }
 
+#if UNITY_2018_2_OR_NEWER
+        // TODO: workaround for bug in 2019.2
+        // https://forum.unity.com/threads/oninspectorgui-not-being-called-on-defaultasset-in-2019-2-0f1.724328/
+        protected override void OnHeaderGUI()
+        {
+            OnInspectorGUI();
+        }
+#endif
+
         public override void OnInspectorGUI()
         {
             if( mViewer != null )
