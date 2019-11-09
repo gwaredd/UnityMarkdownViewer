@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Removed runtime, moved into editor assembly
 * Fix for wrong version number on workaround for unity bug
+* Fix for scrolling in all unity versions
 
 ## [1.0.1] - 2019-11-03
 
