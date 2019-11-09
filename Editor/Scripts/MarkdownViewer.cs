@@ -74,12 +74,26 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+#if UNITY_2019
+        private float mHeight = 1.0f;
+#endif
+
         protected Rect GetEditorRect()
         {
 #if UNITY_2019
-            var height = Screen.height - 138.0f; // TODO: need better way of getting height!
-            GUILayout.Space( height );
-            return new Rect( 0.0f, 4.0f, EditorGUIUtility.currentViewWidth, height );
+
+            // calculate working space
+            if( Event.current.type == EventType.Layout )
+            {
+                var offset = 32.0f + 96.0f + 4.0f; // tab height + asset labels height + offset
+                mHeight = ( Screen.height - offset ) / 1.5115f;
+            }
+
+            // reserve space (we are going to paint on it directly)
+            GUILayout.Space( mHeight );
+
+            // return working rect
+            return new Rect( 0.0f, 4.0f, EditorGUIUtility.currentViewWidth, mHeight );
 #else
             GUILayout.FlexibleSpace();
             var rectContainer = GUILayoutUtility.GetLastRect();
