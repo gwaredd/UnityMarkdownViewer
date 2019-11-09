@@ -83,8 +83,7 @@ namespace MG.MDV
 #else
             GUILayout.FlexibleSpace();
             var rectContainer = GUILayoutUtility.GetLastRect();
-            rectContainer.width = Screen.width;
-
+            rectContainer.width = EditorGUIUtility.currentViewWidth;
             return rectContainer;
 #endif
         }
@@ -106,15 +105,13 @@ namespace MG.MDV
             var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
             GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
-            Debug.Log( rectContainer.width );
-
             // scroll window
 
             var padLeft     = 8.0f;
             var padRight    = 4.0f;
             var padHoriz    = padLeft + padRight;
             var scrollWidth = GUI.skin.verticalScrollbar.fixedWidth;
-            var minWidth    = rectContainer.width - scrollWidth - padHoriz - 200.0f;
+            var minWidth    = rectContainer.width - scrollWidth - padHoriz;
             var maxHeight   = ContentHeight( minWidth );
 
             var hasScrollbar =  maxHeight >= rectContainer.height;
