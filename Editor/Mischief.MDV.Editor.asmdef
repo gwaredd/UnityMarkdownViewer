@@ -3,6 +3,14 @@
     "references": [
         "Mischief.MDV.Runtime"
     ],
-    "includePlatforms": [],
-    "excludePlatforms": []
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

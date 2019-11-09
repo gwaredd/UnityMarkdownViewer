@@ -59,11 +59,21 @@ namespace MG.MDV
         // https://forum.unity.com/threads/oninspectorgui-not-being-called-on-defaultasset-in-2019-2-0f1.724328/
         protected override void OnHeaderGUI()
         {
-            OnInspectorGUI();
+            DrawEditor();
+        }
+#else
+        public override void OnInspectorGUI()
+        {
+            DrawEditor();
         }
 #endif
 
-        public override void OnInspectorGUI()
+
+        //------------------------------------------------------------------------------
+
+        private Editor mDefaultEditor;
+
+        void DrawEditor()
         {
             if( mViewer != null )
             {
@@ -74,11 +84,6 @@ namespace MG.MDV
                 DrawDefaultEditor();
             }
         }
-
-
-        //------------------------------------------------------------------------------
-
-        private Editor mDefaultEditor;
 
         void DrawDefaultEditor()
         {
