@@ -1,8 +1,7 @@
 {
     "name": "Mischief.MDV.Editor",
-    "references": [
-        "Mischief.MDV.Runtime"
-    ],
+    "references": [],
+    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -11,6 +10,5 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": []
+    "defineConstraints": []
 }

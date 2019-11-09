@@ -106,6 +106,7 @@ namespace MG.MDV
             var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
             GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
+            Debug.Log( rectContainer.width );
 
             // scroll window
 
@@ -113,7 +114,7 @@ namespace MG.MDV
             var padRight    = 4.0f;
             var padHoriz    = padLeft + padRight;
             var scrollWidth = GUI.skin.verticalScrollbar.fixedWidth;
-            var minWidth    = rectContainer.width - scrollWidth - padHoriz;
+            var minWidth    = rectContainer.width - scrollWidth - padHoriz - 200.0f;
             var maxHeight   = ContentHeight( minWidth );
 
             var hasScrollbar =  maxHeight >= rectContainer.height;
