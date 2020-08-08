@@ -74,13 +74,13 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-#if UNITY_2019
+#if !UNITY_2018
         private float mHeight = 1.0f;
 #endif
 
         protected Rect GetEditorRect()
         {
-#if UNITY_2019
+#if !UNITY_2018
 
             // calculate working space
             if( Event.current.type == EventType.Layout )
