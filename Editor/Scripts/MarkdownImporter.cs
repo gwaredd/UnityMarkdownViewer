@@ -6,7 +6,7 @@ using System.IO;
 
 namespace MG.MDV
 {
-    [ScriptedImporter( 1, "markdown" )]
+    [ScriptedImporter( 1, new[] {"markdown", "md"})]
     public class MarkdownAssetImporter : ScriptedImporter
     {
         public override void OnImportAsset( AssetImportContext ctx )
