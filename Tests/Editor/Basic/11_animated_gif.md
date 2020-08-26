@@ -1,2 +1,6 @@
 # Animated Gif
-![Animated Cat](./animated.gif "Animated Cat")
+
+* ![Animated Cat](./cat.gif "Animated Cat")
+* ![Animated Butterfly](./butterfly.gif "Animated Butterfly")
+* ![Animated Jellyfish](./jellyfish.gif "Animated Jellyfish")
+

@@ -16,13 +16,25 @@ namespace MG.MDV
 
         class ImageRequest
         {
-            public string           URL; // original url
-            public UnityWebRequest  Request;
+            public  string          URL; // original url
+            public  UnityWebRequest Request;
+            private bool            mIsGif;
 
             public ImageRequest( string url )
             {
                 URL = url;
-                Request = UnityWebRequestTexture.GetTexture( url );
+
+                if( url.EndsWith( ".gif", System.StringComparison.OrdinalIgnoreCase ) )
+                {
+                    mIsGif  = true;
+                    Request = UnityWebRequest.Get( url );
+                }
+                else
+                {
+                    mIsGif  = false;
+                    Request = UnityWebRequestTexture.GetTexture( url );
+                }
+
                 Request.SendWebRequest();
             }
 
@@ -30,8 +42,16 @@ namespace MG.MDV
             {
                 get
                 {
-                    var handler = Request.downloadHandler as DownloadHandlerTexture;
-                    return handler != null ? handler.texture : null;
+                    if( mIsGif )
+                    {
+                        var images = GIF.Decoder.Parse( Request.downloadHandler.data );
+                        return images.GetFrame( 0 ).CreateTexture();
+                    }
+                    else
+                    {
+                        var handler = Request.downloadHandler as DownloadHandlerTexture;
+                        return handler != null ? handler.texture : null;
+                    }
                 }
             }
         }
