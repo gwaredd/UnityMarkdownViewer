@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -10,15 +12,57 @@ namespace MG.MDV
     {
         public string  CurrentPath;
 
-        Texture                     mPlaceholder    = null;
-        List<ImageRequest>          mActiveRequests = new List<ImageRequest>();
-        Dictionary<string,Texture>  mTextureCache   = new Dictionary<string, Texture>();
+        Texture                     mPlaceholder      = null;
+        List<ImageRequest>          mActiveRequests   = new List<ImageRequest>();
+        Dictionary<string,Texture>  mTextureCache     = new Dictionary<string, Texture>();
+        List<AnimatedTexture>       mAnimatedTextures = new List<AnimatedTexture>();
+
+        class AnimatedTexture
+        {
+            public string           URL          = string.Empty;
+            public int              CurrentFrame = 0;
+            public double           FrameTime    = 0.0f;
+            public Texture2D[]      Textures     = null;
+            public float[]          Times        = null;
+
+            public AnimatedTexture( string url, int numFrames )
+            {
+                URL       = url;
+                FrameTime = EditorApplication.timeSinceStartup;
+                Textures  = new Texture2D[ numFrames ];
+                Times     = new float[ numFrames ];
+            }
+
+            public void Add( int i, Texture2D tex, float delay )
+            {
+                if( i >= 0 && i < Textures.Length )
+                {
+                    Textures[ i ] = tex;
+                    Times[ i ] = delay;
+                }
+            }
+
+            public bool Update()
+            {
+                var span = EditorApplication.timeSinceStartup - FrameTime;
+
+                if( span < Times[ CurrentFrame ] )
+                {
+                    return false;
+                }
+
+                FrameTime = EditorApplication.timeSinceStartup;
+                CurrentFrame = ( CurrentFrame + 1 ) % Textures.Length;
+
+                return true;
+            }
+        }
 
         class ImageRequest
         {
-            public  string          URL; // original url
-            public  UnityWebRequest Request;
-            private bool            mIsGif;
+            public string           URL; // original url
+            public UnityWebRequest  Request;
+            public bool             IsGif;
 
             public ImageRequest( string url )
             {
@@ -26,33 +70,44 @@ namespace MG.MDV
 
                 if( url.EndsWith( ".gif", System.StringComparison.OrdinalIgnoreCase ) )
                 {
-                    mIsGif  = true;
+                    IsGif   = true;
                     Request = UnityWebRequest.Get( url );
                 }
                 else
                 {
-                    mIsGif  = false;
+                    IsGif   = false;
                     Request = UnityWebRequestTexture.GetTexture( url );
                 }
 
                 Request.SendWebRequest();
             }
 
-            public Texture Texture
+            public AnimatedTexture GetAnimatedTexture()
             {
-                get
+                var images = GIF.Decoder.Parse( Request.downloadHandler.data );
+
+                var numFrames = images.NumFrames;
+
+                if( numFrames == 0 )
                 {
-                    if( mIsGif )
-                    {
-                        var images = GIF.Decoder.Parse( Request.downloadHandler.data );
-                        return images.GetFrame( 0 ).CreateTexture();
-                    }
-                    else
-                    {
-                        var handler = Request.downloadHandler as DownloadHandlerTexture;
-                        return handler != null ? handler.texture : null;
-                    }
+                    return null;
                 }
+
+                var anim = new AnimatedTexture( URL, numFrames );
+
+                for( int i=0; i < numFrames; i++ )
+                {
+                    var frame = images.GetFrame( i );
+                    anim.Add( i, frame.CreateTexture(), frame.Delay / 1000.0f );
+                }
+
+                return anim;
+            }
+
+            public Texture GetTexture()
+            {
+                var handler = Request.downloadHandler as DownloadHandlerTexture;
+                return handler != null ? handler.texture : null;
             }
         }
 
@@ -123,13 +178,54 @@ namespace MG.MDV
                 Debug.LogError( string.Format( "Network Error: {0} - {1}", req.URL, req.Request.error ) );
                 mTextureCache[ req.URL ] = null;
             }
+            else if( req.IsGif )
+            {
+                var anim = req.GetAnimatedTexture();
+
+                if( anim != null && anim.Textures.Length > 0 )
+                {
+                    mTextureCache[ req.URL ] = anim.Textures[ 0 ];
+
+                    if( anim.Textures.Length > 1 )
+                    {
+                        mAnimatedTextures.Add( anim );
+                    }
+                }
+            }
             else
             {
-                mTextureCache[ req.URL ] = req.Texture;
+                mTextureCache[ req.URL ] = req.GetTexture();
             }
 
             mActiveRequests.Remove( req );
             return true;
+        }
+
+
+        //------------------------------------------------------------------------------
+
+        public bool UpdateAnimations()
+        {
+            var update = false;
+
+            foreach( var anim in mAnimatedTextures )
+            {
+                if( anim.Update() )
+                {
+                    mTextureCache[ anim.URL ] = anim.Textures[ anim.CurrentFrame ];
+                    update = true;
+                }
+            }
+
+            return update;
+        }
+
+
+        //------------------------------------------------------------------------------
+
+        public bool Update()
+        {
+            return UpdateRequests() || UpdateAnimations();
         }
     }
 }

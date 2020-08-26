@@ -41,7 +41,7 @@ namespace MG.MDV
 
         public bool Update()
         {
-            return mHandlerImages.UpdateRequests();
+            return mHandlerImages.Update();
         }
 
 
