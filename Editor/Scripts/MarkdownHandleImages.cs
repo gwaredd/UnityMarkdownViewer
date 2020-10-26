@@ -22,24 +22,19 @@ namespace MG.MDV
             public string           URL          = string.Empty;
             public int              CurrentFrame = 0;
             public double           FrameTime    = 0.0f;
-            public Texture2D[]      Textures     = null;
-            public float[]          Times        = null;
+            public List<Texture2D>  Textures     = new List<Texture2D>();
+            public List<float>      Times        = new List<float>();
 
-            public AnimatedTexture( string url, int numFrames )
+            public AnimatedTexture( string url )
             {
                 URL       = url;
                 FrameTime = EditorApplication.timeSinceStartup;
-                Textures  = new Texture2D[ numFrames ];
-                Times     = new float[ numFrames ];
             }
 
-            public void Add( int i, Texture2D tex, float delay )
+            public void Add( Texture2D tex, float delay )
             {
-                if( i >= 0 && i < Textures.Length )
-                {
-                    Textures[ i ] = tex;
-                    Times[ i ] = delay;
-                }
+                Textures.Add( tex );
+                Times.Add( delay );
             }
 
             public bool Update()
@@ -52,7 +47,7 @@ namespace MG.MDV
                 }
 
                 FrameTime = EditorApplication.timeSinceStartup;
-                CurrentFrame = ( CurrentFrame + 1 ) % Textures.Length;
+                CurrentFrame = ( CurrentFrame + 1 ) % Textures.Count;
 
                 return true;
             }
@@ -84,21 +79,14 @@ namespace MG.MDV
 
             public AnimatedTexture GetAnimatedTexture()
             {
-                var images = GIF.Decoder.Parse( Request.downloadHandler.data );
+                var decoder = new MG.GIF.Decoder( Request.downloadHandler.data );
+                var img     = decoder.NextImage();
+                var anim    = new AnimatedTexture( URL );
 
-                var numFrames = images.NumFrames;
-
-                if( numFrames == 0 )
+                while( img != null )
                 {
-                    return null;
-                }
-
-                var anim = new AnimatedTexture( URL, numFrames );
-
-                for( int i=0; i < numFrames; i++ )
-                {
-                    var frame = images.GetFrame( i );
-                    anim.Add( i, frame.CreateTexture(), frame.Delay / 1000.0f );
+                    anim.Add( img.CreateTexture(), img.Delay / 1000.0f );
+                    img = decoder.NextImage();
                 }
 
                 return anim;
@@ -182,11 +170,11 @@ namespace MG.MDV
             {
                 var anim = req.GetAnimatedTexture();
 
-                if( anim != null && anim.Textures.Length > 0 )
+                if( anim != null && anim.Textures.Count > 0 )
                 {
                     mTextureCache[ req.URL ] = anim.Textures[ 0 ];
 
-                    if( anim.Textures.Length > 1 )
+                    if( anim.Textures.Count > 1 )
                     {
                         mAnimatedTextures.Add( anim );
                     }
