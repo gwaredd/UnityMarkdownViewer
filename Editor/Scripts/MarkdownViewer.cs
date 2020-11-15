@@ -117,7 +117,8 @@ namespace MG.MDV
             // clear background
 
             var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
-            GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
+            if (mSkin.name != "MarkdownSkinQS")
+                GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
 
             // scroll window
 
