@@ -2130,7 +2130,7 @@ MonoBehaviour:
       m_Bottom: 10
     m_Overflow:
       m_Left: 0
-      m_Right: 0
+      m_Right: 22
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
