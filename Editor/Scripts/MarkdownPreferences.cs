@@ -15,7 +15,7 @@ namespace MG.MDV
         private static string mJIRA        = string.Empty;
         private static bool   mStripHTML   = true;
         private static bool   mPrefsLoaded = false;
-        private static bool   mDarkSkin    = true;
+        private static bool   mDarkSkin    = EditorGUIUtility.isProSkin ;
 
         public static string JIRA       { get { LoadPrefs(); return mJIRA; } }
         public static bool   StripHTML  { get { LoadPrefs(); return mStripHTML; } }
@@ -27,7 +27,7 @@ namespace MG.MDV
             {
                 mJIRA        = EditorPrefs.GetString( KeyJIRA, "" );
                 mStripHTML   = EditorPrefs.GetBool( KeyHTML, true );
-                mDarkSkin    = EditorPrefs.GetBool( KeyDarkSkin, true );
+                mDarkSkin    = EditorPrefs.GetBool( KeyDarkSkin, EditorGUIUtility.isProSkin );
                 mPrefsLoaded = true;
             }
         }
