@@ -9,7 +9,8 @@ namespace MG.MDV
     [CustomEditor( typeof( TextAsset ) )]
     public class MarkdownEditor : Editor
     {
-        public GUISkin Skin;
+        public GUISkin SkinLight;
+        public GUISkin SkinDark;
 
         MarkdownViewer mViewer;
 
@@ -24,7 +25,7 @@ namespace MG.MDV
 
             if( mExtensions.Contains( ext ) )
             {
-                mViewer = new MarkdownViewer( Skin, path, content );
+                mViewer = new MarkdownViewer( Preferences.DarkSkin ? SkinDark : SkinLight, path, content );
                 EditorApplication.update += UpdateRequests;
             }
         }

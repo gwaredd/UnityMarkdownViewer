@@ -10,7 +10,7 @@ namespace MG.MDV
         private GUIStyle[]  mWorking;
         private GUIStyle[]  mReference;
 
-        Color linkColor = new Color(0.41f, 0.71f, 1.0f, 1.0f);
+        Color linkColor         = new Color(0.41f, 0.71f, 1.0f, 1.0f);
         const int Variable      = 0;
         const int FixedInline   = 7;
         const int FixedBlock    = 8;
