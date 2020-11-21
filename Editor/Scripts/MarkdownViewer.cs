@@ -82,23 +82,27 @@ namespace MG.MDV
         {
 #if !UNITY_2018
 
+            // fix for Screen.height
+            var offset = 450.0f;
+            var scale  = 2.0f;
+
             // calculate working space
             if( Event.current.type == EventType.Layout )
             {
-                var offset = 32.0f + 96.0f + 4.0f; // tab height + asset labels height + offset
-                mHeight = ( Screen.height - offset ) / 1.5115f;
+                mHeight = ( Screen.height - offset ) / scale;
             }
 
             // reserve space (we are going to paint on it directly)
             GUILayout.Space( mHeight );
 
             // return working rect
-            return new Rect( 0.0f, 4.0f, EditorGUIUtility.currentViewWidth, mHeight );
+            return new Rect( 0.0f, 10.0f, EditorGUIUtility.currentViewWidth, mHeight );
 #else
             GUILayout.FlexibleSpace();
             var rectContainer = GUILayoutUtility.GetLastRect();
             rectContainer.width = EditorGUIUtility.currentViewWidth;
             return rectContainer;
+
 #endif
         }
 
@@ -117,7 +121,7 @@ namespace MG.MDV
             // clear background
 
             var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
-            GUI.DrawTexture( rectFullScreen, EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, false );
+            GUI.DrawTexture( rectFullScreen, GUI.skin.window.normal.background, ScaleMode.StretchToFill, false );
 
             // scroll window
 

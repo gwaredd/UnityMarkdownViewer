@@ -4,7 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - Skin: {fileID: 11400000, guid: 81f272e4a921a5448a30c0e40b4ea003, type: 2}
+  - SkinLight: {fileID: 11400000, guid: 81f272e4a921a5448a30c0e40b4ea003, type: 2}
+  - SkinDark: {fileID: 11400000, guid: 8611e9e5923b6084997203d4997b4976, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
