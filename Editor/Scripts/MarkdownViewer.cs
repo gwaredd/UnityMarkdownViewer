@@ -7,13 +7,14 @@ namespace MG.MDV
 {
     public class MarkdownViewer
     {
+        public static readonly Vector2 Margin = new Vector2( 6.0f, 4.0f );
+
         private GUISkin         mSkin            = null;
         private string          mText            = string.Empty;
         private string          mCurrentPath     = string.Empty;
         private HandlerImages   mHandlerImages   = new HandlerImages();
         private HandlerNavigate mHandlerNavigate = new HandlerNavigate();
 
-        private Vector2         mScrollPos       = Vector2.zero;
         private Layout          mLayout          = null;
         private bool            mRaw             = false;
 
@@ -33,7 +34,7 @@ namespace MG.MDV
             mHandlerNavigate.CurrentPath = mCurrentPath;
             mHandlerNavigate.History     = mHistory;
             mHandlerNavigate.FindBlock   = ( id ) => mLayout.Find( id );
-            mHandlerNavigate.ScrollTo    = ( pos ) => mScrollPos.y = pos;
+            mHandlerNavigate.ScrollTo    = ( pos ) => {}; // TODO: mScrollPos.y = pos;
         }
 
 
@@ -74,102 +75,51 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-#if !UNITY_2018
-        private float mHeight = 1.0f;
-#endif
-
-        protected Rect GetEditorRect()
-        {
-#if !UNITY_2018
-
-            // fix for Screen.height
-            var offset = 450.0f;
-            var scale  = 2.0f;
-
-            // calculate working space
-            if( Event.current.type == EventType.Layout )
-            {
-                mHeight = ( Screen.height - offset ) / scale;
-            }
-
-            // reserve space (we are going to paint on it directly)
-            GUILayout.Space( mHeight );
-
-            // return working rect
-            return new Rect( 0.0f, 10.0f, EditorGUIUtility.currentViewWidth, mHeight );
-#else
-            GUILayout.FlexibleSpace();
-            var rectContainer = GUILayoutUtility.GetLastRect();
-            rectContainer.width = EditorGUIUtility.currentViewWidth;
-            return rectContainer;
-
-#endif
-        }
-
-        //------------------------------------------------------------------------------
-
         public void Draw()
         {
             GUI.skin    = mSkin;
             GUI.enabled = true;
 
-            // content rect
-
-            var rectContainer = GetEditorRect();
-
-
             // clear background
 
-            var rectFullScreen = new Rect( 0.0f, rectContainer.yMin - 4.0f, Screen.width, Screen.height );
+            var rectFullScreen = new Rect( 0.0f, 0.0f, Screen.width, Screen.height );
             GUI.DrawTexture( rectFullScreen, GUI.skin.window.normal.background, ScaleMode.StretchToFill, false );
 
-            // scroll window
 
-            var padLeft     = 8.0f;
-            var padRight    = 4.0f;
-            var padHoriz    = padLeft + padRight;
-            var scrollWidth = GUI.skin.verticalScrollbar.fixedWidth;
-            var minWidth    = rectContainer.width - scrollWidth - padHoriz;
-            var maxHeight   = ContentHeight( minWidth );
+            // content rect
 
-            var hasScrollbar =  maxHeight >= rectContainer.height;
-            var contentWidth = hasScrollbar ? minWidth : rectContainer.width - padHoriz;
-            var rectContent  = new Rect( -padLeft, 0.0f, contentWidth, maxHeight );
+            var contentWidth = EditorGUIUtility.currentViewWidth - GUI.skin.verticalScrollbar.fixedWidth - 2.0f * Margin.x;
+
 
             // draw content
 
-            using( var scroll = new GUI.ScrollViewScope( rectContainer, mScrollPos, rectContent ) )
+            if( mRaw )
             {
-                mScrollPos = scroll.scrollPosition;
+                EditorGUILayout.SelectableLabel( mText, GUI.skin.GetStyle( "raw" ) );
+            }
+            else
+            {
+                // reserve the space
 
-                if( mRaw )
-                {
-                    rectContent.width = minWidth - GUI.skin.button.fixedWidth;
-                    DrawRaw( rectContent );
-                }
-                else
-                {
-                    DrawMarkdown( rectContent );
-                }
+                #if !UNITY_2018
+                    GUILayout.Space( mLayout.Height );
+                #else
+                    GUILayout.FlexibleSpace();
+                #endif
+
+                DrawMarkdown( contentWidth );
             }
 
-            DrawToolbar( rectContainer, hasScrollbar ? scrollWidth + padRight : padRight );
+            DrawToolbar( contentWidth );
         }
 
         //------------------------------------------------------------------------------
 
-        float ContentHeight( float width )
-        {
-            return mRaw ? GUI.skin.GetStyle( "raw" ).CalcHeight( new GUIContent( mText ), width ) : mLayout.Height;
-        }
-
-        //------------------------------------------------------------------------------
-
-        void DrawToolbar( Rect rect, float marginRight )
+        void DrawToolbar( float contentWidth )
         {
             var style  = GUI.skin.button;
             var size   = style.fixedHeight;
-            var btn    = new Rect( rect.xMax - size - marginRight, rect.yMin, size, size );
+            var btn    = new Rect( Margin.x + contentWidth - size, Margin.y, size, size );
 
             if( GUI.Button( btn, string.Empty, GUI.skin.GetStyle( mRaw ? "btnRaw" : "btnFile" ) ) )
             {
@@ -202,14 +152,7 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
-        void DrawRaw( Rect rect )
-        {
-            EditorGUI.SelectableLabel( rect, mText, GUI.skin.GetStyle( "raw" ) );
-        }
-
-        //------------------------------------------------------------------------------
-
-        void DrawMarkdown( Rect rect )
+        void DrawMarkdown( float width )
         {
             switch( Event.current.type )
             {
@@ -224,7 +167,7 @@ namespace MG.MDV
                     break;
 
                 case EventType.Layout:
-                    mLayout.Arrange( rect.width );
+                    mLayout.Arrange( width );
                     break;
 
                 default:
