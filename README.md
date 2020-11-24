@@ -23,7 +23,7 @@ Please note, I have renamed the `master` branch to `main`. This may affect exist
 
 ## Screenshots
 
-![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/master/Documentation/images/Screenshot_render_v2.png)
+![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/main/Documentation/images/Screenshot_render_v2.png)
 
-![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/master/Documentation/images/Screenshot_render_v1.png)
+![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/main/Documentation/images/Screenshot_render_v1.png)
 
