@@ -16,6 +16,10 @@ git clone https://github.com/gwaredd/UnityMarkdownViewer.git
 
 Alternatively import the `.unitypackage` file from the [releases page](https://github.com/gwaredd/UnityMarkdownViewer/releases).
 
+## NB
+
+Please note, I have renamed the `master` branch to `main`. This may affect existing clones.
+
 
 ## Screenshots
 
