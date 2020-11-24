@@ -75,38 +75,39 @@ namespace MG.MDV
 
         //------------------------------------------------------------------------------
 
+        private void ClearBackground( float height )
+        {
+            var rectFullScreen = new Rect( 0.0f, 0.0f, Screen.width, Mathf.Max( height, Screen.height ) );
+            GUI.DrawTexture( rectFullScreen, mSkin.window.normal.background, ScaleMode.StretchToFill, false );
+        }
+
+
+        //------------------------------------------------------------------------------
+
         public void Draw()
         {
             GUI.skin    = mSkin;
             GUI.enabled = true;
 
-            // clear background
+            // useable width of inspector windows
 
-            var rectFullScreen = new Rect( 0.0f, 0.0f, Screen.width, Screen.height );
-            GUI.DrawTexture( rectFullScreen, GUI.skin.window.normal.background, ScaleMode.StretchToFill, false );
-
-
-            // content rect
-
-            var contentWidth = EditorGUIUtility.currentViewWidth - GUI.skin.verticalScrollbar.fixedWidth - 2.0f * Margin.x;
+            var contentWidth = EditorGUIUtility.currentViewWidth - mSkin.verticalScrollbar.fixedWidth - 2.0f * Margin.x;
 
 
             // draw content
 
             if( mRaw )
             {
-                EditorGUILayout.SelectableLabel( mText, GUI.skin.GetStyle( "raw" ) );
+                var style  = mSkin.GetStyle( "raw" );
+                var width  = contentWidth - mSkin.button.fixedHeight;
+                var height = style.CalcHeight( new GUIContent( mText ), width );
+
+                ClearBackground( height );
+                EditorGUILayout.SelectableLabel( mText, style, new GUILayoutOption[] { GUILayout.Width( width ), GUILayout.Height( height ) } );
             }
             else
             {
-                // reserve the space
-
-                #if !UNITY_2018
-                    GUILayout.Space( mLayout.Height );
-                #else
-                    GUILayout.FlexibleSpace();
-                #endif
-
+                ClearBackground( mLayout.Height );
                 DrawMarkdown( contentWidth );
             }
 
@@ -167,6 +168,7 @@ namespace MG.MDV
                     break;
 
                 case EventType.Layout:
+                    GUILayout.Space( mLayout.Height );
                     mLayout.Arrange( width );
                     break;
 
