@@ -7,38 +7,15 @@ It should _just work_ without any setup or configuration.
 
 ## Installation
 
-There are a number of options for installing the package, choose your preference :)
+Clone the repository into the project `Packages` directory
 
-### Asset Store
+```
+cd Packages
+git clone https://github.com/gwaredd/UnityMarkdownViewer.git
+```
 
-The project is available on the [Unity Asset Store](https://assetstore.unity.com/packages/tools/utilities/markdown-viewer-138882).
+Alternatively import the `.unitypackage` file from the [releases page](https://github.com/gwaredd/UnityMarkdownViewer/releases).
 
-### Asset Import
-
-* Download the `.unitypackage` file from the [releases page](https://github.com/gwaredd/UnityMarkdownViewer/releases).
-* In the editor - `Assets -> Import Package -> Custom Package ...`
-
-### Package Manager
-
-You can use the unity package manager to install and manage the library direct from github. You should have `git` installed and available in your system's PATH.
-
-Add the following line to your project `Packages/manifest.json` file.
-
-    "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
-
-It should look something like things
-
-    {
-      "dependencies": {
-        "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
-        "com.unity.package-manager-ui": "2.1.2",
-        "com.unity.modules.ai": "1.0.0",
-        "com.unity.modules.animation": "1.0.0",
-        ...
-      }
-    }
-
-It will install automatically.
 
 ## Screenshots
 
