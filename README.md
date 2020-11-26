@@ -23,7 +23,11 @@ Please note, I have renamed the `master` branch to `main`. This may affect exist
 
 ## Screenshots
 
+### Light Skin
+
 ![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/main/Documentation/images/Screenshot_render_v2.png)
+
+### Dark Skin
 
 ![Screenshot](https://raw.githubusercontent.com/gwaredd/UnityMarkdownViewer/main/Documentation/images/Screenshot_render_dark.png)
 
