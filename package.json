@@ -1,6 +1,6 @@
 {
   "name": "com.mischief.markdownviewer",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "displayName": "Unity Markdown Viewer",
   "description": "Editor inspector for markdown files",
   "unity": "2018.4",
@@ -9,6 +9,11 @@
     "email": "gwaredd@hotmail.com",
     "url": "https://github.com/gwaredd/UnityMarkdownViewer"
   },
-  "dependencies": {
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gwaredd/UnityMarkdownViewer.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@gwaredd"
   }
 }
