@@ -10,6 +10,7 @@ namespace MG.MDV
         private GUIStyle[]  mWorking;
         private GUIStyle[]  mReference;
 
+        Color linkColor         = new Color(0.41f, 0.71f, 1.0f, 1.0f);
         const int Variable      = 0;
         const int FixedInline   = 7;
         const int FixedBlock    = 8;
@@ -56,7 +57,7 @@ namespace MG.MDV
 
                 style.font             = reference.font;
                 style.fontStyle        = src.GetFontStyle();
-                style.normal.textColor = src.Link ? Color.blue : reference.normal.textColor;
+                style.normal.textColor = src.Link ? linkColor : reference.normal.textColor;
 
                 mCurrentStyle = src;
             }
