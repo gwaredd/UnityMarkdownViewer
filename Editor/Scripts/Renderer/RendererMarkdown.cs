@@ -30,6 +30,7 @@ namespace MG.MDV
         }
 
         public bool ConsumeSpace = false;
+        public bool ConsumeNewLine = false;
 
         private string mLink = null;
 
@@ -55,6 +56,7 @@ namespace MG.MDV
             ObjectRenderers.Add( new RendererBlockParagraph() );
             ObjectRenderers.Add( new RendererBlockQuote() );
             ObjectRenderers.Add( new RendererBlockThematicBreak() );
+            ObjectRenderers.Add( new RendererTable() );
 
             ObjectRenderers.Add( new RendererInlineLink() );
             ObjectRenderers.Add( new RendererInlineAutoLink() );
@@ -140,7 +142,7 @@ namespace MG.MDV
             {
                 Layout.Space();
             }
-            else
+            else if ( !ConsumeNewLine )
             {
                 Layout.NewLine();
             }
