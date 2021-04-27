@@ -20,10 +20,6 @@ namespace MG.MDV
 
         public Block Add( Block block )
         {
-            if (Horizontal)
-            {
-                var t = 1;
-            }
             block.Parent = this;
             mBlocks.Add( block );
             return block;
@@ -57,11 +53,11 @@ namespace MG.MDV
             var paddingBottom = 0.0f;
             var paddingVertical = 0.0f;
 
-            if( Highlight || IsTableHeader || IsTableRow)
+            if( Highlight || IsTableHeader || IsTableRow )
             {
                 var style = Highlight ?
-                    (GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" ))
-                    : (GUI.skin.GetStyle( IsTableHeader ? "th" : "tr" ));
+                    GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" )
+                    : GUI.skin.GetStyle( IsTableHeader ? "th" : "tr" );
 
                 pos.x += style.padding.left;
                 pos.y += style.padding.top;
@@ -70,26 +66,26 @@ namespace MG.MDV
                 paddingBottom = style.padding.bottom;
                 paddingVertical = style.padding.vertical;
             }
-            
-            if (!Horizontal)
+
+            if( !Horizontal )
             {
-                foreach( var block in mBlocks ) 
+                foreach( var block in mBlocks )
                 {
                     block.Arrange( context, pos, maxWidth );
                     pos.y += block.Rect.height;
                 }
 
-                Rect.height = pos.y - Rect.position.y + paddingBottom;    
+                Rect.height = pos.y - Rect.position.y + paddingBottom;
             }
             else
             {
                 Rect.height = 0;
-                maxWidth = mBlocks.Count == 0 ? maxWidth : maxWidth / mBlocks.Count ;
+                maxWidth = mBlocks.Count == 0 ? maxWidth : maxWidth / mBlocks.Count;
                 foreach( var block in mBlocks )
                 {
                     block.Arrange( context, pos, maxWidth );
                     pos.x += block.Rect.width;
-                    Rect.height = Mathf.Max(Rect.height, block.Rect.height);
+                    Rect.height = Mathf.Max( Rect.height, block.Rect.height );
                 }
 
                 Rect.height += paddingVertical;
@@ -102,21 +98,21 @@ namespace MG.MDV
             {
                 GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "blockcode" ) );
             }
-            else if (IsTableHeader)
+            else if( IsTableHeader )
             {
-                GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "th") );
+                GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "th" ) );
             }
-            else if (IsTableRow)
+            else if( IsTableRow )
             {
                 var parentBlock = Parent as BlockContainer;
-                if (parentBlock == null)
+                if( parentBlock == null )
                 {
-                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "tr") );    
+                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "tr" ) );
                 }
                 else
                 {
                     var idx = parentBlock.mBlocks.IndexOf(this);
-                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( idx % 2 == 0 ? "tr" : "trl") );
+                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( idx % 2 == 0 ? "tr" : "trl" ) );
                 }
             }
 
