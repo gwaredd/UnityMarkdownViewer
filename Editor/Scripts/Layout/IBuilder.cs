@@ -15,7 +15,13 @@ namespace MG.MDV
         void Outdent();
         void Prefix( string text, Style style );
 
-        void StartBlock( bool quote );
+        void StartBlock(  bool quoted );
         void EndBlock();
+        
+        void StartTable();
+        void EndTable();
+        
+        void StartTableRow(bool isHeader);
+        void EndTableRow();
     }
 }

@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using Markdig.Extensions.JiraLinks;
+using Markdig.Extensions.Tables;
 
 namespace MG.MDV
 {
@@ -62,6 +63,16 @@ namespace MG.MDV
             {
                 pipelineBuilder.UseJiraLinks( new JiraLinkOptions( Preferences.JIRA ) );
             }
+
+
+            if (Preferences.PipedTables)
+            {
+                pipelineBuilder.UsePipeTables(new PipeTableOptions
+                {
+                    RequireHeaderSeparator = Preferences.PipedTablesRequireRequireHeaderSeparator
+                });    
+            }
+            
 
             var pipeline = pipelineBuilder.Build();
             pipeline.Setup( renderer );

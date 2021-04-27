@@ -9,17 +9,24 @@ namespace MG.MDV
     public static class Preferences
     {
         private static readonly string KeyJIRA     = "MG/MDV/JIRA";
+        private static readonly string KeyPipedTables     = "MG/MDV/PIPED";
+        private static readonly string KeyPipedTablesRequireHeaderSeparator     = "MG/MDV/PIPED/USEHSEP";
         private static readonly string KeyHTML     = "MG/MDV/HTML";
         private static readonly string KeyDarkSkin = "MG/MDV/DarkSkin";
 
         private static string mJIRA        = string.Empty;
+        private static bool   mPipedTables   = true;
+        private static bool   mPipedTablesRequireHeaderSeparator   = true;
         private static bool   mStripHTML   = true;
         private static bool   mPrefsLoaded = false;
         private static bool   mDarkSkin    = EditorGUIUtility.isProSkin ;
 
-        public static string JIRA       { get { LoadPrefs(); return mJIRA; } }
-        public static bool   StripHTML  { get { LoadPrefs(); return mStripHTML; } }
-        public static bool   DarkSkin   { get { LoadPrefs(); return mDarkSkin; } }
+        public static string JIRA         { get { LoadPrefs(); return mJIRA; } }
+        public static bool   StripHTML    { get { LoadPrefs(); return mStripHTML; } }
+        public static bool   DarkSkin     { get { LoadPrefs(); return mDarkSkin; } }
+        
+        public static bool   PipedTables  { get { LoadPrefs(); return mPipedTables; } }
+        public static bool   PipedTablesRequireRequireHeaderSeparator  { get { LoadPrefs(); return mPipedTablesRequireHeaderSeparator; } }
 
         private static void LoadPrefs()
         {
@@ -27,6 +34,8 @@ namespace MG.MDV
             {
                 mJIRA        = EditorPrefs.GetString( KeyJIRA, "" );
                 mStripHTML   = EditorPrefs.GetBool( KeyHTML, true );
+                mPipedTables   = EditorPrefs.GetBool( KeyPipedTables, true );
+                mPipedTablesRequireHeaderSeparator   = EditorPrefs.GetBool( KeyPipedTablesRequireHeaderSeparator, true );
                 mDarkSkin    = EditorPrefs.GetBool( KeyDarkSkin, EditorGUIUtility.isProSkin );
                 mPrefsLoaded = true;
             }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Markdig.Syntax;
 using UnityEngine;
 
 namespace MG.MDV
@@ -8,6 +10,9 @@ namespace MG.MDV
     {
         public bool Quoted    = false;
         public bool Highlight = false;
+        public bool Horizontal = false;
+        public bool IsTableRow = false;
+        public bool IsTableHeader = false;
 
         List<Block> mBlocks = new List<Block>();
 
@@ -15,6 +20,10 @@ namespace MG.MDV
 
         public Block Add( Block block )
         {
+            if (Horizontal)
+            {
+                var t = 1;
+            }
             block.Parent = this;
             mBlocks.Add( block );
             return block;
@@ -46,25 +55,45 @@ namespace MG.MDV
             Rect.width = maxWidth - Indent - context.IndentSize;
 
             var paddingBottom = 0.0f;
+            var paddingVertical = 0.0f;
 
-            if( Highlight )
+            if( Highlight || IsTableHeader || IsTableRow)
             {
-                var style = GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" );
+                var style = Highlight ?
+                    (GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" ))
+                    : (GUI.skin.GetStyle( IsTableHeader ? "th" : "tr" ));
 
                 pos.x += style.padding.left;
                 pos.y += style.padding.top;
 
                 maxWidth -= style.padding.horizontal;
                 paddingBottom = style.padding.bottom;
+                paddingVertical = style.padding.vertical;
             }
-
-            foreach( var block in mBlocks )
+            
+            if (!Horizontal)
             {
-                block.Arrange( context, pos, maxWidth );
-                pos.y += block.Rect.height;
-            }
+                foreach( var block in mBlocks ) 
+                {
+                    block.Arrange( context, pos, maxWidth );
+                    pos.y += block.Rect.height;
+                }
 
-            Rect.height = pos.y - Rect.position.y + paddingBottom;
+                Rect.height = pos.y - Rect.position.y + paddingBottom;    
+            }
+            else
+            {
+                Rect.height = 0;
+                maxWidth = mBlocks.Count == 0 ? maxWidth : maxWidth / mBlocks.Count ;
+                foreach( var block in mBlocks )
+                {
+                    block.Arrange( context, pos, maxWidth );
+                    pos.x += block.Rect.width;
+                    Rect.height = Mathf.Max(Rect.height, block.Rect.height);
+                }
+
+                Rect.height += paddingVertical;
+            }
         }
 
         public override void Draw( Context context )
@@ -72,6 +101,23 @@ namespace MG.MDV
             if( Highlight && !Quoted )
             {
                 GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "blockcode" ) );
+            }
+            else if (IsTableHeader)
+            {
+                GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "th") );
+            }
+            else if (IsTableRow)
+            {
+                var parentBlock = Parent as BlockContainer;
+                if (parentBlock == null)
+                {
+                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( "tr") );    
+                }
+                else
+                {
+                    var idx = parentBlock.mBlocks.IndexOf(this);
+                    GUI.Box( Rect, string.Empty, GUI.skin.GetStyle( idx % 2 == 0 ? "tr" : "trl") );
+                }
             }
 
             mBlocks.ForEach( block => block.Draw( context ) );

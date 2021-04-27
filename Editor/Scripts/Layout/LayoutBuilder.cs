@@ -93,7 +93,7 @@ namespace MG.MDV
             {
                 return;
             }
-
+            
             AddBlock( new BlockSpace( mIndent ) );
         }
 
@@ -156,7 +156,7 @@ namespace MG.MDV
         public void StartBlock( bool quoted )
         {
             Space();
-            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Highlight = true, Quoted = quoted } );
+            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Highlight = true, Quoted = quoted} );
             CurrentBlock = null;
         }
 
@@ -168,7 +168,38 @@ namespace MG.MDV
 
             Space();
         }
+        
+        //------------------------------------------------------------------------------
 
+        public void StartTable()
+        {
+            Space();
+            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Quoted = false, Highlight = false} );
+            CurrentBlock = null;
+        }
+
+        public void EndTable()
+        {
+            mCurrentContainer.RemoveTrailingSpace();
+            mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
+            CurrentBlock = null;
+
+            Space();
+        }
+
+
+        public void StartTableRow(bool isHeader)
+        {
+            mCurrentContainer = AddBlock( new BlockContainer( mIndent ) { Quoted = false, Highlight = false, Horizontal = true, IsTableHeader = isHeader, IsTableRow = !isHeader} );
+            CurrentBlock = null;
+        }
+
+        public void EndTableRow()
+        {
+            mCurrentContainer.RemoveTrailingSpace();
+            mCurrentContainer = mCurrentContainer.Parent as BlockContainer ?? mDocument;
+            CurrentBlock = null;
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // private
