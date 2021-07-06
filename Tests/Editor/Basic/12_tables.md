@@ -20,7 +20,7 @@ C1|C2|C3
 Column | Column | Column
 :----- | :----: | -----:
 Left   | Center | Right
-align  | align  | align
+l  | c  | r
 
 ### Empty Cells
 
@@ -56,7 +56,7 @@ And more      | With an escaped '\|'         ||
 | Header 1  | Header 2            | Header 3  |
 | --------- | ------------------- | --------- |
 | Some data | Cell 2              | Cell 3    | Ignored | Ignored |
-| data      | Some long data here | more data | 
+| data      | more data | 
 
 ### With Some Content
 

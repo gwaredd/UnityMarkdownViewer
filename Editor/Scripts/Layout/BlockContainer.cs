@@ -55,9 +55,16 @@ namespace MG.MDV
 
             if( Highlight || IsTableHeader || IsTableRow )
             {
-                var style = Highlight ?
-                    GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" )
-                    : GUI.skin.GetStyle( IsTableHeader ? "th" : "tr" );
+                GUIStyle style;
+
+                if( Highlight )
+                {
+                    style = GUI.skin.GetStyle( Quoted ? "blockquote" : "blockcode" );
+                }
+                else
+                {
+                    style = GUI.skin.GetStyle( IsTableHeader ? "th" : "tr" );
+                }
 
                 pos.x += style.padding.left;
                 pos.y += style.padding.top;
@@ -67,20 +74,11 @@ namespace MG.MDV
                 paddingVertical = style.padding.vertical;
             }
 
-            if( !Horizontal )
-            {
-                foreach( var block in mBlocks )
-                {
-                    block.Arrange( context, pos, maxWidth );
-                    pos.y += block.Rect.height;
-                }
-
-                Rect.height = pos.y - Rect.position.y + paddingBottom;
-            }
-            else
+            if( Horizontal )
             {
                 Rect.height = 0;
                 maxWidth = mBlocks.Count == 0 ? maxWidth : maxWidth / mBlocks.Count;
+
                 foreach( var block in mBlocks )
                 {
                     block.Arrange( context, pos, maxWidth );
@@ -89,6 +87,16 @@ namespace MG.MDV
                 }
 
                 Rect.height += paddingVertical;
+            }
+            else
+            {
+                foreach( var block in mBlocks )
+                {
+                    block.Arrange( context, pos, maxWidth );
+                    pos.y += block.Rect.height;
+                }
+
+                Rect.height = pos.y - Rect.position.y + paddingBottom;
             }
         }
 
@@ -133,3 +141,4 @@ namespace MG.MDV
         }
     }
 }
+

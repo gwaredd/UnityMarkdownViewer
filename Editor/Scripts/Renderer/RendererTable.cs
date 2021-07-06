@@ -1,6 +1,8 @@
+using System.Linq;
 using Markdig.Extensions.Tables;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using UnityEngine;
 
 namespace MG.MDV
 {
@@ -17,33 +19,39 @@ namespace MG.MDV
 
             layout.StartTable();
 
-            for( var i = 0; i <= table.Count - 1; i++ )
-            {
-                var tableRow = table[i] as TableRow;
+            // limit the columns to the number of headers
+            var numCols = ( table[ 0 ] as TableRow ).Count( c => ( c as TableCell ).Count > 0 );
 
-                if( tableRow == null )
+            // column alignment
+            var alignment = table.ColumnDefinitions.Select( cd => cd.Alignment.HasValue ? cd.Alignment.Value : TableColumnAlign.Left ).ToArray();
+
+            foreach( TableRow row in table )
+            {
+                if( row == null )
                 {
                     continue;
                 }
 
-                layout.StartTableRow( tableRow.IsHeader );
+                layout.StartTableRow( row.IsHeader );
                 var consumeSpace = renderer.ConsumeSpace;
                 renderer.ConsumeSpace = true;
 
-                for( var j = 0; j <= tableRow.Count - 1; j++ )
-                {
-                    var tc = tableRow[ j ] as TableCell;
+                var numCells = Mathf.Min( numCols, row.Count );
 
-                    if( tc == null || tc.Count == 0 )
+                for( var cellIndex = 0; cellIndex < numCells; cellIndex++ )
+                {
+                    var cell = row[ cellIndex ] as TableCell;
+
+                    if( cell == null || cell.Count == 0 )
                     {
                         continue;
                     }
 
-                    if( tc[ 0 ].Span.IsEmpty )
+                    if( cell[ 0 ].Span.IsEmpty )
                     {
                         renderer.Write( new LiteralInline( " " ) );
 
-                        if( j != tableRow.Count - 1 )
+                        if( cellIndex != row.Count - 1 )
                         {
                             layout.NewLine();
                         }
@@ -52,12 +60,13 @@ namespace MG.MDV
                     {
                         var consumeNewLine = renderer.ConsumeNewLine;
 
-                        if( j == tableRow.Count - 1 )
+                        if( cellIndex == numCols - 1 )
                         {
                             renderer.ConsumeNewLine = true;
                         }
 
-                        renderer.WriteChildren( tc );
+                        renderer.Write( new LiteralInline( " " ) );
+                        renderer.WriteChildren( cell );
                         renderer.ConsumeNewLine = consumeNewLine;
                     }
                 }
