@@ -90,12 +90,10 @@ namespace MG.MDV
 
         void DrawDefaultEditor()
         {
-//             if( mDefaultEditor == null )
-//             {
-//                 mDefaultEditor = CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
-//             }
-
-            mDefaultEditor = mDefaultEditor ?? CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
+            if( mDefaultEditor == null )
+            {
+                mDefaultEditor = CreateEditor( target, Type.GetType( "UnityEditor.TextAssetInspector, UnityEditor" ) );
+            }
 
             if( mDefaultEditor != null )
             {
