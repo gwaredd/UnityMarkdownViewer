@@ -116,8 +116,8 @@ namespace MG.MDV
                 return string.Format( "file:///{0}{1}", projectDir, url );
             }
 
-            var assetDir = Path.GetDirectoryName( CurrentPath );
-            return "file:///" + Utils.PathNormalise( string.Format( "{0}/{1}/{2}", projectDir, assetDir, url ) );
+            var assetDir = Path.GetDirectoryName(Path.GetFullPath( CurrentPath ));
+            return "file:///" + Utils.PathNormalise( string.Format( "{0}/{1}", assetDir, url ) );
         }
 
         //------------------------------------------------------------------------------
