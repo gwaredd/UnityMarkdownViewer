@@ -31,8 +31,14 @@ namespace MG.MDV
             if( string.IsNullOrEmpty( Link ) )
             {
                 GUI.Label( Location, Payload, context.Apply( Style ) );
+                return;
             }
-            else if( GUI.Button( Location, Payload, context.Apply( Style ) ) )
+
+#if UNITY_EDITOR
+            UnityEditor.EditorGUIUtility.AddCursorRect( Location, UnityEditor.MouseCursor.Link );
+#endif
+
+            if( GUI.Button( Location, Payload, context.Apply( Style ) ) )
             {
                 if( Regex.IsMatch( Link, @"^\w+:", RegexOptions.Singleline ) )
                 {
