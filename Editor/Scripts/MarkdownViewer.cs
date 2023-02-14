@@ -1,4 +1,5 @@
-﻿using Markdig;
+﻿using System;
+using Markdig;
 using UnityEditor;
 using UnityEngine;
 using Markdig.Extensions.JiraLinks;
@@ -15,6 +16,8 @@ namespace MG.MDV
         private string          mCurrentPath     = string.Empty;
         private HandlerImages   mHandlerImages   = new HandlerImages();
         private HandlerNavigate mHandlerNavigate = new HandlerNavigate();
+
+        private Func<float> mViewWidthProvider = () => EditorGUIUtility.currentViewWidth; 
 
         private Layout          mLayout          = null;
         private bool            mRaw             = false;
@@ -36,6 +39,16 @@ namespace MG.MDV
             mHandlerNavigate.History     = mHistory;
             mHandlerNavigate.FindBlock   = ( id ) => mLayout.Find( id );
             mHandlerNavigate.ScrollTo    = ( pos ) => {}; // TODO: mScrollPos.y = pos;
+        }
+
+        public MarkdownViewer( GUISkin skin, string path, string content, Func<float> viewWidthProvider ) : this( skin, path, content )
+        {
+            if (viewWidthProvider == null)
+            {
+                throw new ArgumentNullException(nameof(viewWidthProvider));
+            }
+            
+            mViewWidthProvider = viewWidthProvider;
         }
 
 
@@ -102,7 +115,7 @@ namespace MG.MDV
 
             // useable width of inspector windows
 
-            var contentWidth = EditorGUIUtility.currentViewWidth - mSkin.verticalScrollbar.fixedWidth - 2.0f * Margin.x;
+            var contentWidth = mViewWidthProvider() - mSkin.verticalScrollbar.fixedWidth - 2.0f * Margin.x;
 
 
             // draw content
