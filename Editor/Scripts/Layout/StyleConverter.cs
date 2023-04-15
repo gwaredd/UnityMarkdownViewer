@@ -11,9 +11,9 @@ namespace MG.MDV
         private GUIStyle[]  mReference;
 
         Color linkColor         = new Color(0.41f, 0.71f, 1.0f, 1.0f);
-        const int Variable      = 0;
-        const int FixedInline   = 7;
-        const int FixedBlock    = 8;
+        const int FixedBlock    = 7;
+        const int Variable      = 8;
+        const int FixedInline   = 11;
 
         static readonly string[] CustomStyles = new string[] {
             "variable",
@@ -23,8 +23,13 @@ namespace MG.MDV
             "h4",
             "h5",
             "h6",
-            "fixed_inline",
             "fixed_block",
+            "variable",
+            "variable_bold",
+            "variable_italic",
+            "fixed_inline",
+            "fixed_inline_bold",
+            "fixed_inline_italic",
         };
 
         public StyleConverter( GUISkin skin )
@@ -53,11 +58,32 @@ namespace MG.MDV
 
             if( mCurrentStyle != src )
             {
-                var reference = mReference[ src.Fixed ? FixedInline : Variable ];
+                int font   = src.Fixed ? FixedInline : Variable;
+                int offset = 0;
 
-                style.font             = reference.font;
-                style.fontStyle        = src.GetFontStyle();
-                style.normal.textColor = src.Link ? linkColor : reference.normal.textColor;
+                style.fontStyle = FontStyle.Normal;
+
+                if( src.Bold && src.Italic )
+                {
+                    offset = 2;
+                    style.fontStyle = FontStyle.Bold;
+                }
+                else if( src.Bold )
+                {
+                    offset = 1;
+                }
+                else if( src.Italic )
+                {
+                    offset = 2;
+                }
+
+                style.font = mReference[ font + offset ].font;
+                style.normal.textColor = mReference[ font + offset ].normal.textColor;
+
+                if( src.Link )
+                {
+                    style.normal.textColor = linkColor;
+                }
 
                 mCurrentStyle = src;
             }

@@ -10,7 +10,8 @@ TrueTypeFontImporter:
   includeFontData: 1
   fontNames:
   - JetBrains Mono
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: fd2bc458549bf924a8cc41b618a20c48, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
