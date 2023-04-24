@@ -13,7 +13,7 @@ namespace MG.MDV
         Color linkColor         = new Color(0.41f, 0.71f, 1.0f, 1.0f);
         const int FixedBlock    = 7;
         const int Variable      = 8;
-        const int FixedInline   = 11;
+        const int FixedInline   = 12;
 
         static readonly string[] CustomStyles = new string[] {
             "variable",
@@ -27,9 +27,11 @@ namespace MG.MDV
             "variable",
             "variable_bold",
             "variable_italic",
+            "variable_bolditalic",
             "fixed_inline",
             "fixed_inline_bold",
             "fixed_inline_italic",
+            "fixed_inline_bolditalic",
         };
 
         public StyleConverter( GUISkin skin )
@@ -58,32 +60,11 @@ namespace MG.MDV
 
             if( mCurrentStyle != src )
             {
-                int font   = src.Fixed ? FixedInline : Variable;
-                int offset = 0;
+                var font = ( src.Fixed ? FixedInline : Variable ) + ( src.Bold ? 1 : 0 ) + ( src.Italic ? 2 : 0 );
 
-                style.fontStyle = FontStyle.Normal;
-
-                if( src.Bold && src.Italic )
-                {
-                    offset = 2;
-                    style.fontStyle = FontStyle.Bold;
-                }
-                else if( src.Bold )
-                {
-                    offset = 1;
-                }
-                else if( src.Italic )
-                {
-                    offset = 2;
-                }
-
-                style.font = mReference[ font + offset ].font;
-                style.normal.textColor = mReference[ font + offset ].normal.textColor;
-
-                if( src.Link )
-                {
-                    style.normal.textColor = linkColor;
-                }
+                style.font             = mReference[ font ].font;
+                style.fontStyle        = mReference[ font ].fontStyle;
+                style.normal.textColor = src.Link ? linkColor : mReference[ font ].normal.textColor;
 
                 mCurrentStyle = src;
             }
