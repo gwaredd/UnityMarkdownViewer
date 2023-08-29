@@ -1,6 +1,6 @@
 {
   "name": "com.mischief.markdownviewer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "displayName": "Unity Markdown Viewer",
   "description": "Editor inspector for markdown files",
   "unity": "2018.4",
