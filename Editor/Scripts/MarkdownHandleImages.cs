@@ -71,7 +71,7 @@ namespace MG.MDV
                 else
                 {
                     IsGif   = false;
-                    Request = UnityWebRequestTexture.GetTexture( url );
+                    Request = new UnityWebRequest(url, "GET", new DownloadHandlerBuffer(), null);
                 }
 
                 Request.SendWebRequest();
@@ -93,9 +93,14 @@ namespace MG.MDV
             }
 
             public Texture GetTexture()
-            {
-                var handler = Request.downloadHandler as DownloadHandlerTexture;
-                return handler != null ? handler.texture : null;
+            {                
+                var downloadHandler = Request.downloadHandler as DownloadHandlerBuffer;
+                
+                if (downloadHandler == null) return null;
+
+                var texture = new Texture2D( 2, 2, TextureFormat.RGBA32, false);
+                texture.LoadImage(downloadHandler.data, true);
+                return texture;
             }
         }
 
