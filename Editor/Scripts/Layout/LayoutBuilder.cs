@@ -290,9 +290,27 @@ namespace MG.MDV
                 return;
             }
 
-            var payload = new GUIContent( mWord.ToString(), mTooltip );
+            var word    = mWord.ToString();
+            var payload = new GUIContent( word, mTooltip );
             var content = new ContentText( payload, mStyle, mLink );
+
             content.CalcSize( mContext );
+
+            #if UNITY_2023_1_OR_NEWER
+
+                if( word.EndsWith( " " ) )
+                {
+                    // content.Location.width += mContext.Space;
+
+                    content.Location.width += 3.72f;
+
+                    if( mStyle.Size > 0 )
+                    {
+                        content.Location.width += 0.24f + 0.5f * (6 - mStyle.Size);
+                    }
+                }
+
+            #endif
 
             AddContent( content );
 
