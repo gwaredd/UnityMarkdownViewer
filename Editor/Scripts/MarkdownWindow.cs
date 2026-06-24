@@ -7,11 +7,15 @@ namespace MG.MDV
 {
     public class MarkdownWindow : EditorWindow
     {
-        private TextAsset mMarkdownFile;
+        [SerializeField] private TextAsset mMarkdownFile;
+        [SerializeField] private Vector2 mScrollPosition;
+        [SerializeField] private bool mSyncSelection = true;
+
         private string mLoadedContent;
         private MarkdownViewer mViewer;
-        private Vector2 mScrollPosition;
-        private bool mSyncSelection = true;
+
+        private Hash128 mLoadedDependencyHash;
+        private double mNextAutoReloadCheckTime;
 
         private GUISkin mSkinLight;
         private GUISkin mSkinDark;
@@ -75,10 +79,17 @@ namespace MG.MDV
                 Repaint();
             }
 
-            // Auto-reload if file contents changed on disk
-            if (mMarkdownFile != null && mMarkdownFile.text != mLoadedContent)
+            // Auto-reload if file contents changed (poll dependency hash at a modest interval)
+            if (mMarkdownFile != null && EditorApplication.timeSinceStartup >= mNextAutoReloadCheckTime)
             {
-                ReloadCurrentFile();
+                mNextAutoReloadCheckTime = EditorApplication.timeSinceStartup + 0.5d;
+
+                var path = AssetDatabase.GetAssetPath(mMarkdownFile);
+                var currentHash = AssetDatabase.GetAssetDependencyHash(path);
+                if (currentHash != mLoadedDependencyHash)
+                {
+                    ReloadCurrentFile();
+                }
             }
         }
 
@@ -118,6 +129,9 @@ namespace MG.MDV
             {
                 var path = AssetDatabase.GetAssetPath(mMarkdownFile);
                 mLoadedContent = mMarkdownFile.text;
+                mLoadedDependencyHash = AssetDatabase.GetAssetDependencyHash(path);
+                mNextAutoReloadCheckTime = EditorApplication.timeSinceStartup + 0.5d;
+
                 var skin = Preferences.DarkSkin ? mSkinDark : mSkinLight;
                 mViewer = new MarkdownViewer(skin, path, mLoadedContent, () => position.width);
             }
@@ -125,6 +139,8 @@ namespace MG.MDV
             {
                 mViewer = null;
                 mLoadedContent = null;
+                mLoadedDependencyHash = default;
+                mNextAutoReloadCheckTime = 0d;
             }
         }
 
@@ -232,9 +248,24 @@ namespace MG.MDV
                     if (!rect.Contains(evt.mousePosition))
                         break;
 
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                    var hasMarkdown = false;
+                    foreach (var draggedObject in DragAndDrop.objectReferences)
+                    {
+                        if (draggedObject is TextAsset textAsset)
+                        {
+                            var path = AssetDatabase.GetAssetPath(textAsset);
+                            var ext = Path.GetExtension(path).ToLower();
+                            if (ext == ".md" || ext == ".markdown")
+                            {
+                                hasMarkdown = true;
+                                break;
+                            }
+                        }
+                    }
 
-                    if (evt.type == EventType.DragPerform)
+                    DragAndDrop.visualMode = hasMarkdown ? DragAndDropVisualMode.Copy : DragAndDropVisualMode.Rejected;
+
+                    if (evt.type == EventType.DragPerform && hasMarkdown)
                     {
                         DragAndDrop.AcceptDrag();
                         foreach (var draggedObject in DragAndDrop.objectReferences)
