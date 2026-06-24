@@ -24,9 +24,10 @@ namespace MG.MDV
         }
 
         [OnOpenAsset(1)]
-        public static bool OnOpenAsset(int instanceID, int line)
+        public static bool OnOpenAsset(EntityId instanceID, int line)
         {
-            var obj = EditorUtility.InstanceIDToObject(instanceID);
+            var obj = EditorUtility.EntityIdToObject(instanceID);
+
             if (obj is TextAsset textAsset)
             {
                 var path = AssetDatabase.GetAssetPath(textAsset);
