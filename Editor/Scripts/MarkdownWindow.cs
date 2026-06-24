@@ -27,9 +27,14 @@ namespace MG.MDV
             window.Show();
         }
 
-        [OnOpenAsset(1)]
+        [OnOpenAsset]
         public static bool OnOpenAsset(EntityId instanceID, int line)
         {
+            if (!Preferences.OpenInViewer)
+            {
+                return false;
+            }
+
             var obj = EditorUtility.EntityIdToObject(instanceID);
 
             if (obj is TextAsset textAsset)

@@ -8,23 +8,26 @@ namespace MG.MDV
 {
     public static class Preferences
     {
-        private static readonly string KeyJIRA     = "MG/MDV/JIRA";
-        private static readonly string KeyPipedTables     = "MG/MDV/PIPED";
-        private static readonly string KeyPipedTablesRequireHeaderSeparator     = "MG/MDV/PIPED/USEHSEP";
-        private static readonly string KeyHTML     = "MG/MDV/HTML";
-        private static readonly string KeyDarkSkin = "MG/MDV/DarkSkin";
+        private static readonly string KeyJIRA                              = "MG/MDV/JIRA";
+        private static readonly string KeyPipedTables                       = "MG/MDV/PIPED";
+        private static readonly string KeyPipedTablesRequireHeaderSeparator = "MG/MDV/PIPED/USEHSEP";
+        private static readonly string KeyHTML                              = "MG/MDV/HTML";
+        private static readonly string KeyDarkSkin                          = "MG/MDV/DarkSkin";
+        private static readonly string KeyOpenInViewer                      = "MG/MDV/OpenInViewer";
 
-        private static string mJIRA        = string.Empty;
-        private static bool   mPipedTables   = true;
-        private static bool   mPipedTablesRequireHeaderSeparator   = true;
-        private static bool   mStripHTML   = true;
-        private static bool   mPrefsLoaded = false;
-        private static bool   mDarkSkin    = EditorGUIUtility.isProSkin ;
+        private static string mJIRA                              = string.Empty;
+        private static bool   mPipedTables                       = true;
+        private static bool   mPipedTablesRequireHeaderSeparator = true;
+        private static bool   mStripHTML                         = true;
+        private static bool   mPrefsLoaded                       = false;
+        private static bool   mDarkSkin                          = EditorGUIUtility.isProSkin;
+        private static bool   mOpenInViewer                      = false;
 
         public static string JIRA         { get { LoadPrefs(); return mJIRA; } }
         public static bool   StripHTML    { get { LoadPrefs(); return mStripHTML; } }
         public static bool   DarkSkin     { get { LoadPrefs(); return mDarkSkin; } }
-        
+        public static bool   OpenInViewer { get { LoadPrefs(); return mOpenInViewer; } }
+
         public static bool   PipedTables  { get { LoadPrefs(); return mPipedTables; } }
         public static bool   PipedTablesRequireRequireHeaderSeparator  { get { LoadPrefs(); return mPipedTablesRequireHeaderSeparator; } }
 
@@ -32,12 +35,13 @@ namespace MG.MDV
         {
             if( !mPrefsLoaded )
             {
-                mJIRA        = EditorPrefs.GetString( KeyJIRA, "" );
-                mStripHTML   = EditorPrefs.GetBool( KeyHTML, true );
-                mPipedTables   = EditorPrefs.GetBool( KeyPipedTables, true );
-                mPipedTablesRequireHeaderSeparator   = EditorPrefs.GetBool( KeyPipedTablesRequireHeaderSeparator, true );
-                mDarkSkin    = EditorPrefs.GetBool( KeyDarkSkin, EditorGUIUtility.isProSkin );
-                mPrefsLoaded = true;
+                mJIRA                              = EditorPrefs.GetString( KeyJIRA, "" );
+                mStripHTML                         = EditorPrefs.GetBool( KeyHTML, true );
+                mPipedTables                       = EditorPrefs.GetBool( KeyPipedTables, true );
+                mPipedTablesRequireHeaderSeparator = EditorPrefs.GetBool( KeyPipedTablesRequireHeaderSeparator, true );
+                mDarkSkin                          = EditorPrefs.GetBool( KeyDarkSkin, EditorGUIUtility.isProSkin );
+                mOpenInViewer                      = EditorPrefs.GetBool( KeyOpenInViewer, true );
+                mPrefsLoaded                       = true;
             }
         }
 
@@ -70,9 +74,10 @@ namespace MG.MDV
 
             EditorGUI.BeginChangeCheck();
 
-            mJIRA      = EditorGUILayout.TextField( "JIRA URL", mJIRA );
-            mStripHTML = EditorGUILayout.Toggle( "Strip HTML", mStripHTML );
-            mDarkSkin  = EditorGUILayout.Toggle( "Dark Skin", mDarkSkin );
+            mJIRA         = EditorGUILayout.TextField( "JIRA URL", mJIRA );
+            mStripHTML    = EditorGUILayout.Toggle( "Strip HTML", mStripHTML );
+            mDarkSkin     = EditorGUILayout.Toggle( "Dark Skin", mDarkSkin );
+            mOpenInViewer = EditorGUILayout.Toggle( "Open files in editor", mOpenInViewer );
 
             EditorGUI.EndChangeCheck();
 
@@ -80,6 +85,7 @@ namespace MG.MDV
             {
                 EditorPrefs.SetString( KeyJIRA, mJIRA );
                 EditorPrefs.SetBool( KeyHTML, mStripHTML );
+                EditorPrefs.SetBool( KeyOpenInViewer, mOpenInViewer );
             }
         }
     }
