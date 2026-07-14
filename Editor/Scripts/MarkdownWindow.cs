@@ -28,14 +28,22 @@ namespace MG.MDV
         }
 
         [OnOpenAsset]
+#if UNITY_6000_2_OR_NEWER
         public static bool OnOpenAsset(EntityId instanceID, int line)
+#else
+        public static bool OnOpenAsset(int instanceID, int line)
+#endif
         {
             if (!Preferences.OpenInViewer)
             {
                 return false;
             }
 
+#if UNITY_6000_2_OR_NEWER
             var obj = EditorUtility.EntityIdToObject(instanceID);
+#else
+            var obj = EditorUtility.InstanceIDToObject(instanceID);
+#endif
 
             if (obj is TextAsset textAsset)
             {
